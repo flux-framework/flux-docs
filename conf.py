@@ -28,8 +28,10 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Flux'
-copyright = '2020, LLNL'
-author = 'LLNL'
+copyright = '''Copyright 2014 Lawrence Livermore National Security, LLC and Flux developers.
+
+SPDX-License-Identifier: LGPL-3.0'''
+author = 'This page is maintained by the Flux community.'
 
 # The full version, including alpha/beta/rc tags
 release = '0.13.0'
@@ -66,3 +68,8 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# -- Options for man output -------------------------------------------------
+
+man_pages = [
+]
