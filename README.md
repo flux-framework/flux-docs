@@ -2,7 +2,7 @@
 
 Edits should be made to the `.rst` files.
 The documentation can be built with `make html` or `make man`.
-The generated files will be found in the `build` directory.
+The generated files will be found in the `_build` directory.
 
 ## Installing Sphinx
 
@@ -12,6 +12,7 @@ If Sphinx is not installed on the system, the following may be used to install S
 ``` shell
 virtualenv --system-site-packages env
 source env/bin/activate
+pip install sphinx
 ```
 
 If using this method, then source the virtualenv before running the Makefile steps below:
