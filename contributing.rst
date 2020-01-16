@@ -46,4 +46,4 @@ Developer Guidelines
   * Use `subsystem:` prefix in commit titles.
   * Each commit should have a message with title and body as described in C4.1 (e.g., imperative phrasing).
 
-For more details about C4.1, including commit requirements, see `RFC 1 <https://github.com/flux-framework/rfc/blob/master/spec_1.adoc>`.
+For more details about C4.1, including commit requirements, see `RFC 1 <https://github.com/flux-framework/rfc/blob/master/spec_1.adoc>`_.
