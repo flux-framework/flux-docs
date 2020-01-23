@@ -7,16 +7,11 @@ The generated files will be found in the `_build` directory.
 ## Installing Sphinx
 
 Sphinx is used to generate man pages from the `.rst` files.
-If Sphinx is not installed on the system, the following may be used to install Sphinx into a virtualenv.
+If Sphinx is not installed on the system, the following may be used to install Sphinx and the required theme.
 
 ``` shell
-virtualenv --system-site-packages env
-source env/bin/activate
 pip install sphinx
+pip install sphinx_rtd_theme
 ```
 
-If using this method, then source the virtualenv before running the Makefile steps below:
-
-``` shell
-source env/bin/activate
-```
+Users may want to install these packages into a [Python Virtual Environment](https://docs.python.org/3/tutorial/venv.html)
