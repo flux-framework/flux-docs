@@ -1,3 +1,6 @@
 [submodule "flux-core"]
 	path = flux-core
 	url = https://github.com/flux-framework/flux-core.git
+[submodule "rfc"]
+	path = rfc
+	url = git@github.com:flux-framework/rfc
