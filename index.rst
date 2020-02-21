@@ -11,12 +11,35 @@
 Welcome to Flux's documentation!
 ================================
 
-.. toctree::
-   :maxdepth: 3
-   :caption: Contents
+Flux is a flexible framework for resource management, built for your site.
+The framework consists of a suite of projects, tools, and libraries which may be used to build site-custom resource managers for High Performance Computing centers.
 
-   quickstart
+.. toctree::
+   :maxdepth: 2
+   :caption: Overview
+
    contributing
+   quickstart
+
+.. toctree::
+   :maxdepth: 1
+   :caption: User Relevant RFCs
+
+   rfc/spec_1
+   rfc/spec_2
+   rfc/spec_7
+   rfc/spec_9
+
+.. toctree::
+   :maxdepth: 1
+   :caption: API Reference
+
+   rfc/README.md
+
+.. toctree::
+   :hidden:
+
+   rfc/index
 
 Indices and tables
 ==================
