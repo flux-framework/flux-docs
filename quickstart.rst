@@ -27,6 +27,20 @@ The above command will build and install the latest tagged version of flux-sched
 
 For instructions on installing spack, see `Spack's installation documentation <https://spack.readthedocs.io/en/latest/getting_started.html#installation>`_.
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Docker: Recommended for quick, single-node deployments
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Flux has a continuously updated Docker image available for download on `Docker Hub <https://hub.docker.com/u/fluxrm>`_. If you already have docker installed, just run the following to download the latest Flux docker image and start a container from it:
+
+.. code-block:: console
+
+  $ docker run -ti fluxrm/flux-sched:latest bash
+
+.. note::
+   Multi-node docker deployments of Flux is still an ongoing area of research.
+   This installation method is recommended for developers and users curious to
+   try single-node instances of Flux.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Manual: Recommended for developers and contributors
