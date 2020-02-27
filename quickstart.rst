@@ -16,11 +16,17 @@ Building the Code
 Spack: Recommended for curious users
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Flux maintains an up-to-date package in the `spack <https://github.com/spack/spack>`_ develop branch, which builds all dependencies and flux itself from the current head of the master branch. If you’re already using spack, just run the following to install flux and all necessary dependencies:
+Flux maintains an up-to-date package in the `spack <https://github.com/spack/spack>`_ develop branch. If you’re already using spack, just run the following to install flux and all necessary dependencies:
 
 .. code-block:: console
 
-  $ spack install flux
+  $ spack install flux-sched
+
+The above command will build and install the latest tagged version of flux-sched and flux-core.  To install the latest master branches, use the ``@master`` version specifier: ``spack install flux-sched@master``. If you want Flux to manage and schedule Nvidia GPUs, include the ``+cuda`` variant: ``spack install flux-sched+cuda``.  This builds a CUDA-aware version of hwloc.
+
+
+For instructions on installing spack, see `Spack's installation documentation <https://spack.readthedocs.io/en/latest/getting_started.html#installation>`_.
+
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Manual: Recommended for developers and contributors
