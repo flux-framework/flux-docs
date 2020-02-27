@@ -82,6 +82,34 @@ Ensure all is right with the world by running the built-in ``make check`` target
   Making check in src
   ...
 
+Clone current flux-sched master:
+
+.. code-block:: console
+
+  $ git clone https://github.com/flux-framework/flux-sched.git
+  Initialized empty Git repository in /g/g0/grondo/flux-sched/.git/
+  $ cd flux-sched
+
+Build flux-sched:
+
+.. code-block:: console
+
+  $ ./autogen.sh && PYTHON_VERSION=3 ./configure
+  Running aclocal ...
+  Running libtoolize ...
+  Running autoheader ...
+  ...
+  $ make
+  ...
+
+Ensure all is right with the world by running the built-in ``make check`` target:
+
+.. code-block:: console
+
+  $ make check
+  Making check in src
+  ...
+
 .. _starting-instance:
 
 ------------------------
