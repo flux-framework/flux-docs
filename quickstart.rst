@@ -157,22 +157,21 @@ Services within a Flux session may be implemented by modules loaded in the ``flu
 
 .. code-block:: console
 
-  $ flux module list --rank=all
-  Module                   Size Digest  Idle  S   Nodeset Service
-  job-ingest            1143808 AF0B59E    4  S     [0-2]
-  cron                  1150080 4734B87    0  S         0
-  connector-local       1058616 30B79F6    0  R     [0-2]
-  resource             15996328 C5E139A    3  S         0
-  qmanager               841040 D40C2E0    3  S         0 sched
-  userdb                1066296 56B5D15    4  S         0
-  content-sqlite        1074088 7098AD8    0  S         0 content-backing
-  job-manager           1200296 D97A9A2    3  S         0
-  kvs                   1485416 23988F3    0  S     [0-2]
-  kvs-watch             1231456 4F4618B    0  S     [0-2]
-  job-info              1178896 CEB665F    4  S     [0-2]
-  barrier               1067888 8AEA814    4  S     [0-2]
-  aggregator            1085000 D967157    0  S     [0-2]
-  job-exec              1176856 CED941E    4  S         0
+  $ flux module list
+  Module                   Size Digest  Idle  S Service
+  job-exec              1274936 D83AE37    4  S
+  job-manager           1331496 1F432DD    4  S
+  kvs-watch             1299400 AA90CE6    4  S
+  kvs                   1558712 7D8432C    0  S
+  sched-simple          1241744 AA85006    4  S sched
+  job-info              1348608 CA590E9    4  S
+  barrier               1124360 DDA1A3A    4  S
+  cron                  1202792 1B2DFD1    0  S
+  connector-local       1110736 5AE480D    0  R
+  job-ingest            1214040 19306CA    4  S
+  userdb                1122432 0AA8778    4  S
+  content-sqlite        1126920 EB0D5E9    4  S content-backing
+  aggregator            1141184 5E1E0B6    4  S
 
 The most basic functionality of these service modules can be tested with the ``flux ping`` utility, which targets a builtin ``*.ping`` handler registered by default with each module.
 
@@ -275,7 +274,7 @@ Here, the allocated ID for the job is immediately echoed to stdout.
 
 .. code-block:: console
 
-  $ flux job list
-    JOBID           STATE   USERID    PRI   T_SUBMIT
-    640671547392    R       58985     16    2019-10-22T16:27:02Z
-    1045388328960   R       58985     16    2019-10-22T16:27:26Z
+  $ flux jobs
+  JOBID         USER     NAME       STATE    NTASKS RUNTIME
+  3932864643072 moussa1  io-forward RUN           1 2.527s
+  3825238802432 moussa1  compute.lu RUN           4 8.943s
