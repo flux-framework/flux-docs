@@ -16,11 +16,31 @@ Building the Code
 Spack: Recommended for curious users
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Flux maintains an up-to-date package in the `spack <https://github.com/spack/spack>`_ develop branch, which builds all dependencies and flux itself from the current head of the master branch. If you’re already using spack, just run the following to install flux and all necessary dependencies:
+Flux maintains an up-to-date package in the `spack <https://github.com/spack/spack>`_ develop branch. If you’re already using spack, just run the following to install flux and all necessary dependencies:
 
 .. code-block:: console
 
-  $ spack install flux
+  $ spack install flux-sched
+
+The above command will build and install the latest tagged version of flux-sched and flux-core.  To install the latest master branches, use the ``@master`` version specifier: ``spack install flux-sched@master``. If you want Flux to manage and schedule Nvidia GPUs, include the ``+cuda`` variant: ``spack install flux-sched+cuda``.  This builds a CUDA-aware version of hwloc.
+
+
+For instructions on installing spack, see `Spack's installation documentation <https://spack.readthedocs.io/en/latest/getting_started.html#installation>`_.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Docker: Recommended for quick, single-node deployments
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Flux has a continuously updated Docker image available for download on `Docker Hub <https://hub.docker.com/u/fluxrm>`_. If you already have docker installed, just run the following to download the latest Flux docker image and start a container from it:
+
+.. code-block:: console
+
+  $ docker run -ti fluxrm/flux-sched:latest bash
+
+.. note::
+   Multi-node docker deployments of Flux is still an ongoing area of research.
+   This installation method is recommended for developers and users curious to
+   try single-node instances of Flux.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Manual: Recommended for developers and contributors
@@ -40,8 +60,7 @@ Build flux-core. In order to build python bindings, ensure you have python-3.6 a
 
 .. code-block:: console
 
-  $ module load python/3.6 python-cffi python-pycparser
-  $ ./autogen.sh && ./configure
+  $ ./autogen.sh && PYTHON_VERSION=3 ./configure --prefix=$HOME/local
   Running aclocal ...
   Running libtoolize ...
   Running autoheader ...
@@ -51,7 +70,37 @@ Build flux-core. In order to build python bindings, ensure you have python-3.6 a
 
 .. note::
    Flux still supports python-2.7, but we recommend that you use python-3.6 or higher
-   as the Python community will stop maintaining this version in 2020.
+   as the Python community has stopped maintaining this version as of 2020. The
+   ``PYTHON_VERSION`` environment variable adds a suffix to the python interpreter
+   executable. Configure would look for python3 in the example above.
+
+Ensure all is right with the world by running the built-in ``make check`` target:
+
+.. code-block:: console
+
+  $ make check
+  Making check in src
+  ...
+
+Clone current flux-sched master:
+
+.. code-block:: console
+
+  $ git clone https://github.com/flux-framework/flux-sched.git
+  Initialized empty Git repository in /g/g0/grondo/flux-sched/.git/
+  $ cd flux-sched
+
+Build flux-sched:
+
+.. code-block:: console
+
+  $ ./autogen.sh && PYTHON_VERSION=3 PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig ./configure --prefix=$HOME/local
+  Running aclocal ...
+  Running libtoolize ...
+  Running autoheader ...
+  ...
+  $ make
+  ...
 
 Ensure all is right with the world by running the built-in ``make check`` target:
 
