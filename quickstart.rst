@@ -53,7 +53,7 @@ Clone current flux-core master:
 .. code-block:: console
 
   $ git clone https://github.com/flux-framework/flux-core.git
-  Initialized empty Git repository in /g/g0/grondo/flux-core/.git/
+  Initialized empty Git repository in /home/user1/flux-core/.git/
   $ cd flux-core
 
 Build flux-core. In order to build python bindings, ensure you have python-3.6 and python-cffi available in your current environment:
@@ -87,7 +87,7 @@ Clone current flux-sched master:
 .. code-block:: console
 
   $ git clone https://github.com/flux-framework/flux-sched.git
-  Initialized empty Git repository in /g/g0/grondo/flux-sched/.git/
+  Initialized empty Git repository in /home/user1/flux-sched/.git/
   $ cd flux-sched
 
 Build flux-sched:
@@ -125,10 +125,10 @@ Before a Flux instance can be started, keys must be generated to encrypt and aut
 .. code-block:: console
 
   $ flux keygen
-  Saving /g/g0/grondo/.flux/curve/client
-  Saving /g/g0/grondo/.flux/curve/client_private
-  Saving /g/g0/grondo/.flux/curve/server
-  Saving /g/g0/grondo/.flux/curve/server_private
+  Saving /home/user1/.flux/curve/client
+  Saving /home/user1/.flux/curve/client_private
+  Saving /home/user1/.flux/curve/server
+  Saving /home/user1/.flux/curve/server_private
   $
 
 To start a Flux session with 4 brokers on the local node, use ``flux start``:
@@ -325,5 +325,5 @@ Here, the allocated ID for the job is immediately echoed to stdout.
 
   $ flux jobs
   JOBID         USER     NAME       STATE    NTASKS RUNTIME
-  3932864643072 moussa1  io-forward RUN           1 2.527s
-  3825238802432 moussa1  compute.lu RUN           4 8.943s
+  3932864643072 user1    io-forward RUN           1 2.527s
+  3825238802432 user1    compute.lu RUN           4 8.943s
