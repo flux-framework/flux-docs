@@ -324,6 +324,6 @@ Here, the allocated ID for the job is immediately echoed to stdout.
 .. code-block:: console
 
   $ flux jobs
-  JOBID         USER     NAME       STATE    NTASKS RUNTIME
-  3932864643072 user1    io-forward RUN           1 2.527s
-  3825238802432 user1    compute.lu RUN           4 8.943s
+          JOBID USER     NAME       STATE    NTASKS NNODES  RUNTIME RANKS
+  1378382512128 user1    sleep      RUN           1      1   5.015s 0
+  1355649384448 user1    sleep      RUN           1      1   6.368s 0
