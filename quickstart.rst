@@ -124,31 +124,20 @@ To start a Flux session with 4 brokers on the local node, use ``flux start``:
 
 .. code-block:: console
 
-  $ src/cmd/flux start --size=4
+  $ flux start --size=4
   $
 
 A flux session can be also be started under `Slurm <https://github.com/chaos/slurm>`_ using PMI. To start by using ``srun(1)``, simply run the ``flux start`` command without the ``--size`` option under a Slurm job. You will likely want to start a single broker process per node:
 
 .. code-block:: console
 
-  $ srun -N4 -n4 --pty src/cmd/flux start
+  $ srun -N4 -n4 --pty flux start
   srun: Job is in held state, pending scheduler release
   srun: job 1136410 queued and waiting for resources
   srun: job 1136410 has been allocated resources
   $
 
 After broker wireup is completed, the Flux session starts an “initial program” on rank 0 broker. By default, the initial program is an interactive shell, but an alternate program can be supplied on the ``flux start`` command line. Once the initial program terminates, the Flux session is considered complete and brokers exit.
-
-By default, Flux sets the initial program environment such that the ``flux(1)`` command that was used to start the session is found first in ``PATH``, so within the initial program shell, running ``flux`` will work as expected:
-
-.. code-block:: console
-
-  $ flux
-  Usage: flux [OPTIONS] COMMAND ARGS
-    -h, --help             Display this message
-    -v, --verbose          Be verbose about environment and command search
-  [snip]
-  $
 
 To get help on any ``flux`` subcommand or API program, the ``flux help`` command may be used. For example, to view the man page for the ``flux-hwloc(1)`` command, use
 
