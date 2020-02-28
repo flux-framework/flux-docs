@@ -53,7 +53,7 @@ Clone current flux-core master:
 .. code-block:: console
 
   $ git clone https://github.com/flux-framework/flux-core.git
-  Initialized empty Git repository in /g/g0/grondo/flux-core/.git/
+  Initialized empty Git repository in /home/user1/flux-core/.git/
   $ cd flux-core
 
 Build flux-core. In order to build python bindings, ensure you have python-3.6 and python-cffi available in your current environment:
@@ -87,7 +87,7 @@ Clone current flux-sched master:
 .. code-block:: console
 
   $ git clone https://github.com/flux-framework/flux-sched.git
-  Initialized empty Git repository in /g/g0/grondo/flux-sched/.git/
+  Initialized empty Git repository in /home/user1/flux-sched/.git/
   $ cd flux-sched
 
 Build flux-sched:
@@ -120,35 +120,35 @@ In order to use Flux, you first must initiate a Flux *instance* or *session*.
 
 A Flux session is composed of a hierarchy of ``flux-broker`` processes which are launched via any parallel launch utility that supports PMI. For example, ``srun``, ``mpiexec.hydra``, etc., or locally for testing via the ``flux start`` command.
 
+Before a Flux instance can be started, keys must be generated to encrypt and authenticate Flux messages.  This step is only required for first-time users of flux.
+
+.. code-block:: console
+
+  $ flux keygen
+  Saving /home/user1/.flux/curve/client
+  Saving /home/user1/.flux/curve/client_private
+  Saving /home/user1/.flux/curve/server
+  Saving /home/user1/.flux/curve/server_private
+  $
+
 To start a Flux session with 4 brokers on the local node, use ``flux start``:
 
 .. code-block:: console
 
-  $ src/cmd/flux start --size=4
+  $ flux start --size=4
   $
 
 A flux session can be also be started under `Slurm <https://github.com/chaos/slurm>`_ using PMI. To start by using ``srun(1)``, simply run the ``flux start`` command without the ``--size`` option under a Slurm job. You will likely want to start a single broker process per node:
 
 .. code-block:: console
 
-  $ srun -N4 -n4 --pty src/cmd/flux start
+  $ srun -N4 -n4 --pty flux start
   srun: Job is in held state, pending scheduler release
   srun: job 1136410 queued and waiting for resources
   srun: job 1136410 has been allocated resources
   $
 
 After broker wireup is completed, the Flux session starts an “initial program” on rank 0 broker. By default, the initial program is an interactive shell, but an alternate program can be supplied on the ``flux start`` command line. Once the initial program terminates, the Flux session is considered complete and brokers exit.
-
-By default, Flux sets the initial program environment such that the ``flux(1)`` command that was used to start the session is found first in ``PATH``, so within the initial program shell, running ``flux`` will work as expected:
-
-.. code-block:: console
-
-  $ flux
-  Usage: flux [OPTIONS] COMMAND ARGS
-    -h, --help             Display this message
-    -v, --verbose          Be verbose about environment and command search
-  [snip]
-  $
 
 To get help on any ``flux`` subcommand or API program, the ``flux help`` command may be used. For example, to view the man page for the ``flux-hwloc(1)`` command, use
 
@@ -324,6 +324,6 @@ Here, the allocated ID for the job is immediately echoed to stdout.
 .. code-block:: console
 
   $ flux jobs
-  JOBID         USER     NAME       STATE    NTASKS RUNTIME
-  3932864643072 moussa1  io-forward RUN           1 2.527s
-  3825238802432 moussa1  compute.lu RUN           4 8.943s
+          JOBID USER     NAME       STATE    NTASKS NNODES  RUNTIME RANKS
+  1378382512128 user1    sleep      RUN           1      1   5.015s 0
+  1355649384448 user1    sleep      RUN           1      1   6.368s 0
