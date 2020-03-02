@@ -90,11 +90,13 @@ Clone current flux-sched master:
   Initialized empty Git repository in /home/user1/flux-sched/.git/
   $ cd flux-sched
 
-Build flux-sched:
+Build flux-sched. By default, flux-sched will attempt to configure against
+flux-core found in the specified ``--prefix`` using the same
+``PYTHON_VERSION``::
 
 .. code-block:: console
 
-  $ ./autogen.sh && PYTHON_VERSION=3 PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig ./configure --prefix=$HOME/local
+  $ ./autogen.sh && ./configure --prefix=$HOME/local
   Running aclocal ...
   Running libtoolize ...
   Running autoheader ...
