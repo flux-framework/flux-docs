@@ -1,3 +1,0 @@
-[submodule "flux-core"]
-	path = flux-core
-	url = https://github.com/flux-framework/flux-core.git
