@@ -15,6 +15,7 @@ Welcome to Flux's documentation!
    :maxdepth: 3
    :caption: Contents
 
+   prerequisites
    quickstart
    contributing
 
