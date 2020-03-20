@@ -26,7 +26,7 @@ Flux maintains an up-to-date package in the `spack <https://github.com/spack/spa
 Manual: Recommended for developers and contributors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Ensure the latest list of requirements are installed. The currrent list of build requirements are detailed `here <http://flux-framework.org/docs/requirements/>`_.
+Ensure the latest list of requirements are installed. The currrent list of build requirements are detailed in :ref:`prerequisites`.
 
 Clone current flux-core master:
 
