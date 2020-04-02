@@ -17,6 +17,7 @@ Welcome to Flux's documentation!
 
    quickstart
    contributing
+   coral2
 
 Indices and tables
 ==================
