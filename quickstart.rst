@@ -92,7 +92,7 @@ Clone current flux-sched master:
 
 Build flux-sched. By default, flux-sched will attempt to configure against
 flux-core found in the specified ``--prefix`` using the same
-``PYTHON_VERSION``::
+``PYTHON_VERSION``:
 
 .. code-block:: console
 
