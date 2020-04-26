@@ -1,10 +1,10 @@
 .. _coral2:
 
 ==============
-CORAL2 Systems
+CORAL Systems
 ==============
 
-The LLNL and ORNL `CORAL2 systems <https://procurement.ornl.gov/rfp/CORAL2/>`_
+The LLNL and ORNL `CORAL systems <https://asc.llnl.gov/CORAL/>`_
 Lassen, Sierra, and Summit are pre-exascale supercomputers built by IBM.  They
 run a specialized software stack that requires additional components to
 integrate properly with Flux.  These components are provided as `Lmod
@@ -27,9 +27,9 @@ If you are using the ORNL system Summit, run:
 Launching Flux
 ------------------
 
-Launching Flux on CORAL2 systems requires a shim layer to provide `PMI
+Launching Flux on CORAL systems requires a shim layer to provide `PMI
 <https://www.mcs.anl.gov/papers/P1760.pdf>`_ on top of the PMIx interface
-provided by the CORAL2 system launcher jsrun.  PMI is a common interface
+provided by the CORAL system launcher jsrun.  PMI is a common interface
 for bootstrapping parallel applications like MPI, SHMEM, and Flux.  To load this
 module, run:
 
@@ -107,7 +107,7 @@ You can test to see if your system default hwloc is CUDA-enabled with:
 
 If no output is produced, then your hwloc is not CUDA-enabled.
 
-If running on an LLNL CORAL2 system, you can load a CUDA-enabled hwloc with:
+If running on an LLNL CORAL system, you can load a CUDA-enabled hwloc with:
 
 .. code-block:: sh
 
