@@ -53,7 +53,7 @@ Clone current flux-core master:
 .. code-block:: console
 
   $ git clone https://github.com/flux-framework/flux-core.git
-  Initialized empty Git repository in /home/user1/flux-core/.git/
+  Initialized empty Git repository in /home/fluxuser/flux-core/.git/
   $ cd flux-core
 
 Build flux-core. In order to build python bindings, ensure you have python-3.6 and python-cffi available in your current environment:
@@ -87,12 +87,12 @@ Clone current flux-sched master:
 .. code-block:: console
 
   $ git clone https://github.com/flux-framework/flux-sched.git
-  Initialized empty Git repository in /home/user1/flux-sched/.git/
+  Initialized empty Git repository in /home/fluxuser/flux-sched/.git/
   $ cd flux-sched
 
 Build flux-sched. By default, flux-sched will attempt to configure against
 flux-core found in the specified ``--prefix`` using the same
-``PYTHON_VERSION``::
+``PYTHON_VERSION``:
 
 .. code-block:: console
 
@@ -127,10 +127,10 @@ Before a Flux instance can be started, keys must be generated to encrypt and aut
 .. code-block:: console
 
   $ flux keygen
-  Saving /home/user1/.flux/curve/client
-  Saving /home/user1/.flux/curve/client_private
-  Saving /home/user1/.flux/curve/server
-  Saving /home/user1/.flux/curve/server_private
+  Saving /home/fluxuser/.flux/curve/client
+  Saving /home/fluxuser/.flux/curve/client_private
+  Saving /home/fluxuser/.flux/curve/server
+  Saving /home/fluxuser/.flux/curve/server_private
   $
 
 To start a Flux session with 4 brokers on the local node, use ``flux start``:
@@ -326,6 +326,6 @@ Here, the allocated ID for the job is immediately echoed to stdout.
 .. code-block:: console
 
   $ flux jobs
-          JOBID USER     NAME       STATE    NTASKS NNODES  RUNTIME RANKS
-  1378382512128 user1    sleep      RUN           1      1   5.015s 0
-  1355649384448 user1    sleep      RUN           1      1   6.368s 0
+          JOBID USER        NAME       STATE    NTASKS NNODES  RUNTIME RANKS
+  1378382512128 fluxuser    sleep      RUN           1      1   5.015s 0
+  1355649384448 fluxuser    sleep      RUN           1      1   6.368s 0
