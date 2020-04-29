@@ -2,7 +2,7 @@ pull_request_rules:
   - name: rebase and merge when passing all checks
     conditions:
       - base=master
-      - status-success=continuous-documentation/read-the-docs
+      - status-success="docs/readthedocs.org:flux-framework"
       - status-success="validate commits"
       - label="merge-when-passing"
       - label!="work-in-progress"
