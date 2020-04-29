@@ -1,4 +1,4 @@
-.. _coral2:
+.. _coral:
 
 ==============
 CORAL Systems
