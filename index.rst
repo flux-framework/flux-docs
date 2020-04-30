@@ -23,7 +23,7 @@ The framework consists of a suite of projects, tools, and libraries which may be
 
 .. toctree::
    :maxdepth: 1
-   :caption: User Relevant RFCs
+   :caption: Contributor Relevant RFCs
 
    rfc/spec_1
    rfc/spec_2
