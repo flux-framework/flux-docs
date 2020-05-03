@@ -35,7 +35,11 @@ Flux has a continuously updated Docker image available for download on `Docker H
 
 .. code-block:: console
 
-  $ docker run -ti fluxrm/flux-sched:latest bash
+  $ docker run -ti fluxrm/flux-sched:latest
+  $ flux getattr size
+  1
+  $ flux mini run printenv FLUX_JOB_ID
+  2597498912768
 
 .. note::
    Multi-node docker deployments of Flux is still an ongoing area of research.
