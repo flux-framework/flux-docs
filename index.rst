@@ -35,7 +35,7 @@ Contributor Relevant RFCs
 API Reference
 -------------
 
-- :doc:`rfc:README`
+- :doc:`rfc:index`
 
 
 Indices and tables
