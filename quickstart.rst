@@ -98,19 +98,13 @@ Build flux-core. In order to build python bindings, ensure you have python-3.6 a
 
 .. code-block:: console
 
-  $ ./autogen.sh && PYTHON_VERSION=3 ./configure --prefix=$HOME/local
+  $ ./autogen.sh && ./configure --prefix=$HOME/local
   Running aclocal ...
   Running libtoolize ...
   Running autoheader ...
   ...
   $ make -j 8
   ...
-
-.. note::
-   Flux still supports python-2.7, but we recommend that you use python-3.6 or higher
-   as the Python community has stopped maintaining this version as of 2020. The
-   ``PYTHON_VERSION`` environment variable adds a suffix to the python interpreter
-   executable. Configure would look for python3 in the example above.
 
 Ensure all is right with the world by running the built-in ``make check`` target:
 
