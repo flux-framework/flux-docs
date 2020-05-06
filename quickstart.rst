@@ -35,12 +35,50 @@ Flux has a continuously updated Docker image available for download on `Docker H
 
 .. code-block:: console
 
-  $ docker run -ti fluxrm/flux-sched:latest bash
+  $ docker run -ti fluxrm/flux-sched:latest
+  $ flux getattr size
+  1
+  $ flux mini run printenv FLUX_JOB_ID
+  2597498912768
 
 .. note::
    Multi-node docker deployments of Flux is still an ongoing area of research.
    This installation method is recommended for developers and users curious to
    try single-node instances of Flux.
+
+The default CMD for flux docker images is ``flux start /bin/bash``. To emulate a multi-node deployment within a single container, replace the default CMD by supplying args to ``docker run``:
+
+.. code-block:: console
+
+   $ docker run -ti fluxrm/flux-sched flux start --size 4
+   $ flux getattr size
+   4
+
+If you are developing Flux and want to compile the modified code and run our testsuite within a docker container, you can use our helper script:
+
+.. code-block:: console
+
+   $ git clone https://github.com/flux-framework/flux-core.git
+   Initialized empty Git repository in /home/fluxuser/flux-core/.git/
+   $ cd flux-core
+   $ ./src/test/docker/docker-run-checks.sh
+   <snip>
+   ============================================================================
+   Testsuite summary for flux-core 0.16.0-371-gfe938825c
+   ============================================================================
+   # TOTAL: 2389
+   # PASS:  2367
+   # SKIP:  19
+   # XFAIL: 3
+   # FAIL:  0
+   # XPASS: 0
+   # ERROR: 0
+   ============================================================================
+
+
+.. note::
+   Both the flux-core and flux-sched repositories have the ``docker-run-checks.sh`` helper script
+
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Manual: Recommended for developers and contributors
@@ -60,19 +98,13 @@ Build flux-core. In order to build python bindings, ensure you have python-3.6 a
 
 .. code-block:: console
 
-  $ ./autogen.sh && PYTHON_VERSION=3 ./configure --prefix=$HOME/local
+  $ ./autogen.sh && ./configure --prefix=$HOME/local
   Running aclocal ...
   Running libtoolize ...
   Running autoheader ...
   ...
   $ make -j 8
   ...
-
-.. note::
-   Flux still supports python-2.7, but we recommend that you use python-3.6 or higher
-   as the Python community has stopped maintaining this version as of 2020. The
-   ``PYTHON_VERSION`` environment variable adds a suffix to the python interpreter
-   executable. Configure would look for python3 in the example above.
 
 Ensure all is right with the world by running the built-in ``make check`` target:
 
