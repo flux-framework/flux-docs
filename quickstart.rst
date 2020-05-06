@@ -54,6 +54,32 @@ The default CMD for flux docker images is ``flux start /bin/bash``. To emulate a
    $ flux getattr size
    4
 
+If you are developing Flux and want to compile the modified code and run our testsuite within a docker container, you can use our helper script:
+
+.. code-block:: console
+
+   $ git clone https://github.com/flux-framework/flux-core.git
+   Initialized empty Git repository in /home/fluxuser/flux-core/.git/
+   $ cd flux-core
+   $ ./src/test/docker/docker-run-checks.sh
+   <snip>
+   ============================================================================
+   Testsuite summary for flux-core 0.16.0-371-gfe938825c
+   ============================================================================
+   # TOTAL: 2389
+   # PASS:  2367
+   # SKIP:  19
+   # XFAIL: 3
+   # FAIL:  0
+   # XPASS: 0
+   # ERROR: 0
+   ============================================================================
+
+
+.. note::
+   Both the flux-core and flux-sched repositories have the ``docker-run-checks.sh`` helper script
+
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Manual: Recommended for developers and contributors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
