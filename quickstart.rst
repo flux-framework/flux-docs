@@ -46,6 +46,14 @@ Flux has a continuously updated Docker image available for download on `Docker H
    This installation method is recommended for developers and users curious to
    try single-node instances of Flux.
 
+The default CMD for flux docker images is ``flux start /bin/bash``. To emulate a multi-node deployment within a single container, replace the default CMD by supplying args to ``docker run``:
+
+.. code-block:: console
+
+   $ docker run -ti fluxrm/flux-sched flux start --size 4
+   $ flux getattr size
+   4
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Manual: Recommended for developers and contributors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
