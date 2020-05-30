@@ -11,9 +11,7 @@ Some frequently asked questions about flux and their answers.
 Does flux run on a mac?
 -----------------------
 
-Not yet. We have an open issue_ on GitHub tracking the progress towards the goal of natively compiling on a mac. In the meantime, you can use Docker, see: :ref:`quickstart`.
-
-.. _issue: https://github.com/flux-framework/flux-core/issues/2892 
+Not yet. We have an open `issue <https://github.com/flux-framework/flux-core/issues/2892>`_ on GitHub tracking the progress towards the goal of natively compiling on a mac. In the meantime, you can use Docker, see: :ref:`quickstart`.
 
 .. _bug-report-how:
 
@@ -21,7 +19,4 @@ Not yet. We have an open issue_ on GitHub tracking the progress towards the goal
 How do I report a bug?
 ----------------------
 
-You can read up on reporting bugs here: :ref:`contributing` or report one directly for flux core_ or sched_.
-
-.. _core: https://github.com/flux-framework/flux-core/issues
-.. _sched: https://github.com/flux-framework/flux-sched/issues
+You can read up on reporting bugs here: :ref:`contributing` or report one directly for flux `core <https://github.com/flux-framework/flux-core/issues>`_ or `sched <https://github.com/flux-framework/flux-sched/issues>`_.
