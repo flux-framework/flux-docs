@@ -49,6 +49,8 @@ using the PMI compatibility shim.  The ``${NUM_NODES}`` variable is the number o
 nodes that you want to launch the Flux instance across. The remaining arguments
 ensure that all on-node resources are available to Flux for scheduling.
 
+.. _coral_spectrum_mpi:
+
 ----------------------------------
 Launching Spectrum MPI within Flux
 ----------------------------------
