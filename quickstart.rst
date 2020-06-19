@@ -84,7 +84,7 @@ If you are developing Flux and want to compile the modified code and run our tes
 Manual: Recommended for developers and contributors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Ensure the latest list of requirements are installed. The currrent list of build requirements are detailed `here <http://flux-framework.org/docs/requirements/>`_.
+Ensure the latest list of requirements are installed. The current list of build requirements are detailed `here <http://flux-framework.org/docs/requirements/>`_.
 
 Clone current flux-core master:
 
@@ -182,7 +182,7 @@ A flux session can be also be started under `Slurm <https://github.com/chaos/slu
   srun: job 1136410 has been allocated resources
   $
 
-After broker wireup is completed, the Flux session starts an “initial program” on rank 0 broker. By default, the initial program is an interactive shell, but an alternate program can be supplied on the ``flux start`` command line. Once the initial program terminates, the Flux session is considered complete and brokers exit.
+After broker wire up is completed, the Flux session starts an “initial program” on rank 0 broker. By default, the initial program is an interactive shell, but an alternate program can be supplied on the ``flux start`` command line. Once the initial program terminates, the Flux session is considered complete and brokers exit.
 
 To get help on any ``flux`` subcommand or API program, the ``flux help`` command may be used. For example, to view the man page for the ``flux-hwloc(1)`` command, use
 

@@ -53,6 +53,12 @@ if rtd_version not in ["stable", "latest"]:
 # ones.
 extensions = [
     "sphinx.ext.intersphinx",
+    'sphinxcontrib.spelling',
+]
+
+# sphinxcontrib.spelling settings
+spelling_word_list_filename = [
+    'spell.en.pws'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
