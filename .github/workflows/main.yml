@@ -10,3 +10,12 @@ jobs:
         fetch-depth: 0
     - run: git fetch origin master
     - uses: flux-framework/pr-validator@master
+  make-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: ammaraskar/sphinx-action@master
+      with:
+        pre-build-command: "apt-get update -y && apt-get install -y enchant"
+        build-command: 'make check'
+        docs-folder: './'
