@@ -1,0 +1,3 @@
+Sphinx
+sphinxcontrib-spelling
+sphinx-rtd-theme
