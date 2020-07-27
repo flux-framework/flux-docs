@@ -64,11 +64,11 @@ An example command to set the ``rundir`` could look like:
 
 .. _mimic_slurm_jobstep:
 
-------------------------------------------
-How do I mimic Slurm's jobstep semantics ?
-------------------------------------------
+-------------------------------------------
+How do I mimic Slurm's job step semantics ?
+-------------------------------------------
 
-``flux mini submit`` ting a script with ``flux mini run`` s will not result in Slurm-style jobsteps unless you stick ``flux start`` in front of the jobscript in ``flux mini submit`` .
+Using ``flux mini submit`` to submit a script containing multiple ``flux mini run`` invocations will not result in Slurm-style job steps unless the job script is prefixed with ``flux start`` .
 
 .. _mpi_bootstrap_fails:
 
