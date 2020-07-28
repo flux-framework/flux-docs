@@ -22,4 +22,6 @@ help:
 check: spelling
 
 spelling:
-	@$(SPHINXBUILD) -W -b spelling "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@$(SPHINXBUILD) -W -b spelling "$(SOURCEDIR)" "$(BUILDDIR)" \
+        $(SPHINXOPTS) $(O) \
+	    || (cat $(BUILDDIR)/output.txt; exit 1)
