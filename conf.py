@@ -33,9 +33,6 @@ copyright = '''Copyright 2014 Lawrence Livermore National Security, LLC and Flux
 SPDX-License-Identifier: LGPL-3.0'''
 author = 'This page is maintained by the Flux community.'
 
-# The full version, including alpha/beta/rc tags
-release = '0.13.0'
-
 # -- RTD configuration -------------------------------------------------------
 
 # on_rtd is whether we are on readthedocs.org, this line of code grabbed from docs.readthedocs.org
