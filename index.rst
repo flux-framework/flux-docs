@@ -33,6 +33,12 @@ Contributor Relevant RFCs
 - :doc:`rfc:spec_9`
 
 
+Command Reference
+-----------------
+
+- :doc:`core:index`
+
+
 API Reference
 -------------
 
