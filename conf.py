@@ -80,6 +80,10 @@ intersphinx_mapping = {
         "https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/",
         None,
     ),
+    "core": (
+        "https://flux-framework.readthedocs.io/projects/flux-core/en/latest/",
+        None,
+    ),
 }
 
 # -- Options for HTML output -------------------------------------------------
