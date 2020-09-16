@@ -1,3 +1,4 @@
+Pygments>=2.4
 Sphinx
 sphinxcontrib-spelling
 sphinx-rtd-theme
