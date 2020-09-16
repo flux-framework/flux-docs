@@ -16,6 +16,9 @@ jobs:
     - uses: actions/checkout@v1
     - uses: ammaraskar/sphinx-action@master
       with:
-        pre-build-command: "apt-get update -y && apt-get install -y enchant"
+        pre-build-command: >-
+          apt-get update -y &&
+          apt-get install -y enchant &&
+          pip install -r requirements.txt --upgrade
         build-command: 'make check'
         docs-folder: './'
