@@ -79,10 +79,11 @@ If you are developing Flux and want to compile the modified code and run our tes
 .. note::
    Both the flux-core and flux-sched repositories have the ``docker-run-checks.sh`` helper script
 
+.. _manual_installation:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Manual: Recommended for developers and contributors
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Manual Installation: Recommended for developers and contributors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Ensure the latest list of requirements are installed. The current list of build requirements are detailed `here <http://flux-framework.org/docs/requirements/>`_.
 
