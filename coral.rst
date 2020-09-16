@@ -31,11 +31,11 @@ Launching Flux on CORAL systems requires a shim layer to provide `PMI
 <https://www.mcs.anl.gov/papers/P1760.pdf>`_ on top of the PMIx interface
 provided by the CORAL system launcher jsrun.  PMI is a common interface
 for bootstrapping parallel applications like MPI, SHMEM, and Flux.  To load this
-module, run:
+module along with our side-installed Flux, run:
 
 .. code-block:: sh
 
-  module load pmi-shim
+  module load pmi-shim flux
 
 We also suggest that you launch Flux using jsrun with the following arguments:
 
