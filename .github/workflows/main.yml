@@ -14,11 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - uses: ammaraskar/sphinx-action@master
-      with:
-        pre-build-command: >-
-          apt-get update -y &&
-          apt-get install -y enchant &&
-          pip install -r requirements.txt --upgrade
-        build-command: 'make check'
-        docs-folder: './'
+    - name: install dependencies
+      run: >-
+          sudo apt-get update -y &&
+          sudo apt-get install -y enchant python3-pip &&
+          sudo pip3 install --upgrade -r ./requirements.txt
+    - name: make check
+      run: 'make check'
