@@ -41,7 +41,7 @@ We also suggest that you launch Flux using jsrun with the following arguments:
 
 .. code-block:: sh
 
-  PMIX_MCA_gds="^ds12,ds21" jsrun -a 1 -c ALL_CPUS -g ALL_GPUS --bind=none -n ${NUM_NODES} flux start
+  PMIX_MCA_gds="^ds12,ds21" jsrun -a 1 -c ALL_CPUS -g ALL_GPUS -n ${NUM_NODES} --bind=none --smpiargs="-disable_gpu_hooks" flux start
 
 The ``PMIX_MCA_gds`` environment variable works around `a bug in OpenPMIx
 <https://github.com/openpmix/openpmix/issues/1396>`_ that causes a hang when
