@@ -101,17 +101,19 @@ On all systems, Flux relies on hwloc to auto-detect the on-node resources
 available for scheduling.  The hwloc that Flux is linked against must be
 configured with ``--enable-cuda`` for Flux to be able to detect Nvidia GPUs.
 
-You can test to see if your system default hwloc is CUDA-enabled with:
+You can test to see if a running Flux instance detected any GPUs with:
 
-.. code-block:: sh
+.. code-block:: console
 
-  lstopo | grep CoProc
+   > flux hwloc info
+   1 Machine, 40 Cores, 160 PUs, 4 GPUs
 
-If no output is produced, then your hwloc is not CUDA-enabled.
+.. note::
+
+   Only flux-core versions 0.20.0+ print the number of detected GPUs
 
 If running on an LLNL CORAL system, you can load a CUDA-enabled hwloc with:
 
 .. code-block:: sh
 
   module load hwloc/1.11.10-cuda
-
