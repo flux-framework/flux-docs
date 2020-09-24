@@ -534,6 +534,23 @@ Dedicated Application Time
 Updating Flux Software
 ^^^^^^^^^^^^^^^^^^^^^^
 
+Flux will eventually support rolling software upgrades, but prior to
+major release 1, Flux software release versions should not be assumed
+to inter-operate.  Furthermore, at this early stage, Flux software
+components (e.g. ``flux-core``, ``flux-sched``, ``flux-security``,
+and ``flux-accounting``)  should only only be installed in recommended
+combinations.
+
+.. warning::
+    0.20.0 limitation: mismatched versions are not detected, thus
+    the effect of accidentally mixing versions of flux-core within
+    a Flux instance is unpredictable.
+
+.. warning::
+    0.20.0 limitation: job data should be purged when updating to the
+    next release of flux-core, as internal representations of data written
+    out to the Flux KVS and stored in the content.sqlite file are not yet
+    stable.
 
 .. _troubleshooting:
 
