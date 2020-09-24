@@ -600,15 +600,10 @@ circular buffer.  For some problems, it may be useful to view this log:
 
  $ sudo flux dmesg |tail
  2020-09-14T19:38:38.047025Z sched-simple.debug[0]: free: rank1/core0
- 2020-09-14T19:38:41.599060Z job-manager.debug[0]: submit_cb: added 1 jobs
- 2020-09-14T19:38:41.600061Z sched-simple.info[0]: f=0x7fb74c00de20
  2020-09-14T19:38:41.600670Z sched-simple.debug[0]: req: 6115337007267840: spec={0,1,1} duration=0.0
  2020-09-14T19:38:41.600791Z sched-simple.debug[0]: alloc: 6115337007267840: rank1/core0
  2020-09-14T19:38:41.703252Z sched-simple.debug[0]: free: rank1/core0
  2020-09-14T19:38:46.588157Z job-ingest.debug[0]: validate-jobspec.py: inactivity timeout
- 2020-09-14T19:38:46.589002Z job-ingest.debug[0]: validate-jobspec.py: ready
- 2020-09-14T19:38:46.589037Z job-ingest.debug[0]: validate-jobspec.py: exiting
- 2020-09-14T19:38:46.606071Z job-ingest.debug[0]: validate-jobspec.py: exited normally
 
 .. _kvs-eventlogs:
 
