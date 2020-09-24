@@ -20,7 +20,9 @@ resource manager on a cluster.
 
     0.20.0 limitation: node failure detection is minimal in this release.
     Avoid powering off nodes that are running Flux without following the
-    recommended shutdown procedure below.
+    recommended shutdown procedure below.  Cluster nodes that may require
+    service or have connectivity issues should be omitted from the Flux
+    configuration for now.
 
 .. _installation:
 
