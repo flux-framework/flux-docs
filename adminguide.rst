@@ -193,9 +193,19 @@ administrators privileged Flux access to cancel or list jobs:
 
 .. _configuration-overlay:
 
-^^^^^^^^^^^^^^^^^^^^^
-Overlay configuration
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Overlay network configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Flux brokers on each node communicate over a tree based overlay network.
+Each broker is assigned a ranked integer address, starting with zero.
+The overlay network may be configured to use any IP network that remains
+available the whole time Flux is running.
+
+.. warning::
+    0.20.0 limitation: the system instance tree based overlay network
+    is forced by the systemd unit file to be *flat* (no interior router
+    nodes), trading scalability for reliability.
 
 The Flux system instance overlay is currently configured via a cluster
 specific ``bootstrap.toml`` file. The example here is for a 16 node
@@ -221,9 +231,13 @@ man page.
 
 Hosts will be assigned ranks in the overlay based on their position in the
 host array. In the above example ``fluke1`` is rank 0, ``fluke2`` is rank
-1, etc. In the current implementation, the Flux rank 0 broker is special
-and hosts the majority of Flux's services. Therefore, rank 0 ideally will
-be placed on a non-compute node along with other critical cluster services.
+1, etc.
+
+The Flux rank 0 broker hosts the majority of Flux's services, has a critical
+role in overlay network routing, and requires access to persistent storage,
+preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
+node along with other critical cluster services.
+
 
 .. _configuration-resource-exclusion:
 
