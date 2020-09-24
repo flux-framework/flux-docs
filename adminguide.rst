@@ -20,7 +20,9 @@ resource manager on a cluster.
 
     0.20.0 limitation: node failure detection is minimal in this release.
     Avoid powering off nodes that are running Flux without following the
-    recommended shutdown procedure below.
+    recommended shutdown procedure below.  Cluster nodes that may require
+    service or have connectivity issues should be omitted from the Flux
+    configuration for now.
 
 .. _installation:
 
@@ -177,25 +179,33 @@ Instance access configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default, a Flux instance does not allow access to any user other than
-the instance *owner* (the user running the flux brokers). This is not
+the instance *owner*, in this case the ``flux`` user.  This is not
 suitable for a system instance, so *guest user* access should be enabled
-in ``/etc/flux/system/conf.d/access.toml``:
+in ``/etc/flux/system/conf.d/access.toml``.  In addition, it may be convenient
+to allow the ``root`` user to act as the instance owner, to give system
+administrators privileged Flux access to cancel or list jobs:
 
 .. code-block:: toml
 
  [access]
  allow-guest-user = true
-
-For a system instance it may be convenient to allow the ``root`` user to
-act as the instance owner (so that ``root`` can list and cancel jobs,
-access the KVS, etc). If this is desired, then ``allow-root-owner = true``
-should be set in the ``[access]`` table as well.
+ allow-root-owner = true
 
 .. _configuration-overlay:
 
-^^^^^^^^^^^^^^^^^^^^^
-Overlay configuration
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Overlay network configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Flux brokers on each node communicate over a tree based overlay network.
+Each broker is assigned a ranked integer address, starting with zero.
+The overlay network may be configured to use any IP network that remains
+available the whole time Flux is running.
+
+.. warning::
+    0.20.0 limitation: the system instance tree based overlay network
+    is forced by the systemd unit file to be *flat* (no interior router
+    nodes), trading scalability for reliability.
 
 The Flux system instance overlay is currently configured via a cluster
 specific ``bootstrap.toml`` file. The example here is for a 16 node
@@ -221,9 +231,16 @@ man page.
 
 Hosts will be assigned ranks in the overlay based on their position in the
 host array. In the above example ``fluke1`` is rank 0, ``fluke2`` is rank
-1, etc. In the current implementation, the Flux rank 0 broker is special
-and hosts the majority of Flux's services. Therefore, rank 0 ideally will
-be placed on a non-compute node along with other critical cluster services.
+1, etc.
+
+The Flux rank 0 broker hosts the majority of Flux's services, has a critical
+role in overlay network routing, and requires access to persistent storage,
+preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
+node along with other critical cluster services.
+
+.. warning::
+    0.20.0 limitation: Flux should be completely shut down when the
+    overlay network configuration is modified.
 
 .. _configuration-resource-exclusion:
 
@@ -248,6 +265,9 @@ the following TOML config:
 
 The ``exclude`` keyword specifies an idset of ranks to exclude.
 
+.. warning::
+    0.20.0 limitation: Flux configuration, tooling, and logs often use broker
+    ranks where hostnames would be more convenient.
 
 .. _configuration-storage:
 
@@ -269,6 +289,17 @@ content.sqlite file exists with plenty of space:
 This space should be preserved across a reboot as it contains the Flux
 job queue and record of past jobs.
 
+.. warning::
+    0.20.0 limitation: tools for shrinking the content.sqlite file or
+    purging old job data while retaining other content are not yet available.
+
+    0.20.0 limitation: Flux must be completely stopped to relocate or remove
+    the content.sqlite file.
+
+    0.20.0 limitation: Running out of space is not handled gracefully.
+    If this happens it is best to stop Flux, remove the content.sqlite file,
+    and restart.
+
 ------------------------------
 System Instance Administration
 ------------------------------
@@ -279,13 +310,16 @@ System Instance Administration
 Starting Flux
 ^^^^^^^^^^^^^
 
-The system instance may be started with something like
+Systemd may be configured to start Flux automatically at boot time,
+as long as the network that carries its overlay network will be
+available at that time.  Alternatively, Flux may be started manually, e.g.
 
 .. code-block:: console
 
  $ sudo pdsh -w fluke[1-16] sudo systemctl start flux
 
-Flux brokers can be started in any order or in parallel.
+Flux brokers may be started in any order, but they won't come online
+until their parent in the tree based overlay network is available.
 
 
 ^^^^^^^^^^^^^
@@ -326,7 +360,7 @@ files under ``/etc/flux``, the configuration may be reloaded with
 
 .. code-block:: console
 
- $ sudo flux config reload
+ $ sudo systemctl reload flux
 
 on each rank where the configuration needs to be updated. The broker will
 reread all configuration files and notify modules that configuration has
@@ -335,6 +369,10 @@ been updated.
 Configuration which applies to the ``flux-imp`` or job shell will be reread
 at the time of the next job execution, since these components are executed
 at job launch.
+
+.. warning::
+    0.20.0 limitation: all configuration changes except resource exclusion
+    and instance access have no effect until the Flux broker restarts.
 
 .. _draining-resources:
 
@@ -496,6 +534,23 @@ Dedicated Application Time
 Updating Flux Software
 ^^^^^^^^^^^^^^^^^^^^^^
 
+Flux will eventually support rolling software upgrades, but prior to
+major release 1, Flux software release versions should not be assumed
+to inter-operate.  Furthermore, at this early stage, Flux software
+components (e.g. ``flux-core``, ``flux-sched``, ``flux-security``,
+and ``flux-accounting``)  should only only be installed in recommended
+combinations.
+
+.. warning::
+    0.20.0 limitation: mismatched versions are not detected, thus
+    the effect of accidentally mixing versions of flux-core within
+    a Flux instance is unpredictable.
+
+.. warning::
+    0.20.0 limitation: job data should be purged when updating to the
+    next release of flux-core, as internal representations of data written
+    out to the Flux KVS and stored in the content.sqlite file are not yet
+    stable.
 
 .. _troubleshooting:
 
@@ -545,15 +600,10 @@ circular buffer.  For some problems, it may be useful to view this log:
 
  $ sudo flux dmesg |tail
  2020-09-14T19:38:38.047025Z sched-simple.debug[0]: free: rank1/core0
- 2020-09-14T19:38:41.599060Z job-manager.debug[0]: submit_cb: added 1 jobs
- 2020-09-14T19:38:41.600061Z sched-simple.info[0]: f=0x7fb74c00de20
  2020-09-14T19:38:41.600670Z sched-simple.debug[0]: req: 6115337007267840: spec={0,1,1} duration=0.0
  2020-09-14T19:38:41.600791Z sched-simple.debug[0]: alloc: 6115337007267840: rank1/core0
  2020-09-14T19:38:41.703252Z sched-simple.debug[0]: free: rank1/core0
  2020-09-14T19:38:46.588157Z job-ingest.debug[0]: validate-jobspec.py: inactivity timeout
- 2020-09-14T19:38:46.589002Z job-ingest.debug[0]: validate-jobspec.py: ready
- 2020-09-14T19:38:46.589037Z job-ingest.debug[0]: validate-jobspec.py: exiting
- 2020-09-14T19:38:46.606071Z job-ingest.debug[0]: validate-jobspec.py: exited normally
 
 .. _kvs-eventlogs:
 
