@@ -289,6 +289,17 @@ content.sqlite file exists with plenty of space:
 This space should be preserved across a reboot as it contains the Flux
 job queue and record of past jobs.
 
+.. warning::
+    0.20.0 limitation: tools for shrinking the content.sqlite file or
+    purging old job data while retaining other content are not yet available.
+
+    0.20.0 limitation: Flux must be completely stopped to relocate or remove
+    the content.sqlite file.
+
+    0.20.0 limitation: Running out of space is not handled gracefully.
+    If this happens it is best to stop Flux, remove the content.sqlite file,
+    and restart.
+
 ------------------------------
 System Instance Administration
 ------------------------------
