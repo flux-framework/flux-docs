@@ -296,13 +296,16 @@ System Instance Administration
 Starting Flux
 ^^^^^^^^^^^^^
 
-The system instance may be started with something like
+Systemd may be configured to start Flux automatically at boot time,
+as long as the network that carries its overlay network will be
+available at that time.  Alternatively, Flux may be started manually, e.g.
 
 .. code-block:: console
 
  $ sudo pdsh -w fluke[1-16] sudo systemctl start flux
 
-Flux brokers can be started in any order or in parallel.
+Flux brokers may be started in any order, but they won't come online
+until their parent in the tree based overlay network is available.
 
 
 ^^^^^^^^^^^^^
