@@ -238,6 +238,9 @@ role in overlay network routing, and requires access to persistent storage,
 preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
 node along with other critical cluster services.
 
+.. warning::
+    0.20.0 limitation: Flux should be completely shut down when the
+    overlay network configuration is modified.
 
 .. _configuration-resource-exclusion:
 
@@ -346,7 +349,7 @@ files under ``/etc/flux``, the configuration may be reloaded with
 
 .. code-block:: console
 
- $ sudo flux config reload
+ $ sudo systemctl reload flux
 
 on each rank where the configuration needs to be updated. The broker will
 reread all configuration files and notify modules that configuration has
@@ -355,6 +358,10 @@ been updated.
 Configuration which applies to the ``flux-imp`` or job shell will be reread
 at the time of the next job execution, since these components are executed
 at job launch.
+
+.. warning::
+    0.20.0 limitation: all configuration changes except resource exclusion
+    and instance access have no effect until the Flux broker restarts.
 
 .. _draining-resources:
 
