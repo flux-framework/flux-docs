@@ -262,6 +262,9 @@ the following TOML config:
 
 The ``exclude`` keyword specifies an idset of ranks to exclude.
 
+.. warning::
+    0.20.0 limitation: Flux configuration, tooling, and logs often use broker
+    ranks where hostnames would be more convenient.
 
 .. _configuration-storage:
 
