@@ -177,19 +177,17 @@ Instance access configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default, a Flux instance does not allow access to any user other than
-the instance *owner* (the user running the flux brokers). This is not
+the instance *owner*, in this case the ``flux`` user.  This is not
 suitable for a system instance, so *guest user* access should be enabled
-in ``/etc/flux/system/conf.d/access.toml``:
+in ``/etc/flux/system/conf.d/access.toml``.  In addition, it may be convenient
+to allow the ``root`` user to act as the instance owner, to give system
+administrators privileged Flux access to cancel or list jobs:
 
 .. code-block:: toml
 
  [access]
  allow-guest-user = true
-
-For a system instance it may be convenient to allow the ``root`` user to
-act as the instance owner (so that ``root`` can list and cancel jobs,
-access the KVS, etc). If this is desired, then ``allow-root-owner = true``
-should be set in the ``[access]`` table as well.
+ allow-root-owner = true
 
 .. _configuration-overlay:
 
