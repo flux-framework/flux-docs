@@ -13,12 +13,12 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.20.0.
+    version 0.21.0.
 
 .. warning::
-    0.20.0 limitation: system instance size should not exceed 256 nodes.
+    0.21.0 limitation: system instance size should not exceed 256 nodes.
 
-    0.20.0 limitation: node failure detection is minimal in this release.
+    0.21.0 limitation: node failure detection is minimal in this release.
     Avoid powering off nodes that are running Flux without following the
     recommended shutdown procedure below.  Cluster nodes that may require
     service or have connectivity issues should be omitted from the Flux
@@ -174,9 +174,9 @@ is read by the ``job-exec`` module.
  imp = "/usr/libexec/flux/flux-imp"
 
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Instance access configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+Access configuration
+^^^^^^^^^^^^^^^^^^^^
 
 By default, a Flux instance does not allow access to any user other than
 the instance *owner*, in this case the ``flux`` user.  This is not
@@ -193,9 +193,9 @@ administrators privileged Flux access to cancel or list jobs:
 
 .. _configuration-overlay:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Overlay network configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+Network configuration
+^^^^^^^^^^^^^^^^^^^^^
 
 Flux brokers on each node communicate over a tree based overlay network.
 Each broker is assigned a ranked integer address, starting with zero.
@@ -203,7 +203,7 @@ The overlay network may be configured to use any IP network that remains
 available the whole time Flux is running.
 
 .. warning::
-    0.20.0 limitation: the system instance tree based overlay network
+    0.21.0 limitation: the system instance tree based overlay network
     is forced by the systemd unit file to be *flat* (no interior router
     nodes), trading scalability for reliability.
 
@@ -218,11 +218,11 @@ and a management network interface of ``enp0s25``:
 
  [bootstrap]
  default_port = 8050
- default_bind = "tcp://enp0s25:%p"
- default_connect = "tcp://%h:%p"
+ default_bind = "tcp://eno1:%p"
+ default_connect = "tcp://e%h:%p"
 
  hosts = [
-    { host = "fluke[1-16]" },
+    { host = "fluke[3,108,6-103]" },
  ]
 
 The file format more flexible than this example would indicate. For
@@ -230,7 +230,7 @@ more info, refer to the `flux-config-bootstrap(5) <https://flux-framework.readth
 man page.
 
 Hosts will be assigned ranks in the overlay based on their position in the
-host array. In the above example ``fluke1`` is rank 0, ``fluke2`` is rank
+host array. In the above example ``fluke3`` is rank 0, ``fluke108`` is rank
 1, etc.
 
 The Flux rank 0 broker hosts the majority of Flux's services, has a critical
@@ -239,7 +239,7 @@ preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
 node along with other critical cluster services.
 
 .. warning::
-    0.20.0 limitation: Flux should be completely shut down when the
+    0.21.0 limitation: Flux should be completely shut down when the
     overlay network configuration is modified.
 
 .. _configuration-resource-exclusion:
@@ -261,12 +261,12 @@ the following TOML config:
 .. code-block:: toml
 
  [resource]
- exclude = "0"
+ exclude = "0-1"
 
 The ``exclude`` keyword specifies an idset of ranks to exclude.
 
 .. warning::
-    0.20.0 limitation: Flux configuration, tooling, and logs often use broker
+    0.21.0 limitation: Flux configuration, tooling, and logs often use broker
     ranks where hostnames would be more convenient.
 
 .. _configuration-storage:
@@ -290,13 +290,13 @@ This space should be preserved across a reboot as it contains the Flux
 job queue and record of past jobs.
 
 .. warning::
-    0.20.0 limitation: tools for shrinking the content.sqlite file or
+    0.21.0 limitation: tools for shrinking the content.sqlite file or
     purging old job data while retaining other content are not yet available.
 
-    0.20.0 limitation: Flux must be completely stopped to relocate or remove
+    0.21.0 limitation: Flux must be completely stopped to relocate or remove
     the content.sqlite file.
 
-    0.20.0 limitation: Running out of space is not handled gracefully.
+    0.21.0 limitation: Running out of space is not handled gracefully.
     If this happens it is best to stop Flux, remove the content.sqlite file,
     and restart.
 
@@ -316,7 +316,7 @@ available at that time.  Alternatively, Flux may be started manually, e.g.
 
 .. code-block:: console
 
- $ sudo pdsh -w fluke[1-16] sudo systemctl start flux
+ $ sudo pdsh -w fluke[3,108,6-103] sudo systemctl start flux
 
 Flux brokers may be started in any order, but they won't come online
 until their parent in the tree based overlay network is available.
@@ -344,7 +344,7 @@ To shut down a single node running Flux, simply run the above command
 on that node.
 
 .. warning::
-    0.20.0 limitation: jobs using a node are not automatically canceled
+    0.21.0 limitation: jobs using a node are not automatically canceled
     when the individual node is shut down.  On an active system, first drain
     the node as described below, then ensure no jobs are using it before
     shutting it down.
@@ -371,7 +371,7 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.20.0 limitation: all configuration changes except resource exclusion
+    0.21.0 limitation: all configuration changes except resource exclusion
     and instance access have no effect until the Flux broker restarts.
 
 .. _draining-resources:
@@ -488,7 +488,7 @@ command:
 ^^^^^^^^^^^^^^^^^^
 Managing Flux Jobs
 ^^^^^^^^^^^^^^^^^^
-    
+
 .. _expedite-jobs:
 
 ~~~~~~~~~~~~~~~
@@ -542,12 +542,12 @@ and ``flux-accounting``)  should only only be installed in recommended
 combinations.
 
 .. warning::
-    0.20.0 limitation: mismatched versions are not detected, thus
+    0.21.0 limitation: mismatched versions are not detected, thus
     the effect of accidentally mixing versions of flux-core within
     a Flux instance is unpredictable.
 
 .. warning::
-    0.20.0 limitation: job data should be purged when updating to the
+    0.21.0 limitation: job data should be purged when updating to the
     next release of flux-core, as internal representations of data written
     out to the Flux KVS and stored in the content.sqlite file are not yet
     stable.
