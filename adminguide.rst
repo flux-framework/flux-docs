@@ -218,11 +218,11 @@ and a management network interface of ``enp0s25``:
 
  [bootstrap]
  default_port = 8050
- default_bind = "tcp://enp0s25:%p"
- default_connect = "tcp://%h:%p"
+ default_bind = "tcp://eno1:%p"
+ default_connect = "tcp://e%h:%p"
 
  hosts = [
-    { host = "fluke[1-16]" },
+    { host = "fluke[3,108,6-103]" },
  ]
 
 The file format more flexible than this example would indicate. For
@@ -230,7 +230,7 @@ more info, refer to the `flux-config-bootstrap(5) <https://flux-framework.readth
 man page.
 
 Hosts will be assigned ranks in the overlay based on their position in the
-host array. In the above example ``fluke1`` is rank 0, ``fluke2`` is rank
+host array. In the above example ``fluke3`` is rank 0, ``fluke108`` is rank
 1, etc.
 
 The Flux rank 0 broker hosts the majority of Flux's services, has a critical
@@ -261,7 +261,7 @@ the following TOML config:
 .. code-block:: toml
 
  [resource]
- exclude = "0"
+ exclude = "0-1"
 
 The ``exclude`` keyword specifies an idset of ranks to exclude.
 
@@ -316,7 +316,7 @@ available at that time.  Alternatively, Flux may be started manually, e.g.
 
 .. code-block:: console
 
- $ sudo pdsh -w fluke[1-16] sudo systemctl start flux
+ $ sudo pdsh -w fluke[3,108,6-103] sudo systemctl start flux
 
 Flux brokers may be started in any order, but they won't come online
 until their parent in the tree based overlay network is available.
