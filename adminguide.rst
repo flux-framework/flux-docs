@@ -244,26 +244,39 @@ node along with other critical cluster services.
 
 .. _configuration-resource-exclusion:
 
-^^^^^^^^^^^^^^^^^^
-Resource exclusion
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+Resource configuration
+^^^^^^^^^^^^^^^^^^^^^^
 
-It may be desirable to prevent resources on management and login nodes from
-being scheduled to jobs.
+The system resource configuration may be generated in RFC 20 (R version 1)
+form using ``flux R encode``.  At minimum, a hostlist and core idset must
+be specified on the command line, e.g.
 
-Resources may be excluded by broker rank via the ``exclude`` key in the
-``resource`` table. It will be common to exclude rank 0 from running jobs,
-since it runs critical Flux services. This can be accomplished by creating
-the following TOML config:
+.. code-block:: console
+
+ $ flux R encode --hosts=fluke[3,108,6-103] --cores=0-3 >/etc/flux/system/R
+
+The resource configuration is then referenced from the ``resource`` table,
+``path`` key.
+
+.. note::
+    The rank to hostname mapping represented in R is ignored, and is
+    replaced at runtime by the rank to hostname mapping from the bootstrap
+    hosts array (see above).
+
+Some sites may choose to exclude login and service nodes from scheduling.
+This is accomplished using the optional ``exclude`` key, whose value is
+an idset of broker ranks to exclude.
+
+An example resource configuration:
 
 ``/etc/flux/system/conf.d/resource.toml``
 
 .. code-block:: toml
 
  [resource]
+ path = "/etc/flux/system/R"
  exclude = "0-1"
-
-The ``exclude`` keyword specifies an idset of ranks to exclude.
 
 .. warning::
     0.21.0 limitation: Flux configuration, tooling, and logs often use broker
