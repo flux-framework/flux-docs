@@ -31,7 +31,7 @@ For this demonstration, we first launch Flux under SLURM and get an interactive 
 
   $ salloc -N4 -ppdebug
   salloc: Granted job allocation 5620626
-  $ srun -N ${SLURM_NNODES} 4 -n ${SLURM_NNODES} --pty --mpi=none --mpibind=off flux start
+  $ srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --pty --mpi=none --mpibind=off flux start
 
 .. note::
    If launching under SLURM is not possible or convenient, a single-node
@@ -141,7 +141,7 @@ An example sbatch script:
   #!/bin/sh
   #SBATCH -N 4
 
-  srun -N ${SLURM_NNODES} 4 -n ${SLURM_NNODES} --mpi=none --mpibind=off flux start flux_batch.sh
+  srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --mpi=none --mpibind=off flux start flux_batch.sh
 
 .. note::
    ``--pty`` is not used in this case because this option
@@ -201,7 +201,7 @@ First Come First Served (FCFS).
 
     queue-policy = "easy"
 
-  $ srun -N ${SLURM_NNODES} 4 -n ${SLURM_NNODES} --pty --mpi=none --mpibind=off flux start -o,--config-path=./
+  $ srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --pty --mpi=none --mpibind=off flux start -o,--config-path=./
 
 
 ``sched-fluxion-qmanager`` is the one of the modules from Fluxion and
