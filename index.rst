@@ -36,16 +36,16 @@ Contributor Relevant RFCs
 - :doc:`rfc:spec_9`
 
 
-Command Reference
------------------
-
-- :doc:`core:index`
-
-
-API Reference
--------------
+All RFCs
+--------
 
 - :doc:`rfc:index`
+
+
+Manual Pages
+------------
+
+- :ref:`core:man-pages`
 
 
 Workflow Examples
