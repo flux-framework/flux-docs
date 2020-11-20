@@ -81,6 +81,10 @@ intersphinx_mapping = {
         "https://flux-framework.readthedocs.io/projects/flux-core/en/latest/",
         None,
     ),
+    "workflow-examples": (
+        "https://flux-framework.readthedocs.io/projects/flux-workflow-examples/en/latest/",
+        None,
+    ),
 }
 
 # -- Options for HTML output -------------------------------------------------

@@ -48,6 +48,11 @@ API Reference
 - :doc:`rfc:index`
 
 
+Workflow Examples
+-----------------
+
+- :doc:`workflow-examples:index`
+
 Indices and tables
 ==================
 
