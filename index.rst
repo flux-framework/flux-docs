@@ -26,6 +26,15 @@ The framework consists of a suite of projects, tools, and libraries which may be
    batch
    faqs
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Sub-Projects
+   :hidden:
+
+   flux-core <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/index.html>
+   RFCs <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/index.html>
+   Workflow Examples <https://flux-framework.readthedocs.io/projects/flux-workflow-examples/en/latest/index.html>
+
 
 Contributor Relevant RFCs
 -------------------------
