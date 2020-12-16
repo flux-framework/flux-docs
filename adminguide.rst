@@ -396,6 +396,72 @@ at job launch.
     0.22.0 limitation: all configuration changes except resource exclusion
     and instance access have no effect until the Flux broker restarts.
 
+.. _resource-status:
+
+^^^^^^^^^^^^^^^^^^^^^^^
+Viewing Resource Status
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Flux offers two different utilities to query the current resource state.
+
+``flux resource status`` is an administrative command which lists ranks
+which are available, online, offline, excluded, or drained along with
+their corresponding node names. By default, sets which have 0 members
+are not displayed, e.g.
+
+.. code-block:: console
+
+ $ flux resource status
+    STATUS NNODES RANKS           NODELIST
+     avail     15 1-15            fluke[26-40]
+     drain      1 0               fluke25
+
+To list a set of states explicitly, use the ``--states`` option:
+(Run ``--states=help`` to get a list of valid states)
+
+.. code-block:: console
+
+ $ flux resource status --states=offline,exclude
+    STATUS NNODES RANKS           NODELIST
+   offline      0
+   exclude      0
+
+This option is useful to get a list of ranks or hostnames in a given
+state. For example, the following command fetches the hostlist
+for all resources configured in a Flux instance:
+
+.. code-block:: console
+
+ $ flux resource status -s all -no {nodelist}
+ fluke[25-40]
+
+
+In contrast to ``flux resource status``, the ``flux resource list``
+command lists the *scheduler*'s view of available resources. This
+command shows the free, allocated, and unavailable (down) resources,
+and includes nodes, cores, and gpus at this time:
+
+.. code-block:: console
+
+ $ flux resource list
+     STATE NNODES   NCORES    NGPUS NODELIST
+      free     15       60        0 fluke[26-40]
+ allocated      0        0        0
+      down      1        4        0 fluke25
+
+
+With ``-v``, ``flux resource list`` will show a finer grained list
+of resources in each state, instead of a nodelist:
+
+.. code-block:: console
+
+ $ flux resource list -v
+      STATE NNODES   NCORES    NGPUS LIST
+       free     15       60        0 rank[1-15]/core[0-3]
+  allocated      0        0        0
+       down      1        4        0 rank0/core[0-3]
+
+
 .. _draining-resources:
 
 ^^^^^^^^^^^^^^^^^^

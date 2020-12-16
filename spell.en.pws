@@ -476,3 +476,4 @@ respawn
 dmesg
 eventlog
 eventlogs
+nodelist
