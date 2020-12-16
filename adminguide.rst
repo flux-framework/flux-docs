@@ -13,12 +13,12 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.21.0.
+    version 0.22.0.
 
 .. warning::
-    0.21.0 limitation: system instance size should not exceed 256 nodes.
+    0.22.0 limitation: system instance size should not exceed 256 nodes.
 
-    0.21.0 limitation: node failure detection is minimal in this release.
+    0.22.0 limitation: node failure detection is minimal in this release.
     Avoid powering off nodes that are running Flux without following the
     recommended shutdown procedure below.  Cluster nodes that may require
     service or have connectivity issues should be omitted from the Flux
@@ -92,21 +92,27 @@ Ensure this is replicated across all nodes.
 System instance CURVE Keys
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The system instance shares a CURVE public/private keypair that must be
-distributed to all nodes. At this time it must be stored in the ``flux``
-user's home directory. To create a new keypair run the ``flux keygen``
-utility as the ``flux`` user:
+The system instance shares a CURVE certificate that must be distributed to
+all nodes.  It should be readable only by the ``flux`` user.  To create a
+new keypair run the ``flux keygen`` utility as the ``flux`` user:
 
 .. code-block:: console
 
- $ sudo -u flux flux keygen
- Saving /home/flux/.flux/curve/client
- Saving /home/flux/.flux/curve/client_private
- Saving /home/flux/.flux/curve/server
- Saving /home/flux/.flux/curve/server_private
-
+ $ sudo -u flux flux keygen /etc/flux/system/curve.cert
 
 .. _configuration:
+
+Do this once and then copy the certificate to the same location on
+the other nodes, preserving owner and mode.
+
+.. note::
+    0.22.0 changed the way CURVE certificates are generated and configured.
+    When upgrading, generate a new certificate as described above, and add
+    ``curve_cert = "/etc/flux/system/curve.cert"`` to the ``[bootstrap]``
+    configuration.
+
+    You may remove the old certificates in the ``flux`` user's home directory
+
 
 -----------------------------
 System Instance Configuration
@@ -203,7 +209,7 @@ The overlay network may be configured to use any IP network that remains
 available the whole time Flux is running.
 
 .. warning::
-    0.21.0 limitation: the system instance tree based overlay network
+    0.22.0 limitation: the system instance tree based overlay network
     is forced by the systemd unit file to be *flat* (no interior router
     nodes), trading scalability for reliability.
 
@@ -217,6 +223,7 @@ and a management network interface of ``enp0s25``:
 .. code-block:: toml
 
  [bootstrap]
+ curve_cert = "/etc/flux/system/curve.cert"
  default_port = 8050
  default_bind = "tcp://eno1:%p"
  default_connect = "tcp://e%h:%p"
@@ -239,7 +246,7 @@ preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
 node along with other critical cluster services.
 
 .. warning::
-    0.21.0 limitation: Flux should be completely shut down when the
+    0.22.0 limitation: Flux should be completely shut down when the
     overlay network configuration is modified.
 
 .. _configuration-resource-exclusion:
@@ -276,11 +283,13 @@ An example resource configuration:
 
  [resource]
  path = "/etc/flux/system/R"
- exclude = "0-1"
+ exclude = "fluke[3,108]"
 
-.. warning::
-    0.21.0 limitation: Flux configuration, tooling, and logs often use broker
-    ranks where hostnames would be more convenient.
+.. note::
+    0.22.0 implements support for exclusion by hostlist.  It is suggested
+    that the previously configured exclusion rank idset be replaced with a
+    hostlist, which should be more convenient and less prone to error
+    going forward.
 
 .. _configuration-storage:
 
@@ -303,13 +312,13 @@ This space should be preserved across a reboot as it contains the Flux
 job queue and record of past jobs.
 
 .. warning::
-    0.21.0 limitation: tools for shrinking the content.sqlite file or
+    0.22.0 limitation: tools for shrinking the content.sqlite file or
     purging old job data while retaining other content are not yet available.
 
-    0.21.0 limitation: Flux must be completely stopped to relocate or remove
+    0.22.0 limitation: Flux must be completely stopped to relocate or remove
     the content.sqlite file.
 
-    0.21.0 limitation: Running out of space is not handled gracefully.
+    0.22.0 limitation: Running out of space is not handled gracefully.
     If this happens it is best to stop Flux, remove the content.sqlite file,
     and restart.
 
@@ -357,7 +366,7 @@ To shut down a single node running Flux, simply run the above command
 on that node.
 
 .. warning::
-    0.21.0 limitation: jobs using a node are not automatically canceled
+    0.22.0 limitation: jobs using a node are not automatically canceled
     when the individual node is shut down.  On an active system, first drain
     the node as described below, then ensure no jobs are using it before
     shutting it down.
@@ -384,7 +393,7 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.21.0 limitation: all configuration changes except resource exclusion
+    0.22.0 limitation: all configuration changes except resource exclusion
     and instance access have no effect until the Flux broker restarts.
 
 .. _draining-resources:
@@ -395,17 +404,15 @@ Draining Resources
 
 Resources may be temporarily removed from scheduling via the
 ``flux resource drain`` command. Currently, resources may only be drained
-at the granularity of a node, represented by its broker rank, for example:
+at the granularity of a node, represented by its hostname or broker rank,
+for example:
 
 .. code-block:: console
 
- $ sudo flux resource drain 4
- $ sudo flux resource list
-      STATE NNODES   NCORES    NGPUS
-       free     15       30        0
-  allocated      0        0        0
-       down      1        2        0
-
+ $ sudo flux resource drain fluke7 node is fubar
+ $ sudo flux resource drain
+ TIMESTAMP            RANK     REASON                         NODELIST
+ 2020-12-16T09:00:25  4        node is fubar                  fluke7
 
 Any work running on the drained node is allowed to complete normally.
 
@@ -413,13 +420,9 @@ To return drained resources use ``flux resource undrain``:
 
 .. code-block:: console
 
- $ sudo flux resource undrain 4
- $ sudo flux resource list
-      STATE NNODES   NCORES    NGPUS
-       free     16       32        0
-  allocated      0        0        0
-       down      0        0        0
-
+ $ sudo flux resource undrain fluke7
+ $ sudo flux resource drain
+ TIMESTAMP            RANK     REASON                         NODELIST
 
 .. _queue-admin:
 
@@ -555,12 +558,12 @@ and ``flux-accounting``)  should only only be installed in recommended
 combinations.
 
 .. warning::
-    0.21.0 limitation: mismatched versions are not detected, thus
+    0.22.0 limitation: mismatched versions are not detected, thus
     the effect of accidentally mixing versions of flux-core within
     a Flux instance is unpredictable.
 
 .. warning::
-    0.21.0 limitation: job data should be purged when updating to the
+    0.22.0 limitation: job data should be purged when updating to the
     next release of flux-core, as internal representations of data written
     out to the Flux KVS and stored in the content.sqlite file are not yet
     stable.
