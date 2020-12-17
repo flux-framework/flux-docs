@@ -152,7 +152,7 @@ job requests be signed using MUNGE:
  allowed-types = [ "munge" ]
 
 
-Then configure ``flux-imp`` by creating ``/etc/flux/imp/exec.toml``
+Then configure ``flux-imp`` by creating ``/etc/flux/imp/conf.d/imp.toml``
 with the following contents:
 
 .. code-block:: toml
@@ -273,7 +273,7 @@ The resource configuration is then referenced from the ``resource`` table,
 
 Some sites may choose to exclude login and service nodes from scheduling.
 This is accomplished using the optional ``exclude`` key, whose value is
-an idset of broker ranks to exclude.
+a hostlist, or alternatively, idset of broker ranks to exclude.
 
 An example resource configuration:
 
