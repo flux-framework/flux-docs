@@ -152,7 +152,7 @@ job requests be signed using MUNGE:
  allowed-types = [ "munge" ]
 
 
-Then configure ``flux-imp`` by creating ``/etc/flux/imp/exec.toml``
+Then configure ``flux-imp`` by creating ``/etc/flux/imp/conf.d/imp.toml``
 with the following contents:
 
 .. code-block:: toml
