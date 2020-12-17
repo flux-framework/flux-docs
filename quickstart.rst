@@ -155,17 +155,6 @@ In order to use Flux, you first must initiate a Flux *instance* or *session*.
 
 A Flux session is composed of a hierarchy of ``flux-broker`` processes which are launched via any parallel launch utility that supports PMI. For example, ``srun``, ``mpiexec.hydra``, etc., or locally for testing via the ``flux start`` command.
 
-Before a Flux instance can be started, keys must be generated to encrypt and authenticate Flux messages.  This step is only required for first-time users of flux.
-
-.. code-block:: console
-
-  $ flux keygen
-  Saving /home/fluxuser/.flux/curve/client
-  Saving /home/fluxuser/.flux/curve/client_private
-  Saving /home/fluxuser/.flux/curve/server
-  Saving /home/fluxuser/.flux/curve/server_private
-  $
-
 To start a Flux session with 4 brokers on the local node, use ``flux start``:
 
 .. code-block:: console
