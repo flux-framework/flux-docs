@@ -273,7 +273,7 @@ The resource configuration is then referenced from the ``resource`` table,
 
 Some sites may choose to exclude login and service nodes from scheduling.
 This is accomplished using the optional ``exclude`` key, whose value is
-an idset of broker ranks to exclude.
+a hostlist, or alternatively, idset of broker ranks to exclude.
 
 An example resource configuration:
 
