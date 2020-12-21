@@ -35,7 +35,7 @@ contribute to a Flux Framework project:
 * Rebase your commits into meaningfully labeled, easily digestible chunks, ideally without errors.
 * Push the branch to your GitHub repo. ``git push origin new_feature``
 * Create a PR against flux-framework/[project] and describe what your change does and why you think it should be merged. List any outstanding "to do" items.
-* Each PR will be subjected to automated tests under `travis-ci.org <https://travis-ci.org/>`_.
+* Each PR will be subjected to automated tests.
 
 Please note that PRs should be rebased onto the master of the target
 repository, merge commits will be rejected by the ``pr-validator`` script.
