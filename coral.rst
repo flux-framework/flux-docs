@@ -56,21 +56,8 @@ Launching Spectrum MPI within Flux
 ----------------------------------
 
 If you want to run MPI applications compiled with Spectrum MPI under Flux, then
-two steps are required.  First, load our copy of Spectrum MPI that includes a
-`backported fix from OpenMPI <https://github.com/open-mpi/ompi/issues/6730>`_:
-
-.. code-block:: sh
-
-  module load spectrum-mpi/2019.06.24-flux
-
-
-.. note::
-
-   Future releases of Spectrum MPI will include this patch, making loading this
-   module unnecessary.
-
-Second, when you run a Spectrum MPI binary under flux, enable Flux's Spectrum
-MPI plugin.  From the CLI, this looks like:
+one additional step is required.  When you run a Spectrum MPI binary under flux,
+you must enable Flux's Spectrum MPI plugin.  From the CLI, this looks like:
 
 .. code-block:: sh
 
