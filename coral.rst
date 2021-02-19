@@ -56,21 +56,8 @@ Launching Spectrum MPI within Flux
 ----------------------------------
 
 If you want to run MPI applications compiled with Spectrum MPI under Flux, then
-two steps are required.  First, load our copy of Spectrum MPI that includes a
-`backported fix from OpenMPI <https://github.com/open-mpi/ompi/issues/6730>`_:
-
-.. code-block:: sh
-
-  module load spectrum-mpi/2019.06.24-flux
-
-
-.. note::
-
-   Future releases of Spectrum MPI will include this patch, making loading this
-   module unnecessary.
-
-Second, when you run a Spectrum MPI binary under flux, enable Flux's Spectrum
-MPI plugin.  From the CLI, this looks like:
+one additional step is required.  When you run a Spectrum MPI binary under flux,
+you must enable Flux's Spectrum MPI plugin.  From the CLI, this looks like:
 
 .. code-block:: sh
 
@@ -101,17 +88,22 @@ On all systems, Flux relies on hwloc to auto-detect the on-node resources
 available for scheduling.  The hwloc that Flux is linked against must be
 configured with ``--enable-cuda`` for Flux to be able to detect Nvidia GPUs.
 
-You can test to see if your system default hwloc is CUDA-enabled with:
-
-.. code-block:: sh
-
-  lstopo | grep CoProc
-
-If no output is produced, then your hwloc is not CUDA-enabled.
-
 If running on an LLNL CORAL system, you can load a CUDA-enabled hwloc with:
 
 .. code-block:: sh
 
   module load hwloc/1.11.10-cuda
 
+You can test to see if the hwloc that Flux is linked against is CUDA-enabled by
+running:
+
+.. code-block:: terminal
+
+  $ flux start flux resource list
+        STATE NNODES   NCORES    NGPUS
+         free      1       40        4
+    allocated      0        0        0
+         down      0        0        0
+
+If the number of free GPUs is 0, then the hwloc that Flux is linked against is
+not CUDA-enabled.
