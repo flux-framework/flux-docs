@@ -171,7 +171,7 @@ Execution system configuration
 
 A system Flux instance must be configured to use a ``flux-imp`` process
 as a privileged helper for multi-user execution. This configuration should
-be made in ``/etc/flux/system/conf.d/exec/toml``. This configuration table
+be made in ``/etc/flux/system/conf.d/exec.toml``. This configuration table
 is read by the ``job-exec`` module.
 
 .. code-block:: toml
