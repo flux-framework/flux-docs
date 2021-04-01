@@ -115,3 +115,19 @@ The interesting part of the versioning comes from the multi-repo structure. Flux
 A 'flux' meta-package (such as in spack or distro package managers) that would pull in compatible versions of the various sub-packages/repos is also versioned independently of any of its subcomponents. It is a similar situation for the flux-docs repo and the documentation up on readthedocs. Each repo has it's own documentation and that gets tagged and released along with the code, but the high-level "meta" documentation has it's own versioning that is divorced from any particular sub-packages/repos versioning.
 
 .. TODO: we should make a table and put it in the docs too
+
+----------------------------------------
+What versions of OpenMPI work with Flux?
+----------------------------------------
+
+Flux plugins were added to OpenMPI 3.0.0.  Generally, these plugins enable OpenMPI major versions 3 and 4 to work with Flux.  OpenMPI must be configured with the Flux plugins enabled.  Your installed version may be checked with:
+
+.. code-block:: console
+
+ $ ompi_info|grep flux
+                 MCA pmix: flux (MCA v2.1.0, API v2.0.0, Component v4.0.3)
+               MCA schizo: flux (MCA v2.1.0, API v1.0.0, Component v4.0.3)
+
+Unfortunately, `a bug <https://github.com/open-mpi/ompi/issues/6730>`_ broke the Flux plugins in versions 3.1.0 through 4.0.1 (inclusive).  The `trivial fix <https://github.com/open-mpi/ompi/pull/6764/commits/d4070d5f58f0c65aef89eea5910b202b8402e48b>`_ may be back-ported to the broken versions, if needed.
+
+The OpenMPI project dropped the Flux plugins--in fact, that whole abstraction layer that contains them--in the development branch that will become major version 5.  There are two solutions being discussed, neither of which is implemented yet:  `Running PRRTE inside a Flux allocation <https://github.com/flux-framework/flux-core/issues/3539>`_ and `Implementing a PMIx job shell plugin <https://github.com/flux-framework/flux-core/issues/3536>`_.
