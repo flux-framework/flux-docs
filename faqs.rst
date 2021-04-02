@@ -128,6 +128,8 @@ Flux plugins were added to OpenMPI 3.0.0.  Generally, these plugins enable OpenM
                  MCA pmix: flux (MCA v2.1.0, API v2.0.0, Component v4.0.3)
                MCA schizo: flux (MCA v2.1.0, API v1.0.0, Component v4.0.3)
 
-Unfortunately, `a bug <https://github.com/open-mpi/ompi/issues/6730>`_ broke the Flux plugins in versions 3.1.0 through 4.0.1 (inclusive).  The `trivial fix <https://github.com/open-mpi/ompi/pull/6764/commits/d4070d5f58f0c65aef89eea5910b202b8402e48b>`_ may be back-ported to the broken versions, if needed.
+Unfortunately, `an OpenMPI bug <https://github.com/open-mpi/ompi/issues/6730>`_ broke the Flux plugins in OpenMPI versions 3.0.0-3.0.4, 3.1.0-3.1.4, and 4.0.0-4.0.2.  The `fix <https://github.com/open-mpi/ompi/pull/6764/commits/d4070d5f58f0c65aef89eea5910b202b8402e48b>`_ was backported such that the 3.0.5+, 3.1.5+, and 4.0.2+ series do not experience this issue.
 
-The OpenMPI project dropped the Flux plugins--in fact, that whole abstraction layer that contains them--in the development branch that will become major version 5.  There are two solutions being discussed, neither of which is implemented yet:  `Running PRRTE inside a Flux allocation <https://github.com/flux-framework/flux-core/issues/3539>`_ and `Implementing a PMIx job shell plugin <https://github.com/flux-framework/flux-core/issues/3536>`_.
+A slightly different `OpenMPI bug <https://github.com/open-mpi/ompi/pull/8380>`_ caused segfaults of MPI in ``MPI_Finalize`` when UCX PML was used.  `The fix <https://github.com/open-mpi/ompi/pull/8380>`_ was backported to 4.0.6 and 4.1.1.  If you are using UCX PML in OpenMPI, we recommend using 4.0.6+ or 4.1.1+.
+
+For the upcoming 5.0 release, the OpenMPI project dropped the Flux plugins and abstraction layer that contains them.  There are two solutions being discussed, neither of which is implemented yet:  `Running PRRTE inside a Flux allocation <https://github.com/flux-framework/flux-core/issues/3539>`_ and `Implementing a PMIx job shell plugin <https://github.com/flux-framework/flux-core/issues/3536>`_.
