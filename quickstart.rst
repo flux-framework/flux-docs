@@ -50,7 +50,7 @@ The default CMD for flux docker images is ``flux start /bin/bash``. To emulate a
 
 .. code-block:: console
 
-   $ docker run -ti fluxrm/flux-sched flux start --size 4
+   $ docker run -ti fluxrm/flux-sched flux start --test-size 4
    $ flux getattr size
    4
 
@@ -159,7 +159,7 @@ To start a Flux session with 4 brokers on the local node, use ``flux start``:
 
 .. code-block:: console
 
-  $ flux start --size=4
+  $ flux start --test-size=4
   $
 
 A flux session can be also be started under `Slurm <https://github.com/chaos/slurm>`_ using PMI. To start by using ``srun(1)``, simply run the ``flux start`` command without the ``--size`` option under a Slurm job. You will likely want to start a single broker process per node:
