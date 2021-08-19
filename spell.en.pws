@@ -478,3 +478,7 @@ eventlog
 eventlogs
 nodelist
 backported
+statsd
+brubeck
+django
+udp
