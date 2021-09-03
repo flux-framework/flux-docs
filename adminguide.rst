@@ -13,16 +13,16 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.26.0.
+    version 0.29.0.
 
 .. warning::
-    0.26.0 limitation: system instance size should not exceed 256 nodes.
+    0.29.0 limitation: the flux system instance is primarily tested on
+    a 128 node cluster.
 
-    0.26.0 limitation: node failure detection is minimal in this release.
-    Avoid powering off nodes that are running Flux without following the
-    recommended shutdown procedure below.  Cluster nodes that may require
-    service or have connectivity issues should be omitted from the Flux
-    configuration for now.
+    0.29.0 limitation: Avoid powering off nodes that are running Flux
+    without following the recommended shutdown procedure below.  Cluster
+    nodes that may require service or have connectivity issues should be
+    omitted from the Flux configuration for now.
 
 .. _installation:
 
@@ -104,17 +104,6 @@ new keypair run the ``flux keygen`` utility as the ``flux`` user:
 
 Do this once and then copy the certificate to the same location on
 the other nodes, preserving owner and mode.
-
-.. note::
-    The way CURVE certificates are generated and configured was changed as
-    of flux-core v0.22.0.  When upgrading from earlier versions, generate a
-    new certificate as described above, and add
-
-    ``curve_cert = "/etc/flux/system/curve.cert"``
-
-    to the ``[bootstrap]`` configuration.
-
-    You may remove the old certificates in the ``flux`` user's home directory
 
 
 -----------------------------
@@ -212,7 +201,7 @@ The overlay network may be configured to use any IP network that remains
 available the whole time Flux is running.
 
 .. warning::
-    0.26.0 limitation: the system instance tree based overlay network
+    0.29.0 limitation: the system instance tree based overlay network
     is forced by the systemd unit file to be *flat* (no interior router
     nodes), trading scalability for reliability.
 
@@ -249,7 +238,7 @@ preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
 node along with other critical cluster services.
 
 .. warning::
-    0.26.0 limitation: Flux should be completely shut down when the
+    0.29.0 limitation: Flux should be completely shut down when the
     overlay network configuration is modified.
 
 .. _configuration-resource-exclusion:
@@ -300,12 +289,6 @@ An example resource configuration:
  path = "/etc/flux/system/R"
  exclude = "fluke[3,108]"
 
-.. note::
-    0.22.0 implemented support for exclusion by hostlist.  It is suggested
-    that any previously configured exclusion rank idset be replaced with a
-    hostlist, which should be more convenient and less prone to error
-    going forward.
-
 .. _configuration-storage:
 
 ^^^^^^^^^^^^^^^^^^^^^
@@ -327,13 +310,13 @@ This space should be preserved across a reboot as it contains the Flux
 job queue and record of past jobs.
 
 .. warning::
-    0.26.0 limitation: tools for shrinking the content.sqlite file or
+    0.29.0 limitation: tools for shrinking the content.sqlite file or
     purging old job data while retaining other content are not yet available.
 
-    0.26.0 limitation: Flux must be completely stopped to relocate or remove
+    0.29.0 limitation: Flux must be completely stopped to relocate or remove
     the content.sqlite file.
 
-    0.26.0 limitation: Running out of space is not handled gracefully.
+    0.29.0 limitation: Running out of space is not handled gracefully.
     If this happens it is best to stop Flux, remove the content.sqlite file,
     and restart.
 
@@ -381,7 +364,7 @@ To shut down a single node running Flux, simply run the above command
 on that node.
 
 .. warning::
-    0.26.0 limitation: jobs using a node are not automatically canceled
+    0.29.0 limitation: jobs using a node are not automatically canceled
     when the individual node is shut down.  On an active system, first drain
     the node as described below, then ensure no jobs are using it before
     shutting it down.
@@ -408,7 +391,7 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.26.0 limitation: all configuration changes except resource exclusion
+    0.29.0 limitation: all configuration changes except resource exclusion
     and instance access have no effect until the Flux broker restarts.
 
 .. _resource-status:
@@ -639,11 +622,11 @@ and ``flux-accounting``)  should only only be installed in recommended
 combinations.
 
 .. note::
-    0.26.0 added support for detection of mismatched versions within an
-    instance. The version of Flux is currently required to match exactly.
+    Mismatched broker versions are detected as brokers attempt to join
+    the instance.  The version is currently required to match exactly.
 
 .. warning::
-    0.26.0 limitation: job data should be purged when updating to the
+    0.29.0 limitation: job data should be purged when updating to the
     next release of flux-core, as internal representations of data written
     out to the Flux KVS and stored in the content.sqlite file are not yet
     stable.
@@ -654,6 +637,87 @@ combinations.
 Troubleshooting
 ---------------
 
+.. _overlay-network:
+
+^^^^^^^^^^^^^^^
+Overlay Network
+^^^^^^^^^^^^^^^
+
+The tree-based overlay network interconnects brokers of the system instance.
+The current status of the overlay subtree at any rank can be shown with:
+
+.. code-block:: console
+
+ $ flux overlay status -r RANK
+
+The possible status values are:
+
+**Full**
+  Node is online and no children are in partial, offline, degraded, or lost
+  state.
+
+**Partial**
+  Node is online, and some children are in partial or offline state; no
+  children are in degraded or lost state.
+
+**Degraded**
+  Node is online, and some children are in degraded or lost state.
+
+**Lost**
+  Node has gone missing, from the parent perspective.
+
+**Offline**
+  Node has not yet joined the instance, or has been cleanly shut down.
+
+Note that the RANK argument is where the request will be sent, not necessarily
+the rank whose status is of interest.  Parents track the status of their
+children, so a good approach when something is wrong to start with rank 0
+(the default).  The following options can be used to ask rank 0 for a detailed
+listing:
+
+.. code-block:: console
+
+ $ flux overlay status -vvv --ghost --pretty --color
+ 0: degraded
+ └1: partial
+  └3: offline
+   └7: offline
+   └8: offline
+  └4: full
+   └9: full
+   └10: full
+ └2: degraded
+  └5: full
+   └11: full
+   └12: full
+  └6: degraded
+   └13: full
+   └14: lost
+
+To determine if a broker is reachable from the current rank, use:
+
+.. code-block:: console
+
+ $ flux ping RANK
+
+A broker that is not responding but is not shown as lost or offline
+by ``flux overlay status`` may be forcibly detached from the overlay
+network with:
+
+.. code-block:: console
+
+ $ flux overlay disconnect RANK
+
+However, before doing that, it may be useful to see if a broker acting
+as a router to that node is actually the problem.  The overlay parent
+of RANK may be listed with
+
+.. code-block:: console
+
+ $ flux overlay parentof RANK
+
+Using ``flux ping`` and ``flux overlay parentof`` iteratively, one should
+be able to isolate the problem rank.
 
 .. _flux-logs:
 
