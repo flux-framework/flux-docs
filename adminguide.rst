@@ -637,6 +637,87 @@ combinations.
 Troubleshooting
 ---------------
 
+.. _overlay-network:
+
+^^^^^^^^^^^^^^^
+Overlay Network
+^^^^^^^^^^^^^^^
+
+The tree-based overlay network interconnects brokers of the system instance.
+The current status of the overlay subtree at any rank can be shown with:
+
+.. code-block:: console
+
+ $ flux overlay status -r RANK
+
+The possible status values are:
+
+**Full**
+  Node is online and no children are in partial, offline, degraded, or lost
+  state.
+
+**Partial**
+  Node is online, and some children are in partial or offline state; no
+  children are in degraded or lost state.
+
+**Degraded**
+  Node is online, and some children are in degraded or lost state.
+
+**Lost**
+  Node has gone missing, from the parent perspective.
+
+**Offline**
+  Node has not yet joined the instance, or has been cleanly shut down.
+
+Note that the RANK argument is where the request will be sent, not necessarily
+the rank whose status is of interest.  Parents track the status of their
+children, so a good approach when something is wrong to start with rank 0
+(the default).  The following options can be used to ask rank 0 for a detailed
+listing:
+
+.. code-block:: console
+
+ $ flux overlay status -vvv --ghost --pretty --color
+ 0: degraded
+ └1: partial
+  └3: offline
+   └7: offline
+   └8: offline
+  └4: full
+   └9: full
+   └10: full
+ └2: degraded
+  └5: full
+   └11: full
+   └12: full
+  └6: degraded
+   └13: full
+   └14: lost
+
+To determine if a broker is reachable from the current rank, use:
+
+.. code-block:: console
+
+ $ flux ping RANK
+
+A broker that is not responding but is not shown as lost or offline
+by ``flux overlay status`` may be forcibly detached from the overlay
+network with:
+
+.. code-block:: console
+
+ $ flux overlay disconnect RANK
+
+However, before doing that, it may be useful to see if a broker acting
+as a router to that node is actually the problem.  The overlay parent
+of RANK may be listed with
+
+.. code-block:: console
+
+ $ flux overlay parentof RANK
+
+Using ``flux ping`` and ``flux overlay parentof`` iteratively, one should
+be able to isolate the problem rank.
 
 .. _flux-logs:
 
