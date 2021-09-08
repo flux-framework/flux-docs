@@ -22,6 +22,7 @@ The framework consists of a suite of projects, tools, and libraries which may be
    adminguide
    contributing
    coral
+   coral2
    debugging
    batch
    faqs
