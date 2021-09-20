@@ -27,27 +27,45 @@ If you are using the ORNL system Summit, run:
 Launching Flux
 ------------------
 
-Launching Flux on CORAL systems requires a shim layer to provide `PMI
-<https://www.mcs.anl.gov/papers/P1760.pdf>`_ on top of the PMIx interface
-provided by the CORAL system launcher jsrun.  PMI is a common interface
-for bootstrapping parallel applications like MPI, SHMEM, and Flux.  To load this
-module along with our side-installed Flux, run:
+You can load the latest Flux-team managed installation on LLNL and ORNL CORAL
+machines using:
 
 .. code-block:: sh
 
-  module load pmi-shim flux
+  module load flux
+
+.. note::
+
+  If you are using an installation of Flux that is not provided by the Flux
+  team and that is configured without ``--enabled-pmix-bootstrap`` (e.g., a
+  spack-installed Flux), launching it on CORAL systems requires a shim layer to
+  provide `PMI <https://www.mcs.anl.gov/papers/P1760.pdf>`_ on top of the PMIx
+  interface provided by the CORAL system launcher jsrun. To load this module
+  along with our side-installed Flux, run ``module load pmi-shim``.
 
 We also suggest that you launch Flux using jsrun with the following arguments:
 
 .. code-block:: sh
 
-  PMIX_MCA_gds="^ds12,ds21" jsrun -a 1 -c ALL_CPUS -g ALL_GPUS -n ${NUM_NODES} --bind=none --smpiargs="-disable_gpu_hooks" flux start
+  jsrun -a 1 -c ALL_CPUS -g ALL_GPUS -n ${NUM_NODES} --bind=none flux start
 
-The ``PMIX_MCA_gds`` environment variable works around `a bug in OpenPMIx
-<https://github.com/openpmix/openpmix/issues/1396>`_ that causes a hang when
-using the PMI compatibility shim.  The ``${NUM_NODES}`` variable is the number of
-nodes that you want to launch the Flux instance across. The remaining arguments
-ensure that all on-node resources are available to Flux for scheduling.
+The ``${NUM_NODES}`` variable is the number of nodes that you want to launch
+the Flux instance across. The remaining arguments ensure that all on-node
+resources are available to Flux for scheduling.
+
+.. note::
+
+  If you are using the ``pmi-shim`` module mentioned above, you will need to set
+  ``PMIX_MCA_gds="^ds12,ds21"`` in your environment before calling ``jsrun``. The
+  ``PMIX_MCA_gds`` environment variable works around `a bug in OpenPMIx
+  <https://github.com/openpmix/openpmix/issues/1396>`_ that causes a hang when
+  using the PMI compatibility shim.
+
+.. note::
+
+  If you are encountering segmentation faults in the OS's glibc, you can
+  potentially workaround the issue by passing
+  ``--smpiargs="-disable_gpu_hooks"`` to ``jsrun``.
 
 .. _coral_spectrum_mpi:
 
@@ -88,14 +106,17 @@ On all systems, Flux relies on hwloc to auto-detect the on-node resources
 available for scheduling.  The hwloc that Flux is linked against must be
 configured with ``--enable-cuda`` for Flux to be able to detect Nvidia GPUs.
 
-If running on an LLNL CORAL system, you can load a CUDA-enabled hwloc with:
+The ORNL CORAL `flux` module automatically loads an `hwloc` configured against
+the system default `cuda`. If running on an LLNL CORAL system, you can load a
+hwloc configured against the `cuda/10.1` in `/usr/tce` with:
 
 .. code-block:: sh
 
-  module load hwloc/1.11.10-cuda
+  module use /usr/tce/modulefiles/Core # if not already in use
+  module load hwloc/1.11.13-cuda10.1
 
-You can test to see if the hwloc that Flux is linked against is CUDA-enabled by
-running:
+For all systems, you can test to see if the hwloc that Flux is linked against
+is CUDA-enabled by running:
 
 .. code-block:: terminal
 
