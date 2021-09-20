@@ -21,7 +21,7 @@ If you are using the ORNL system Summit, run:
 
 .. code-block:: sh
 
-  module use /sw/summit/modulefiles/ums/gen007flux/Core
+  module use /sw/summit/modulefiles/ums/gen007flux/linux-rhel8-ppc64le/Core
 
 ------------------
 Launching Flux
