@@ -51,6 +51,7 @@ if rtd_version not in ["stable", "latest"]:
 extensions = [
     "sphinx.ext.intersphinx",
     'sphinxcontrib.spelling',
+    'sphinx_copybutton',
 ]
 
 # sphinxcontrib.spelling settings
