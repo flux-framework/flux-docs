@@ -15,6 +15,7 @@ Sierra, run:
 
 .. code-block:: sh
 
+  module use /usr/tce/modulefiles/Core # if not already in use
   module use /usr/global/tools/flux/blueos_3_ppc64le_ib/modulefiles
 
 If you are using the ORNL system Summit, run:
@@ -106,14 +107,8 @@ On all systems, Flux relies on hwloc to auto-detect the on-node resources
 available for scheduling.  The hwloc that Flux is linked against must be
 configured with ``--enable-cuda`` for Flux to be able to detect Nvidia GPUs.
 
-The ORNL CORAL `flux` module automatically loads an `hwloc` configured against
-the system default `cuda`. If running on an LLNL CORAL system, you can load a
-hwloc configured against the `cuda/10.1` in `/usr/tce` with:
-
-.. code-block:: sh
-
-  module use /usr/tce/modulefiles/Core # if not already in use
-  module load hwloc/1.11.13-cuda10.1
+The LLNL and ORNL CORAL ``flux`` modules automatically loads an ``hwloc`` configured
+against a system-provided ``cuda``.
 
 For all systems, you can test to see if the hwloc that Flux is linked against
 is CUDA-enabled by running:
