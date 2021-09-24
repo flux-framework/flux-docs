@@ -44,7 +44,7 @@ machines using:
   interface provided by the CORAL system launcher ``jsrun``. To load this module
   alongside your side-installed Flux, run ``module load pmi-shim``.
 
-We also suggest that you launch Flux using jsrun with the following arguments:
+We also suggest that you launch Flux using ``jsrun`` with the following arguments:
 
 .. code-block:: sh
 
@@ -103,14 +103,14 @@ From the Python API, this looks like::
 Scheduling GPUs
 ---------------
 
-On all systems, Flux relies on hwloc to auto-detect the on-node resources
-available for scheduling.  The hwloc that Flux is linked against must be
+On all systems, Flux relies on ``hwloc`` to auto-detect the on-node resources
+available for scheduling.  The ``hwloc`` that Flux is linked against must be
 configured with ``--enable-cuda`` for Flux to be able to detect Nvidia GPUs.
 
 The LLNL and ORNL CORAL ``flux`` modules automatically loads an ``hwloc`` configured
 against a system-provided ``cuda``.
 
-For all systems, you can test to see if the hwloc that Flux is linked against
+For all systems, you can test to see if the ``hwloc`` that Flux is linked against
 is CUDA-enabled by running:
 
 .. code-block:: terminal
@@ -121,5 +121,5 @@ is CUDA-enabled by running:
     allocated      0        0        0
          down      0        0        0
 
-If the number of free GPUs is 0, then the hwloc that Flux is linked against is
+If the number of free GPUs is 0, then the ``hwloc`` that Flux is linked against is
 not CUDA-enabled.
