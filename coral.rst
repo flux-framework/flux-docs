@@ -48,7 +48,7 @@ We also suggest that you launch Flux using ``jsrun`` with the following argument
 
 .. code-block:: sh
 
-  jsrun -a 1 -c ALL_CPUS -g ALL_GPUS -n ${NUM_NODES} --bind=none flux start
+  jsrun -a 1 -c ALL_CPUS -g ALL_GPUS -n ${NUM_NODES} --bind=none --smpiargs="-disable_gpu_hooks" flux start
 
 The ``${NUM_NODES}`` variable is the number of nodes that you want to launch
 the Flux instance across. The remaining arguments ensure that all on-node
@@ -61,12 +61,6 @@ resources are available to Flux for scheduling.
   ``PMIX_MCA_gds`` environment variable works around `a bug in OpenPMIx
   <https://github.com/openpmix/openpmix/issues/1396>`_ that causes a hang when
   using the PMI compatibility shim.
-
-.. note::
-
-  If you are encountering segmentation faults in the OS's glibc, you can
-  potentially workaround the issue by passing
-  ``--smpiargs="-disable_gpu_hooks"`` to ``jsrun``.
 
 .. _coral_spectrum_mpi:
 
