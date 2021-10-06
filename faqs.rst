@@ -132,4 +132,4 @@ Unfortunately, `an OpenMPI bug <https://github.com/open-mpi/ompi/issues/6730>`_ 
 
 A slightly different `OpenMPI bug <https://github.com/open-mpi/ompi/pull/8380>`_ caused segfaults of MPI in ``MPI_Finalize`` when UCX PML was used.  `The fix <https://github.com/open-mpi/ompi/pull/8380>`_ was backported to 4.0.6 and 4.1.1.  If you are using UCX PML in OpenMPI, we recommend using 4.0.6+ or 4.1.1+.
 
-For the upcoming 5.0 release, the OpenMPI project dropped the Flux plugins and abstraction layer that contains them.  There are two solutions being discussed, neither of which is implemented yet:  `Running PRRTE inside a Flux allocation <https://github.com/flux-framework/flux-core/issues/3539>`_ and `Implementing a PMIx job shell plugin <https://github.com/flux-framework/flux-core/issues/3536>`_.
+A special `job shell plugin <https://github.com/flux-framework/flux-pmix>`_, offered as a separate package, is required to bootstrap the upcoming openmpi 5.0.x releases.  Once installed, the plugin is activated by submitting a job with the ``-ompi=openmpi@5`` option.
