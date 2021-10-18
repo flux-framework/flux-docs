@@ -53,7 +53,9 @@ Package installation
 A Flux system install requires ``flux-security`` and ``flux-core``
 packages to be installed at a minimum. For real workloads it is highly
 recommended that ``flux-sched`` (a.k.a the *Fluxion* graph-based scheduler)
-be installed as well.
+be installed as well. For managing user accounts, banks, and utilizing job
+priority calculation and fairshare, the ``flux-accounting`` package should also
+be installed.
 
 If installing from your Linux distribution package manager (preferred),
 e.g. RPM or dpkg, you may skip this section.
@@ -319,6 +321,124 @@ job queue and record of past jobs.
     0.30.0 limitation: Running out of space is not handled gracefully.
     If this happens it is best to stop Flux, remove the content.sqlite file,
     and restart.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+flux-accounting configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If ``flux-accounting`` was installed on the management node, its database should
+be initialized (its default location is ``/var/lib/flux/FluxAccounting.db``),
+and the job manager configured to automatically load the multi-factor priority
+plugin provided by flux-accounting. All commands presented in the following
+subsections should be run as the flux user.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Database Creation and Initialization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The first thing to configure when first setting up the flux-accounting database
+is to set the **PriorityUsageResetPeriod** and **PriorityDecayHalfLife**
+parameters. Both of these parameters represent a number of weeks by which to
+hold usage factors up to the time period where jobs no longer play a factor in
+calculating a usage factor. If these parameters are not passed when creating the
+DB, **PriorityDecayHalfLife** is set to 1 week and **PriorityUsageResetPeriod**
+is set to 4 weeks, i.e the flux-accounting database will store up to a month's
+worth of jobs broken up into one week chunks:
+
+.. code-block:: console
+
+ $ flux account create-db --priority-decay-half-life=2 --priority-usage-reset-period=8
+
+Now that the database is created, as the admin who has permission to write to
+the database, we can initialize it with some banks by specifying a name and the
+number of shares:
+
+.. code-block:: console
+
+ $ flux account add-bank root 1
+ $ flux account add-bank --parent-bank=root sub_bank_A 1
+
+We can then add some users to those banks so those users can run jobs on the
+system:
+
+.. code-block:: console
+
+ $ flux account add-user --username=user1234 --bank=sub_bank_A
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Loading the multi-factor priority plugin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The other component to load is the multi-factor priority plugin, which can be
+loaded by specifying it in the ``job-manager.plugins`` section of the Flux TOML
+configuration file. Below is an example configuration file:
+
+``/etc/flux/system/conf.d/plugins.toml``
+
+.. code-block:: toml
+
+ [job-manager]
+ plugins = [
+   { load = "/usr/lib64/flux/job-manager/plugins/mf_priority.so" },
+ ]
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Setting up the automatic update scripts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There are three update commands and scripts that require setup in order for the
+database to be periodically updated with new job usage and fairshare
+information. These commands and scripts should be run as the flux user and they
+should be run in order and with the same frequency to ensure accurate updates.
+A suggested frequency for running these automatic updates would be to run these
+once every 30 minutes, but can be tuned to run more or less frequently.
+
+The first automatic cron job that should run is the ``update-usage`` subcommand.
+This subcommand fetches the most recent job records from the job-archive
+database for every user in the flux-accounting database and calculates a new job
+usage value. This subcommand takes one optional argument,
+``--priority-decay-half-life`` which should be set to the same value as the
+``--priority-decay-half-life`` parameter mentioned above when first creating the
+database; it represents the number of weeks to hold one job usage "chunk."
+If not specified, this optional argument also defaults to 1 week.
+
+.. code-block:: console
+
+ $ flux account update-usage
+
+After the job usage values are re-calculated and updated, the fairshare values
+for each user also need to be updated. This can be accomplished by configuring
+the ``flux-update-fshare`` command to also run as the second cron job. This
+fetches user account data from the flux-accounting DB and recalculates and
+writes the updated fairshare values back to the DB.
+
+.. code-block:: console
+
+ $ flux account-update-fshare
+
+Once the fairshare values for all of the users in the flux-accounting DB get
+updated, this information will be sent to the priority plugin. The
+``flux account-priority-update`` command can also be configured to run as the
+third cron job to send the updated values to the plugin:
+
+.. code-block:: console
+
+ $ flux account-priority-update
+
+Together, the three automatic update scripts can be combined to run as the flux
+user in succession of one another via ``cron`` using a shell script like the
+following example:
+
+``flux-accounting-update.sh``
+
+.. code-block:: sh
+
+ #!/bin/bash
+
+ flux account update-usage
+ flux account-update-fshare
+ flux account-priority-update
+
 
 ------------------------------
 System Instance Administration
