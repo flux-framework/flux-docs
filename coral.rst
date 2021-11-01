@@ -117,3 +117,14 @@ is CUDA-enabled by running:
 
 If the number of free GPUs is 0, then the ``hwloc`` that Flux is linked against is
 not CUDA-enabled.
+
+In addition, please refer to the manual page of the
+`flux-mini(1) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html>`_
+command to run or to submit an MPI job with a specific CPU/GPU set
+and affinity using its shell options.
+For example, to run a job at 4 MPI processes
+each binding to 10 CPU cores and 1 GPU on a compute node:
+
+.. code-block:: sh
+
+  flux mini run -N 1 -n 4 -c 10 -g 1 -o mpi=spectrum -o cpu-affinity=per-task -o gpu-affinity=per-task my_mpi_binary
