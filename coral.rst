@@ -107,7 +107,7 @@ against a system-provided ``cuda``.
 For all systems, you can test to see if the ``hwloc`` that Flux is linked against
 is CUDA-enabled by running:
 
-.. code-block:: terminal
+.. code-block:: console
 
   $ flux start flux resource list
         STATE NNODES   NCORES    NGPUS
