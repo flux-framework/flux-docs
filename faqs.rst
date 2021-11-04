@@ -122,7 +122,7 @@ My message callback is not being run. How do I debug?
 * ``FLUX_HANDLE_TRACE`` is set when starting a Flux instance:
   ``FLUX_HANDLE_TRACE=t flux start``
 * ``FLUX_O_TRACE`` is passed as a flag to
-  `flux_open <https://github.com/flux-framework/flux-core/blob/9822c63f5e6edf329ab3efb9ce3b8bfe5811e8ab/doc/man3/flux_open.adoc>`_
+  `flux_open(3) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man3/flux_open.html>`_
 
 .. _parallel_run_hang:
 
