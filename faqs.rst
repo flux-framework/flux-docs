@@ -62,18 +62,30 @@ for an example workflow or flux `tree <https://github.com/flux-framework/flux-sc
 Memory exhaustion on a node when running large ensembles with Flux
 ------------------------------------------------------------------
 
-Flux's in-memory KVS is backed by an on-disk content store.  The default
-location for the content store is ``/tmp``, which for some systems is
-configured as a RAMDisk.  To minimize Flux's memory footprint at the cost
-of a slower content store, set ``rundir`` so that the content store is not
-saved to ``/tmp`` but to filesystem.  An example command to set the ``rundir``
-could look like:
+Flux's in-memory KVS, or more properly, its content-addressable storage
+subsystem, is backed by an `SQLite <https://www.sqlite.org>`_ database file,
+located by default in ``/tmp`` (or ``$TMPDIR``).  On some systems, ``/tmp``
+is a RAM-backed file system.  To minimize Flux's memory footprint on such
+systems, Flux may be launched with the database file redirected to a more
+appropriate location.  For example:
 
 .. code-block:: sh
 
-    flux start -o,-Srundir=/path/to/rundir
+    flux start -o,-Scontent.backing-path=/scratch/mydir/content.sqlite
 
 .. _mimic_slurm_jobstep:
+
+Note the following:
+
+* There is only one database file per Flux instance, accessed by the rank 0
+  Flux broker.
+* The directory containing the database file must exist before starting Flux.
+* The database file itself must *not* exist before starting Flux, unless
+  attempting to restart a Flux instance.
+* The database file, if relocated from its default location in the Flux
+  *rundir*, is not automatically cleaned up when Flux exits.
+
+See also: `flux-broker-attributes(7) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/flux-broker-attributes.html>`_
 
 -------------------------------------------
 How do I mimic Slurm's job step semantics ?
