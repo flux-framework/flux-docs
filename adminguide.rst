@@ -1,8 +1,8 @@
 .. _admin-guide:
 
-==========================
+##########################
 Flux Administrator's Guide
-==========================
+##########################
 
 The *Flux Administrator's Guide* documents relevant information for
 installation, configuration, and management of Flux as the native
@@ -26,13 +26,12 @@ resource manager on a cluster.
 
 .. _installation:
 
-------------
+************
 Installation
-------------
+************
 
-^^^^^^^^^^^^^
 Prerequisites
-^^^^^^^^^^^^^
+=============
 
 `MUNGE <https://github.com/dun/munge>`_ is used to sign job requests
 submitted to Flux, so the MUNGE daemon should be installed on all
@@ -46,9 +45,8 @@ A system user named ``flux`` is required, with the following characteristics:
 - valid home directory (either shared or unique per node are fine)
 - logins may be disabled
 
-^^^^^^^^^^^^^^^^^^^^
 Package installation
-^^^^^^^^^^^^^^^^^^^^
+====================
 
 A Flux system install requires ``flux-security`` and ``flux-core``
 packages to be installed at a minimum. For real workloads it is highly
@@ -90,9 +88,8 @@ Ensure this is replicated across all nodes.
 
  .. _curve-keys:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^
 System instance CURVE Keys
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+==========================
 
 The system instance shares a CURVE certificate that must be distributed to
 all nodes.  It should be readable only by the ``flux`` user.  To create a
@@ -108,9 +105,9 @@ Do this once and then copy the certificate to the same location on
 the other nodes, preserving owner and mode.
 
 
------------------------------
+*****************************
 System Instance Configuration
------------------------------
+*****************************
 
 Much of Flux configuration occurs via
 `TOML <https://github.com/toml-lang/toml>`_ configuration files found
@@ -127,9 +124,8 @@ of adding all configuration tables to a single TOML file.
 
 .. _configuration-security:
 
-^^^^^^^^^^^^^^^^^^^^
 flux-security config
-^^^^^^^^^^^^^^^^^^^^
+====================
 
 In order to run multi-user workloads ``flux-security`` components such
 as the signing library and ``flux-imp`` need proper configuration.
@@ -159,9 +155,8 @@ with the following contents:
 This ensures that only the ``flux`` user may run the ``flux-imp`` executable,
 and the only allowed job shell is the system installed ``flux-shell``.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Execution system configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+==============================
 
 A system Flux instance must be configured to use a ``flux-imp`` process
 as a privileged helper for multi-user execution. This configuration should
@@ -174,9 +169,8 @@ is read by the ``job-exec`` module.
  imp = "/usr/libexec/flux/flux-imp"
 
 
-^^^^^^^^^^^^^^^^^^^^
 Access configuration
-^^^^^^^^^^^^^^^^^^^^
+====================
 
 By default, a Flux instance does not allow access to any user other than
 the instance *owner*, in this case the ``flux`` user.  This is not
@@ -193,9 +187,8 @@ administrators privileged Flux access to cancel or list jobs:
 
 .. _configuration-overlay:
 
-^^^^^^^^^^^^^^^^^^^^^
 Network configuration
-^^^^^^^^^^^^^^^^^^^^^
+=====================
 
 Flux brokers on each node communicate over a tree based overlay network.
 Each broker is assigned a ranked integer address, starting with zero.
@@ -245,9 +238,8 @@ node along with other critical cluster services.
 
 .. _configuration-resource-exclusion:
 
-^^^^^^^^^^^^^^^^^^^^^^
 Resource configuration
-^^^^^^^^^^^^^^^^^^^^^^
+======================
 
 The system resource configuration may be generated in RFC 20 (R version 1)
 form using ``flux R encode``.  At minimum, a hostlist and core idset must
@@ -293,9 +285,8 @@ An example resource configuration:
 
 .. _configuration-storage:
 
-^^^^^^^^^^^^^^^^^^^^^
 Storage configuration
-^^^^^^^^^^^^^^^^^^^^^
+=====================
 
 Flux is currently prolific in its use of disk space to back up its key
 value store, proportional to the number of jobs run and the quantity
@@ -322,9 +313,8 @@ job queue and record of past jobs.
     If this happens it is best to stop Flux, remove the content.sqlite file,
     and restart.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 flux-accounting configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+=============================
 
 If ``flux-accounting`` was installed on the management node, its database should
 be initialized (its default location is ``/var/lib/flux/FluxAccounting.db``),
@@ -332,9 +322,8 @@ and the job manager configured to automatically load the multi-factor priority
 plugin provided by flux-accounting. All commands presented in the following
 subsections should be run as the flux user.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Database Creation and Initialization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------
 
 The first thing to configure when first setting up the flux-accounting database
 is to set the **PriorityUsageResetPeriod** and **PriorityDecayHalfLife**
@@ -365,9 +354,8 @@ system:
 
  $ flux account add-user --username=user1234 --bank=sub_bank_A
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Loading the multi-factor priority plugin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------------
 
 The other component to load is the multi-factor priority plugin, which can be
 loaded by specifying it in the ``job-manager.plugins`` section of the Flux TOML
@@ -382,9 +370,8 @@ configuration file. Below is an example configuration file:
    { load = "/usr/lib64/flux/job-manager/plugins/mf_priority.so" },
  ]
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Setting up the automatic update scripts
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------
 
 There are three update commands and scripts that require setup in order for the
 database to be periodically updated with new job usage and fairshare
@@ -439,9 +426,8 @@ following example:
  flux account-update-fshare
  flux account-priority-update
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Job prolog/epilog configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+===============================
 
 As of version 0.31.0, Flux does not support a traditional job prolog and
 epilog that runs on each node before and after job tasks are executed.
@@ -516,15 +502,14 @@ scripts in ``/etc/flux/system/{prolog,epilog}.d`` on rank 0 by default.
 To run scripts from a different directory, use the ``-d, --exec-directory``
 option in the configured ``command``.
 
-------------------------------
+******************************
 System Instance Administration
-------------------------------
+******************************
 
 .. _starting-system-instance:
 
-^^^^^^^^^^^^^
 Starting Flux
-^^^^^^^^^^^^^
+=============
 
 Systemd may be configured to start Flux automatically at boot time,
 as long as the network that carries its overlay network will be
@@ -538,9 +523,8 @@ Flux brokers may be started in any order, but they won't come online
 until their parent in the tree based overlay network is available.
 
 
-^^^^^^^^^^^^^
 Stopping Flux
-^^^^^^^^^^^^^
+=============
 
 The full Flux system instance may be temporarily stopped by running
 the following on the rank 0 node:
@@ -567,9 +551,8 @@ on that node.
 
 .. _configuration-change:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changing the Flux configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+===============================
 
 After changing flux broker or module specific configuration in the TOML
 files under ``/etc/flux``, the configuration may be reloaded with
@@ -592,9 +575,8 @@ at job launch.
 
 .. _resource-status:
 
-^^^^^^^^^^^^^^^^^^^^^^^
 Viewing Resource Status
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 Flux offers two different utilities to query the current resource state.
 
@@ -658,9 +640,8 @@ of resources in each state, instead of a nodelist:
 
 .. _draining-resources:
 
-^^^^^^^^^^^^^^^^^^
 Draining Resources
-^^^^^^^^^^^^^^^^^^
+==================
 
 Resources may be temporarily removed from scheduling via the
 ``flux resource drain`` command. Currently, resources may only be drained
@@ -686,9 +667,8 @@ To return drained resources use ``flux resource undrain``:
 
 .. _queue-admin:
 
-^^^^^^^^^^^^^^^^^^^^^^^
 Managing the Flux Queue
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 The queue of jobs is managed by the flux job-manager, which in turn
 makes allocation requests for jobs in priority order to the scheduler.
@@ -711,27 +691,24 @@ This queue can be managed using the ``flux-queue`` command.
 
 The queue may be listed with the `flux jobs` command.  Refer to `flux-jobs(1) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-jobs.html>`_
 
-~~~~~~~~~~~~~~~~~~~~~~~~
 Disabling job submission
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 By default, the queue is *enabled*, meaning that jobs can be submitted
 into the system. To disable job submission, e..g to prepare the system
 for a shutdown, use ``flux queue disable``. To restore queue access
 use ``flux queue enable``.
 
-~~~~~~~~~~~~~~~~~~~~~~~
 Stopping job allocation
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 The queue may also be stopped with ``flux queue stop``, which disables
 further allocation requests from the job-manager to the scheduler. This
 allows jobs to be submitted, but stops new jobs from being scheduled.
 To restore scheduling use ``flux queue start``.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~
 Flux queue idle and drain
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 The ``flux queue drain`` and ``flux queue idle`` commands can be used
 to wait for the queue to enter a given state. This may be useful when
@@ -761,22 +738,20 @@ command:
 
 .. _managing-jobs:
 
-^^^^^^^^^^^^^^^^^^
 Managing Flux Jobs
-^^^^^^^^^^^^^^^^^^
+==================
 
 .. _expedite-jobs:
 
-~~~~~~~~~~~~~~~
 Expediting Jobs
-~~~~~~~~~~~~~~~
+---------------
+
 Expediting and holding jobs is planned, but not currently supported.
 
 .. _canceling-jobs:
 
-~~~~~~~~~~~~~~
 Canceling Jobs
-~~~~~~~~~~~~~~
+--------------
 
 An active job may be canceled via the ``flux job cancel`` command. An
 instance owner may cancel any job, while a guest may only cancel their
@@ -798,17 +773,10 @@ The set of jobs matched by the ``cancelall`` command may also be restricted
 via the ``-s, --states=STATES`` and ``-u, --user=USER`` options.
 
 
-.. _dedicated-application-time:
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-Dedicated Application Time
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 .. _updating-flux:
 
-^^^^^^^^^^^^^^^^^^^^^^
 Updating Flux Software
-^^^^^^^^^^^^^^^^^^^^^^
+======================
 
 Flux will eventually support rolling software upgrades, but prior to
 major release 1, Flux software release versions should not be assumed
@@ -829,15 +797,14 @@ combinations.
 
 .. _troubleshooting:
 
----------------
+***************
 Troubleshooting
----------------
+***************
 
 .. _overlay-network:
 
-^^^^^^^^^^^^^^^
 Overlay Network
-^^^^^^^^^^^^^^^
+===============
 
 The tree-based overlay network interconnects brokers of the system instance.
 The current status of the overlay subtree at any rank can be shown with:
@@ -915,17 +882,10 @@ of RANK may be listed with
 Using ``flux ping`` and ``flux overlay parentof`` iteratively, one should
 be able to isolate the problem rank.
 
-.. _flux-logs:
-
-^^^^
-Logs
-^^^^
-
 .. _systemd-journal:
 
-~~~~~~~~~~~~~~~
 Systemd journal
-~~~~~~~~~~~~~~~
+===============
 
 Flux brokers log information to standard error, which is normally captured
 by the systemd journal.  It may be useful to look at this log when diagnosing
@@ -945,9 +905,8 @@ a problem on a particular node:
 
 .. _flux-dmesg:
 
-~~~~~~~~~~~~~~~~~~~~~
 Flux logs: flux-dmesg
-~~~~~~~~~~~~~~~~~~~~~
+=====================
 
 The rank 0 broker accumulates log information for the full instance in a
 circular buffer.  For some problems, it may be useful to view this log:
@@ -960,10 +919,4 @@ circular buffer.  For some problems, it may be useful to view this log:
  2020-09-14T19:38:41.600791Z sched-simple.debug[0]: alloc: 6115337007267840: rank1/core0
  2020-09-14T19:38:41.703252Z sched-simple.debug[0]: free: rank1/core0
  2020-09-14T19:38:46.588157Z job-ingest.debug[0]: validate-jobspec.py: inactivity timeout
-
-.. _kvs-eventlogs:
-
-~~~~~~~~~~~~~
-KVS Eventlogs
-~~~~~~~~~~~~~
 
