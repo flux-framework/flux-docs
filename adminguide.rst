@@ -46,12 +46,25 @@ A system user named ``flux`` is required, with the following characteristics:
 Software
 ========
 
-A Flux system install requires ``flux-security`` and ``flux-core``
-packages to be installed at a minimum. For real workloads it is highly
-recommended that ``flux-sched`` (a.k.a the *Fluxion* graph-based scheduler)
-be installed as well. For managing user accounts, banks, and utilizing job
-priority calculation and fairshare, the ``flux-accounting`` package should also
-be installed.
+The following Flux framework packages are needed for a Flux system instance:
+
+flux-core
+  All of the core components of Flux, including the Flux broker.
+  flux-core is functional on its own, but cannot run jobs as multiple users,
+  has a simple FIFO scheduler, and does not implement accounting-based job
+  prioritization. Install on all nodes (required).
+
+flux-security
+  APIs for job signing, and the IMP, a privileged program for starting
+  processes as multiple users. Install on all nodes (required).
+
+flux-sched
+  The Fluxion graph-based scheduler.  Install on management node
+  (optional, but recommended).
+
+flux-accounting
+  Accounting database of user/bank usage information, and a priority plugin.
+  Install on management node (optional, early preview users only).
 
 If installing from your Linux distribution package manager (preferred),
 e.g. RPM or dpkg, you may skip this section.
@@ -74,8 +87,7 @@ When configuring ``flux-core`` be sure to compile against ``flux-security``
 by adding ``--with-flux-security`` to the ``configure`` arguments.
 
 After installation of ``flux-security``, ensure the ``flux-imp`` executable
-is installed setuid root. This is the one component of Flux that must run
-with privilege:
+is installed setuid root.
 
 .. code-block:: console
 
