@@ -694,10 +694,19 @@ command:
 Managing Flux jobs
 ==================
 
-Expediting jobs
----------------
+Expediting/Holding jobs
+-----------------------
 
-Expediting and holding jobs is planned, but not currently supported.
+To expedite or hold a job, set its *urgency* to the special values
+EXPEDITE or HOLD.
+
+.. code-block:: console
+
+ $ flux job urgency ƒAiVi2Sj EXPEDITE
+
+.. code-block:: console
+
+ $ flux job urgency ƒAiVi2Sj HOLD
 
 Canceling jobs
 --------------
