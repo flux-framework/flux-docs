@@ -439,6 +439,82 @@ following example:
  flux account-update-fshare
  flux account-priority-update
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Job prolog/epilog configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As of version 0.31.0, Flux does not support a traditional job prolog and
+epilog that runs on each node before and after job tasks are executed.
+However, Flux does support a "job-manager" prolog and epilog, which
+are run on rank 0 at the same points in a job life cycle. A convenience
+command ``flux perilog-run`` is provided which can simulate a job
+prolog and epilog by executing a command across the broker ranks assigned
+to a job from the job-manager prolog and epilog.
+
+To configure a per-node job prolog and epilog, run with root privileges,
+currently requires three steps
+
+ 1. Configure the IMP such that it will allow the system instance user
+    to execute a prolog and epilog script or command as root, e.g.
+    in ``/etc/flux/imp/imp.toml``:
+
+    .. code-block:: toml
+
+       [run.prolog]
+       allowed-users = [ "flux" ]
+       path = "/etc/flux/system/prolog"
+
+       [run.epilog]
+       allowed-users = [ "flux" ]
+       path = "/etc/flux/system/epilog"
+
+    By default, the IMP will set the environment variables
+    ``FLUX_OWNER_USERID``, ``FLUX_JOB_USERID``, ``FLUX_JOB_ID``, ``HOME``
+    and ``USER`` for the prolog and epilog processes. ``PATH`` will
+    be set explicitly to ``/usr/sbin:/usr/bin:/sbin:/bin``. To allow extra
+    environment variables to be passed from the enclosing environment,
+    use the ``allowed-environment`` key, which is an array of ``glob(7)``
+    patterns for acceptable environment variables, e.g.
+
+    .. code-block:: toml
+
+       [run.prolog]
+       allowed-environment = [ "FLUX_*" ]
+
+    will pass all ``FLUX_`` environment variables to the IMP ``run``
+    commands.
+
+
+ 2. Configure the system instance to load the job-manager ``perilog.so``
+    plugin, which is not active by default:
+
+    .. code-block:: toml
+
+       [job-manager]
+       plugins = [
+         { load = "perilog.so" }
+       ]
+
+ 3. Configure ``[job-manager.prolog]`` and ``[job-manager.epilog]`` to
+    execute ``flux perilog-run`` with appropriate arguments:
+
+    .. code-block:: toml
+
+       [job-manager.prolog]
+       command = [
+          "flux", "perilog-run", "prolog",
+          "-e", "/usr/libexec/flux/flux-imp,run,prolog"
+       ]
+       [job-manager.epilog]
+       command = [
+          "flux", "perilog-run", "epilog",
+          "-e", "/usr/libexec/flux/flux-imp,run,epilog"
+       ]
+
+Note that the ``flux perilog-run`` command will additionally execute any
+scripts in ``/etc/flux/system/{prolog,epilog}.d`` on rank 0 by default.
+To run scripts from a different directory, use the ``-d, --exec-directory``
+option in the configured ``command``.
 
 ------------------------------
 System Instance Administration
