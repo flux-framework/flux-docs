@@ -24,8 +24,6 @@ resource manager on a cluster.
     nodes that may require service or have connectivity issues should be
     omitted from the Flux configuration for now.
 
-.. _installation:
-
 ************
 Installation
 ************
@@ -86,8 +84,6 @@ with privilege:
 
 Ensure this is replicated across all nodes.
 
- .. _curve-keys:
-
 System instance CURVE Keys
 ==========================
 
@@ -99,11 +95,8 @@ new keypair run the ``flux keygen`` utility as the ``flux`` user:
 
  $ sudo -u flux flux keygen /etc/flux/system/curve.cert
 
-.. _configuration:
-
 Do this once and then copy the certificate to the same location on
 the other nodes, preserving owner and mode.
-
 
 *****************************
 System Instance Configuration
@@ -121,8 +114,6 @@ a typical Flux system instance will read all configuration from
 In this guide, separate files will typically be used for clarity, instead
 of adding all configuration tables to a single TOML file.
 
-
-.. _configuration-security:
 
 flux-security config
 ====================
@@ -185,8 +176,6 @@ administrators privileged Flux access to cancel or list jobs:
  allow-guest-user = true
  allow-root-owner = true
 
-.. _configuration-overlay:
-
 Network configuration
 =====================
 
@@ -236,8 +225,6 @@ node along with other critical cluster services.
     0.30.0 limitation: Flux should be completely shut down when the
     overlay network configuration is modified.
 
-.. _configuration-resource-exclusion:
-
 Resource configuration
 ======================
 
@@ -282,8 +269,6 @@ An example resource configuration:
  [resource]
  path = "/etc/flux/system/R"
  exclude = "fluke[3,108]"
-
-.. _configuration-storage:
 
 Storage configuration
 =====================
@@ -506,8 +491,6 @@ option in the configured ``command``.
 System Instance Administration
 ******************************
 
-.. _starting-system-instance:
-
 Starting Flux
 =============
 
@@ -549,8 +532,6 @@ on that node.
     the node as described below, then ensure no jobs are using it before
     shutting it down.
 
-.. _configuration-change:
-
 Changing the Flux configuration
 ===============================
 
@@ -572,8 +553,6 @@ at job launch.
 .. warning::
     0.30.0 limitation: all configuration changes except resource exclusion
     and instance access have no effect until the Flux broker restarts.
-
-.. _resource-status:
 
 Viewing Resource Status
 =======================
@@ -638,8 +617,6 @@ of resources in each state, instead of a nodelist:
        down      1        4        0 rank0/core[0-3]
 
 
-.. _draining-resources:
-
 Draining Resources
 ==================
 
@@ -664,8 +641,6 @@ To return drained resources use ``flux resource undrain``:
  $ sudo flux resource undrain fluke7
  $ sudo flux resource drain
  TIMESTAMP            RANK     REASON                         NODELIST
-
-.. _queue-admin:
 
 Managing the Flux Queue
 =======================
@@ -736,19 +711,13 @@ command:
  flux-queue: 4 running jobs
 
 
-.. _managing-jobs:
-
 Managing Flux Jobs
 ==================
-
-.. _expedite-jobs:
 
 Expediting Jobs
 ---------------
 
 Expediting and holding jobs is planned, but not currently supported.
-
-.. _canceling-jobs:
 
 Canceling Jobs
 --------------
@@ -772,9 +741,6 @@ be used:
 The set of jobs matched by the ``cancelall`` command may also be restricted
 via the ``-s, --states=STATES`` and ``-u, --user=USER`` options.
 
-
-.. _updating-flux:
-
 Updating Flux Software
 ======================
 
@@ -795,13 +761,9 @@ combinations.
     out to the Flux KVS and stored in the content.sqlite file are not yet
     stable.
 
-.. _troubleshooting:
-
 ***************
 Troubleshooting
 ***************
-
-.. _overlay-network:
 
 Overlay Network
 ===============
@@ -882,8 +844,6 @@ of RANK may be listed with
 Using ``flux ping`` and ``flux overlay parentof`` iteratively, one should
 be able to isolate the problem rank.
 
-.. _systemd-journal:
-
 Systemd journal
 ===============
 
@@ -902,8 +862,6 @@ a problem on a particular node:
  Sep 14 09:53:54 sun1 flux[23182]: broker.info[2]: rc1.0: /bin/sh -c /etc/flux/rc1 Exited (rc=0) 0.4s
  Sep 14 09:53:54 sun1 flux[23182]: broker.info[2]: rc1-success: init->quorum 0.414207s
  Sep 14 09:53:54 sun1 flux[23182]: broker.info[2]: quorum-full: quorum->run 9.3847e-05s
-
-.. _flux-dmesg:
 
 Flux logs: flux-dmesg
 =====================
