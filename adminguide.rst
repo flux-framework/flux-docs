@@ -24,6 +24,75 @@ resource manager on a cluster.
     nodes that may require service or have connectivity issues should be
     omitted from the Flux configuration for now.
 
+********
+Overview
+********
+
+The base component of Flux is the ``flux-broker`` executable.  Most of
+Flux's distributed systems and services that aren't directly associated
+with a running job are embedded in that executable or its dynamically loaded
+plugins.
+
+Flux is often used in *single-user mode*, where a Flux instance (a ranked
+set of brokers) is launched as a parallel job, and the *instance owner*
+(the user that submitted the parallel job) has control of, and exclusive
+access to, the resources assigned to the instance.  In fact, this user
+has complete administrative control over the single user instance, including
+the ability to alter Flux software.
+
+When Flux is deployed as the native resource manager on a cluster, its brokers
+still execute with the credentials of a non-privileged instance owner, but the
+Flux instance operates somewhat differently:
+
+- The Flux broker is started directly by systemd on each node instead of
+  being launched as a process in a parallel job.
+- The systemd unit file passes arguments to the broker that tell it to use
+  system paths for various files, and to ingest TOML files from a system
+  configuration directory.
+- A single security certificate is used for the entire cluster instead of
+  each broker generating one on the fly and exchanging public keys with PMI.
+- The Flux overlay network endpoints are statically configured from files
+  instead of being generated on on the fly and exchanged via PMI.
+- The instance owner is a system account that does not correspond to an
+  actual user.
+- Users other than the instance owner (*guests*) are permitted to connect
+  to the Flux broker, and are granted limited access to Flux services.
+- Users connect to the Flux broker's AF_UNIX socket via a well known system URI
+  if FLUX_URI is not set in the environment.
+- Job processes (including the Flux job shell) are launched as the submitting
+  user with the assistance of a setuid root helper on each node called the IMP.
+- Job requests are signed with MUNGE, and this signature is verified by the IMP.
+- The content of the Flux KVS, containing system state such as the set of
+  drained nodes and the job queue, is preserved across a full Flux restart.
+- The system instance functions with some nodes offline.
+- The system instance has no *initial program*.
+
+The same Flux executables are used in both single user and system modes,
+with operation differentiated only by configuration.
+
+Although a Flux single user instance can be launched by any resource manager
+or process launcher, a single user Flux instance has access to a richer
+environment when it is launched by a Flux system instance.  For example,
+the Fluxion graph scheduler can hierarchically schedule advanced resource types
+when its resources are statically configured at the system level;  otherwise,
+Fluxion is limited to resource types and relationships that can be dynamically
+probed.
+
+.. figure:: images/adminarch.png
+   :alt: Flux system instance architecture
+   :align: center
+
+   Fox prevents Frog from submitting jobs on a cluster with Flux
+   as the system resource manager.
+
+Some aspects of Flux have matured in the single user environment, however Flux
+has a ways to go to reach feature parity with system level resource managers
+like SLURM.  Flux limitations are documented in warning boxes throughout this
+text.  Most are expected to be short term obstacles as Flux system capability
+is expanded to meet deployment goals in 2022.  During this period of
+development and testing, we appreciate your design feedback, bug reports,
+and patience.
+
 ************
 Installation
 ************
