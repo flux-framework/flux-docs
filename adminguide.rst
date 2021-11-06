@@ -209,11 +209,10 @@ network interface of ``enp0s25``:
     { host = "fluke[3,108,6-103]" },
  ]
 
-The file format more flexible than this example would indicate. For
-more info, refer to the `flux-config-bootstrap(5) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man5/flux-config-bootstrap.html>`_
-man page.
+For more information on the structure of the bootstrap table, refer to
+`flux-config-bootstrap(5) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man5/flux-config-bootstrap.html>`_.
 
-Hosts will be assigned ranks in the overlay based on their position in the
+Hosts are assigned ranks in the overlay network based on their position in the
 host array. In the above example ``fluke3`` is rank 0, ``fluke108`` is rank
 1, etc.
 
