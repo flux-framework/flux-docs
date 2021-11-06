@@ -417,7 +417,7 @@ the job manager config file:
 
  [job-manager]
  plugins = [
-   { load = "/usr/lib64/flux/job-manager/plugins/mf_priority.so" },
+   { load = "mf_priority.so" },
  ]
 
 Automatic updates
