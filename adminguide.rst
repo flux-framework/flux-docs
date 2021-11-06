@@ -96,20 +96,6 @@ is installed setuid root.
 
 Ensure this is replicated across all nodes.
 
-Security certificates
-=====================
-
-The system instance shares a CURVE certificate that must be distributed to
-all nodes.  It should be readable only by the ``flux`` user.  To create a
-new keypair run the ``flux keygen`` utility as the ``flux`` user:
-
-.. code-block:: console
-
- $ sudo -u flux flux keygen /etc/flux/system/curve.cert
-
-Do this once and then copy the certificate to the same location on
-the other nodes, preserving owner and mode.
-
 *******************
 Configuration files
 *******************
@@ -187,6 +173,17 @@ Flux brokers on each node communicate over a tree based overlay network.
 Each broker is assigned a ranked integer address, starting with zero.
 The overlay network may be configured to use any IP network that remains
 available the whole time Flux is running.
+
+Overlay network security requires a certificate to be distributed to all nodes.
+It should be readable only by the ``flux`` user.  To create a new certificate,
+run the ``flux keygen`` utility as the ``flux`` user:
+
+.. code-block:: console
+
+ $ sudo -u flux flux keygen /etc/flux/system/curve.cert
+
+Do this once and then copy the certificate to the same location on
+the other nodes, preserving owner and mode.
 
 .. warning::
     0.31.0 limitation: the system instance tree based overlay network
