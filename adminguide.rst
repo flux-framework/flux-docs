@@ -155,9 +155,6 @@ installed ``flux-shell``.
  allowed-users = [ "flux" ]
  allowed-shells = [ "/usr/libexec/flux/flux-shell" ]
 
-Execution system
-================
-
 The ``job-exec`` module must be configured to use the ``flux-imp`` process
 as its privileged helper for multi-user execution:
 
@@ -167,10 +164,6 @@ as its privileged helper for multi-user execution:
 
  [exec]
  imp = "/usr/libexec/flux/flux-imp"
-
-
-User access
-===========
 
 By default, a Flux instance does not allow access to any user other than
 the instance *owner*, in this case the ``flux`` user.  This is not
