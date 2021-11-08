@@ -223,9 +223,8 @@ as its privileged helper for multi-user execution:
 By default, a Flux instance does not allow access to any user other than
 the instance *owner*, in this case the ``flux`` user.  This is not
 suitable for a system instance, so *guest user* access should be enabled.
-In addition, it may be convenient to allow the ``root`` user to act as the
-instance owner, to give system administrators privileged Flux access to
-cancel or list jobs:
+In addition, for convenience, the ``root`` user should be allowed to act
+in the role of instance owner:
 
 .. code-block:: toml
 
