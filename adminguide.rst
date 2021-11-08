@@ -1,8 +1,8 @@
 .. _admin-guide:
 
-==========================
+##########################
 Flux Administrator's Guide
-==========================
+##########################
 
 The *Flux Administrator's Guide* documents relevant information for
 installation, configuration, and management of Flux as the native
@@ -13,26 +13,92 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.30.0.
+    version 0.31.0.
 
 .. warning::
-    0.30.0 limitation: the flux system instance is primarily tested on
+    0.31.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
-    0.30.0 limitation: Avoid powering off nodes that are running Flux
+    0.31.0 limitation: Avoid powering off nodes that are running Flux
     without following the recommended shutdown procedure below.  Cluster
     nodes that may require service or have connectivity issues should be
     omitted from the Flux configuration for now.
 
-.. _installation:
+********
+Overview
+********
 
-------------
+The base component of Flux is the ``flux-broker`` executable.  Most of
+Flux's distributed systems and services that aren't directly associated
+with a running job are embedded in that executable or its dynamically loaded
+plugins.
+
+Flux is often used in *single-user mode*, where a Flux instance (a ranked
+set of brokers) is launched as a parallel job, and the *instance owner*
+(the user that submitted the parallel job) has control of, and exclusive
+access to, the resources assigned to the instance.  In fact, this user
+has complete administrative control over the single user instance, including
+the ability to alter Flux software.
+
+When Flux is deployed as the native resource manager on a cluster, its brokers
+still execute with the credentials of a non-privileged instance owner, but the
+Flux instance operates somewhat differently:
+
+- The Flux broker is started directly by systemd on each node instead of
+  being launched as a process in a parallel job.
+- The systemd unit file passes arguments to the broker that tell it to use
+  system paths for various files, and to ingest TOML files from a system
+  configuration directory.
+- A single security certificate is used for the entire cluster instead of
+  each broker generating one on the fly and exchanging public keys with PMI.
+- The Flux overlay network endpoints are statically configured from files
+  instead of being generated on on the fly and exchanged via PMI.
+- The instance owner is a system account that does not correspond to an
+  actual user.
+- Users other than the instance owner (*guests*) are permitted to connect
+  to the Flux broker, and are granted limited access to Flux services.
+- Users connect to the Flux broker's AF_UNIX socket via a well known system URI
+  if FLUX_URI is not set in the environment.
+- Job processes (including the Flux job shell) are launched as the submitting
+  user with the assistance of a setuid root helper on each node called the IMP.
+- Job requests are signed with MUNGE, and this signature is verified by the IMP.
+- The content of the Flux KVS, containing system state such as the set of
+  drained nodes and the job queue, is preserved across a full Flux restart.
+- The system instance functions with some nodes offline.
+- The system instance has no *initial program*.
+
+The same Flux executables are used in both single user and system modes,
+with operation differentiated only by configuration.
+
+Although a Flux single user instance can be launched by any resource manager
+or process launcher, a single user Flux instance has access to a richer
+environment when it is launched by a Flux system instance.  For example,
+the Fluxion graph scheduler can hierarchically schedule advanced resource types
+when its resources are statically configured at the system level;  otherwise,
+Fluxion is limited to resource types and relationships that can be dynamically
+probed.
+
+.. figure:: images/adminarch.png
+   :alt: Flux system instance architecture
+   :align: center
+
+   Fox prevents Frog from submitting jobs on a cluster with Flux
+   as the system resource manager.
+
+Some aspects of Flux have matured in the single user environment, however Flux
+has a ways to go to reach feature parity with system level resource managers
+like SLURM.  Flux limitations are documented in warning boxes throughout this
+text.  Most are expected to be short term obstacles as Flux system capability
+is expanded to meet deployment goals in 2022.  During this period of
+development and testing, we appreciate your design feedback, bug reports,
+and patience.
+
+************
 Installation
-------------
+************
 
-^^^^^^^^^^^^^
 Prerequisites
-^^^^^^^^^^^^^
+=============
 
 `MUNGE <https://github.com/dun/munge>`_ is used to sign job requests
 submitted to Flux, so the MUNGE daemon should be installed on all
@@ -46,16 +112,28 @@ A system user named ``flux`` is required, with the following characteristics:
 - valid home directory (either shared or unique per node are fine)
 - logins may be disabled
 
-^^^^^^^^^^^^^^^^^^^^
-Package installation
-^^^^^^^^^^^^^^^^^^^^
+Software
+========
 
-A Flux system install requires ``flux-security`` and ``flux-core``
-packages to be installed at a minimum. For real workloads it is highly
-recommended that ``flux-sched`` (a.k.a the *Fluxion* graph-based scheduler)
-be installed as well. For managing user accounts, banks, and utilizing job
-priority calculation and fairshare, the ``flux-accounting`` package should also
-be installed.
+The following Flux framework packages are needed for a Flux system instance:
+
+flux-core
+  All of the core components of Flux, including the Flux broker.
+  flux-core is functional on its own, but cannot run jobs as multiple users,
+  has a simple FIFO scheduler, and does not implement accounting-based job
+  prioritization. Install on all nodes (required).
+
+flux-security
+  APIs for job signing, and the IMP, a privileged program for starting
+  processes as multiple users. Install on all nodes (required).
+
+flux-sched
+  The Fluxion graph-based scheduler.  Install on management node
+  (optional, but recommended).
+
+flux-accounting
+  Accounting database of user/bank usage information, and a priority plugin.
+  Install on management node (optional, early preview users only).
 
 If installing from your Linux distribution package manager (preferred),
 e.g. RPM or dpkg, you may skip this section.
@@ -78,8 +156,7 @@ When configuring ``flux-core`` be sure to compile against ``flux-security``
 by adding ``--with-flux-security`` to the ``configure`` arguments.
 
 After installation of ``flux-security``, ensure the ``flux-imp`` executable
-is installed setuid root. This is the one component of Flux that must run
-with privilege:
+is installed setuid root.
 
 .. code-block:: console
 
@@ -88,29 +165,9 @@ with privilege:
 
 Ensure this is replicated across all nodes.
 
- .. _curve-keys:
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-System instance CURVE Keys
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The system instance shares a CURVE certificate that must be distributed to
-all nodes.  It should be readable only by the ``flux`` user.  To create a
-new keypair run the ``flux keygen`` utility as the ``flux`` user:
-
-.. code-block:: console
-
- $ sudo -u flux flux keygen /etc/flux/system/curve.cert
-
-.. _configuration:
-
-Do this once and then copy the certificate to the same location on
-the other nodes, preserving owner and mode.
-
-
------------------------------
-System Instance Configuration
------------------------------
+*******************
+Configuration files
+*******************
 
 Much of Flux configuration occurs via
 `TOML <https://github.com/toml-lang/toml>`_ configuration files found
@@ -125,96 +182,90 @@ In this guide, separate files will typically be used for clarity, instead
 of adding all configuration tables to a single TOML file.
 
 
-.. _configuration-security:
-
-^^^^^^^^^^^^^^^^^^^^
-flux-security config
-^^^^^^^^^^^^^^^^^^^^
+Multi-user
+==========
 
 In order to run multi-user workloads ``flux-security`` components such
 as the signing library and ``flux-imp`` need proper configuration.
-
-First, a valid signing method should be configured. In
-``/etc/flux/security/conf.d/sign.toml``, add the following to configure
-job requests be signed using MUNGE:
+First, configure MUNGE as the method used to sign job requests:
 
 .. code-block:: toml
+
+ # /etc/flux/security/conf.d/sign.toml
 
  [sign]
  max-ttl = 1209600  # 2 weeks
  default-type = "munge"
  allowed-types = [ "munge" ]
 
-
-Then configure ``flux-imp`` by creating ``/etc/flux/imp/conf.d/imp.toml``
-with the following contents:
+Then configure the IMP to ensure that only the ``flux`` user may run
+the ``flux-imp`` executable, and the only allowed job shell is the system
+installed ``flux-shell``.
 
 .. code-block:: toml
+
+ # /etc/flux/imp/conf.d/imp.toml
 
  [exec]
  allowed-users = [ "flux" ]
  allowed-shells = [ "/usr/libexec/flux/flux-shell" ]
 
-
-This ensures that only the ``flux`` user may run the ``flux-imp`` executable,
-and the only allowed job shell is the system installed ``flux-shell``.
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Execution system configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-A system Flux instance must be configured to use a ``flux-imp`` process
-as a privileged helper for multi-user execution. This configuration should
-be made in ``/etc/flux/system/conf.d/exec.toml``. This configuration table
-is read by the ``job-exec`` module.
+The ``job-exec`` module must be configured to use the ``flux-imp`` process
+as its privileged helper for multi-user execution:
 
 .. code-block:: toml
+
+ # /etc/flux/system/conf.d/exec.toml
 
  [exec]
  imp = "/usr/libexec/flux/flux-imp"
 
-
-^^^^^^^^^^^^^^^^^^^^
-Access configuration
-^^^^^^^^^^^^^^^^^^^^
-
 By default, a Flux instance does not allow access to any user other than
 the instance *owner*, in this case the ``flux`` user.  This is not
-suitable for a system instance, so *guest user* access should be enabled
-in ``/etc/flux/system/conf.d/access.toml``.  In addition, it may be convenient
-to allow the ``root`` user to act as the instance owner, to give system
-administrators privileged Flux access to cancel or list jobs:
+suitable for a system instance, so *guest user* access should be enabled.
+In addition, for convenience, the ``root`` user should be allowed to act
+in the role of instance owner:
 
 .. code-block:: toml
+
+ # /etc/flux/system/conf.d/access.toml
 
  [access]
  allow-guest-user = true
  allow-root-owner = true
 
-.. _configuration-overlay:
-
-^^^^^^^^^^^^^^^^^^^^^
-Network configuration
-^^^^^^^^^^^^^^^^^^^^^
+Network
+=======
 
 Flux brokers on each node communicate over a tree based overlay network.
 Each broker is assigned a ranked integer address, starting with zero.
 The overlay network may be configured to use any IP network that remains
 available the whole time Flux is running.
 
+Overlay network security requires a certificate to be distributed to all nodes.
+It should be readable only by the ``flux`` user.  To create a new certificate,
+run the ``flux keygen`` utility as the ``flux`` user:
+
+.. code-block:: console
+
+ $ sudo -u flux flux keygen /etc/flux/system/curve.cert
+
+Do this once and then copy the certificate to the same location on
+the other nodes, preserving owner and mode.
+
 .. warning::
-    0.30.0 limitation: the system instance tree based overlay network
+    0.31.0 limitation: the system instance tree based overlay network
     is forced by the systemd unit file to be *flat* (no interior router
     nodes), trading scalability for reliability.
 
 The Flux system instance overlay is currently configured via a cluster
-specific ``bootstrap.toml`` file. The example here is for a 16 node
-cluster named ``fluke`` with hostnames ``fluke1`` through ``fluke16``,
-and a management network interface of ``enp0s25``:
-
-``/etc/flux/system/conf.d/bootstrap.toml``
+specific config file. The example here is for a 16 node cluster named
+``fluke`` with hostnames ``fluke1`` through ``fluke16``, and a management
+network interface of ``enp0s25``:
 
 .. code-block:: toml
+
+ # /etc/flux/system/conf.d/bootstrap.toml
 
  [bootstrap]
  curve_cert = "/etc/flux/system/curve.cert"
@@ -226,11 +277,10 @@ and a management network interface of ``enp0s25``:
     { host = "fluke[3,108,6-103]" },
  ]
 
-The file format more flexible than this example would indicate. For
-more info, refer to the `flux-config-bootstrap(5) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man5/flux-config-bootstrap.html>`_
-man page.
+For more information on the structure of the bootstrap table, refer to
+`flux-config-bootstrap(5) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man5/flux-config-bootstrap.html>`_.
 
-Hosts will be assigned ranks in the overlay based on their position in the
+Hosts are assigned ranks in the overlay network based on their position in the
 host array. In the above example ``fluke3`` is rank 0, ``fluke108`` is rank
 1, etc.
 
@@ -240,14 +290,11 @@ preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
 node along with other critical cluster services.
 
 .. warning::
-    0.30.0 limitation: Flux should be completely shut down when the
+    0.31.0 limitation: Flux should be completely shut down when the
     overlay network configuration is modified.
 
-.. _configuration-resource-exclusion:
-
-^^^^^^^^^^^^^^^^^^^^^^
-Resource configuration
-^^^^^^^^^^^^^^^^^^^^^^
+Resources
+=========
 
 The system resource configuration may be generated in RFC 20 (R version 1)
 form using ``flux R encode``.  At minimum, a hostlist and core idset must
@@ -257,20 +304,19 @@ be specified on the command line, e.g.
 
  $ flux R encode --hosts=fluke[3,108,6-103] --cores=0-3 >/etc/flux/system/R
 
-To use the Fluxion scheduler, ``flux ion-R encode`` may additionally be used, e.g.,
+Alternatively, if the Fluxion scheduler is installed, run the following command:
 
 .. code-block:: console
 
  $ flux R encode --hosts=fluke[3,108,6-103] --cores=0-3 | flux ion-R encode >/etc/flux/system/R
 
-``flux ion-R encode`` simply adds the optional ``scheduling`` key of RFC 20
-to the resource configuration generated by ``flux R encode``.
-Our Fluxion scheduler relies on the existence of this key containing
-resource graph data in the JSON Graph Format (JGF) for
-system instance scheduling.
+The ``flux ion-R encode`` filter simply adds the optional ``scheduling`` key
+of RFC 20 to the resource configuration generated by ``flux R encode``.
+Our Fluxion scheduler relies on the existence of this key containing resource
+graph data in the JSON Graph Format (JGF) for system instance scheduling.
 
-The resource configuration is then referenced from the ``resource`` table,
-``path`` key.
+The resource configuration ``R`` is then referenced from the configuration
+file below.
 
 .. note::
     The rank to hostname mapping represented in R is ignored, and is
@@ -283,24 +329,21 @@ a hostlist, or alternatively, idset of broker ranks to exclude.
 
 An example resource configuration:
 
-``/etc/flux/system/conf.d/resource.toml``
-
 .. code-block:: toml
+
+ # /etc/flux/system/conf.d/resource.toml
 
  [resource]
  path = "/etc/flux/system/R"
  exclude = "fluke[3,108]"
 
-.. _configuration-storage:
+KVS backing store
+=================
 
-^^^^^^^^^^^^^^^^^^^^^
-Storage configuration
-^^^^^^^^^^^^^^^^^^^^^
-
-Flux is currently prolific in its use of disk space to back up its key
-value store, proportional to the number of jobs run and the quantity
-of standard I/O. On your rank 0 node, ensure that the directory for the
-content.sqlite file exists with plenty of space:
+Flux is prolific in its use of disk space to back up its key value store,
+proportional to the number of jobs run and the quantity of standard I/O.
+On your rank 0 node, ensure that the directory for the ``content.sqlite``
+file exists with plenty of space:
 
 .. code-block:: console
 
@@ -312,136 +355,104 @@ This space should be preserved across a reboot as it contains the Flux
 job queue and record of past jobs.
 
 .. warning::
-    0.30.0 limitation: tools for shrinking the content.sqlite file or
+    0.31.0 limitation: tools for shrinking the content.sqlite file or
     purging old job data while retaining other content are not yet available.
 
-    0.30.0 limitation: Flux must be completely stopped to relocate or remove
+    0.31.0 limitation: Flux must be completely stopped to relocate or remove
     the content.sqlite file.
 
-    0.30.0 limitation: Running out of space is not handled gracefully.
+    0.31.0 limitation: Running out of space is not handled gracefully.
     If this happens it is best to stop Flux, remove the content.sqlite file,
     and restart.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-flux-accounting configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Accounting
+==========
 
-If ``flux-accounting`` was installed on the management node, its database should
-be initialized (its default location is ``/var/lib/flux/FluxAccounting.db``),
-and the job manager configured to automatically load the multi-factor priority
-plugin provided by flux-accounting. All commands presented in the following
-subsections should be run as the flux user.
+If ``flux-accounting`` was installed, some additional setup on the management
+node is needed.  All commands shown below should be run as the ``flux`` user.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Database Creation and Initialization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. note::
+    The flux-accounting database must contain user bank assignments for
+    all users allowed to run on the system.  If a site has an identity
+    management system that adds and removes user access, the accounting
+    database should be included in its update process so it remains in sync
+    with access controls.
 
-The first thing to configure when first setting up the flux-accounting database
-is to set the **PriorityUsageResetPeriod** and **PriorityDecayHalfLife**
-parameters. Both of these parameters represent a number of weeks by which to
-hold usage factors up to the time period where jobs no longer play a factor in
-calculating a usage factor. If these parameters are not passed when creating the
-DB, **PriorityDecayHalfLife** is set to 1 week and **PriorityUsageResetPeriod**
-is set to 4 weeks, i.e the flux-accounting database will store up to a month's
-worth of jobs broken up into one week chunks:
+Database creation
+-----------------
+
+The accounting database is created with the command below.  Default
+parameters are assumed, including the accounting database path of
+``/var/lib/flux/FluxAccounting.db``.
 
 .. code-block:: console
 
- $ flux account create-db --priority-decay-half-life=2 --priority-usage-reset-period=8
+ $ flux account create-db
 
-Now that the database is created, as the admin who has permission to write to
-the database, we can initialize it with some banks by specifying a name and the
-number of shares:
+Banks must be added to the system, for example:
 
 .. code-block:: console
 
  $ flux account add-bank root 1
  $ flux account add-bank --parent-bank=root sub_bank_A 1
 
-We can then add some users to those banks so those users can run jobs on the
-system:
+Users that are permitted to run on the system must be assigned banks,
+for example:
 
 .. code-block:: console
 
  $ flux account add-user --username=user1234 --bank=sub_bank_A
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Loading the multi-factor priority plugin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Multi-factor priority plugin
+----------------------------
 
-The other component to load is the multi-factor priority plugin, which can be
-loaded by specifying it in the ``job-manager.plugins`` section of the Flux TOML
-configuration file. Below is an example configuration file:
-
-``/etc/flux/system/conf.d/plugins.toml``
+When flux-accounting is installed, the job manager uses a multi-factor
+priority plugin to calculate job priorities.  The plugin must be listed in
+the job manager config file:
 
 .. code-block:: toml
 
+ # /etc/flux/system/conf.d/job-manager.toml
+
  [job-manager]
  plugins = [
-   { load = "/usr/lib64/flux/job-manager/plugins/mf_priority.so" },
+   { load = "mf_priority.so" },
  ]
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Setting up the automatic update scripts
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Automatic updates
+-----------------
 
-There are three update commands and scripts that require setup in order for the
-database to be periodically updated with new job usage and fairshare
-information. These commands and scripts should be run as the flux user and they
-should be run in order and with the same frequency to ensure accurate updates.
-A suggested frequency for running these automatic updates would be to run these
-once every 30 minutes, but can be tuned to run more or less frequently.
+A series of actions should run periodically to keep the accounting
+system in sync with Flux:
 
-The first automatic cron job that should run is the ``update-usage`` subcommand.
-This subcommand fetches the most recent job records from the job-archive
-database for every user in the flux-accounting database and calculates a new job
-usage value. This subcommand takes one optional argument,
-``--priority-decay-half-life`` which should be set to the same value as the
-``--priority-decay-half-life`` parameter mentioned above when first creating the
-database; it represents the number of weeks to hold one job usage "chunk."
-If not specified, this optional argument also defaults to 1 week.
+- The job-archive module scans inactive jobs and dumps them to a sqlite
+  database.
+- A script reads the archive database and updates the job usage data in the
+  accounting database.
+- A script updates the per-user fair share factors in the accounting database.
+- A script pushes updated factors to the multi-factor priority plugin.
 
-.. code-block:: console
+The ``job-archive`` module must be configured to run periodically:
 
- $ flux account update-usage
+.. code-block:: toml
 
-After the job usage values are re-calculated and updated, the fairshare values
-for each user also need to be updated. This can be accomplished by configuring
-the ``flux-update-fshare`` command to also run as the second cron job. This
-fetches user account data from the flux-accounting DB and recalculates and
-writes the updated fairshare values back to the DB.
+ # /etc/flux/system/conf.d/archive.toml``
+
+ [archive]
+ dbpath = "/var/lib/flux/job-archive.sqlite"
+ period = 60
+ busytimeout = 50
+
+And the scripts should be run by ``flux cron``:
 
 .. code-block:: console
 
- $ flux account-update-fshare
+ # /etc/flux/system/cron.d/accounting
 
-Once the fairshare values for all of the users in the flux-accounting DB get
-updated, this information will be sent to the priority plugin. The
-``flux account-priority-update`` command can also be configured to run as the
-third cron job to send the updated values to the plugin:
+ 30 * * * * bash -c "flux account update-usage --job-archive_db_path=/var/lib/flux/job-archive.sqlite; flux account-update-fshare; flux account-priority-update"
 
-.. code-block:: console
-
- $ flux account-priority-update
-
-Together, the three automatic update scripts can be combined to run as the flux
-user in succession of one another via ``cron`` using a shell script like the
-following example:
-
-``flux-accounting-update.sh``
-
-.. code-block:: sh
-
- #!/bin/bash
-
- flux account update-usage
- flux account-update-fshare
- flux account-priority-update
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Job prolog/epilog configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Job prolog/epilog
+=================
 
 As of version 0.31.0, Flux does not support a traditional job prolog and
 epilog that runs on each node before and after job tasks are executed.
@@ -455,10 +466,11 @@ To configure a per-node job prolog and epilog, run with root privileges,
 currently requires three steps
 
  1. Configure the IMP such that it will allow the system instance user
-    to execute a prolog and epilog script or command as root, e.g.
-    in ``/etc/flux/imp/imp.toml``:
+    to execute a prolog and epilog script or command as root:
 
     .. code-block:: toml
+
+       # /etc/flux/imp/imp.toml
 
        [run.prolog]
        allowed-users = [ "flux" ]
@@ -490,6 +502,8 @@ currently requires three steps
 
     .. code-block:: toml
 
+       # /etc/flux/system/conf.d/job-manager.toml
+
        [job-manager]
        plugins = [
          { load = "perilog.so" }
@@ -516,15 +530,12 @@ scripts in ``/etc/flux/system/{prolog,epilog}.d`` on rank 0 by default.
 To run scripts from a different directory, use the ``-d, --exec-directory``
 option in the configured ``command``.
 
-------------------------------
-System Instance Administration
-------------------------------
+*************************
+Day to day administration
+*************************
 
-.. _starting-system-instance:
-
-^^^^^^^^^^^^^
 Starting Flux
-^^^^^^^^^^^^^
+=============
 
 Systemd may be configured to start Flux automatically at boot time,
 as long as the network that carries its overlay network will be
@@ -537,10 +548,8 @@ available at that time.  Alternatively, Flux may be started manually, e.g.
 Flux brokers may be started in any order, but they won't come online
 until their parent in the tree based overlay network is available.
 
-
-^^^^^^^^^^^^^
 Stopping Flux
-^^^^^^^^^^^^^
+=============
 
 The full Flux system instance may be temporarily stopped by running
 the following on the rank 0 node:
@@ -560,16 +569,13 @@ To shut down a single node running Flux, simply run the above command
 on that node.
 
 .. warning::
-    0.30.0 limitation: jobs using a node are not automatically canceled
+    0.31.0 limitation: jobs using a node are not automatically canceled
     when the individual node is shut down.  On an active system, first drain
     the node as described below, then ensure no jobs are using it before
     shutting it down.
 
-.. _configuration-change:
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changing the Flux configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Configuration update
+====================
 
 After changing flux broker or module specific configuration in the TOML
 files under ``/etc/flux``, the configuration may be reloaded with
@@ -587,14 +593,11 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.30.0 limitation: all configuration changes except resource exclusion
+    0.31.0 limitation: all configuration changes except resource exclusion
     and instance access have no effect until the Flux broker restarts.
 
-.. _resource-status:
-
-^^^^^^^^^^^^^^^^^^^^^^^
-Viewing Resource Status
-^^^^^^^^^^^^^^^^^^^^^^^
+Viewing resource status
+=======================
 
 Flux offers two different utilities to query the current resource state.
 
@@ -629,7 +632,6 @@ for all resources configured in a Flux instance:
  $ flux resource status -s all -no {nodelist}
  fluke[25-40]
 
-
 In contrast to ``flux resource status``, the ``flux resource list``
 command lists the *scheduler*'s view of available resources. This
 command shows the free, allocated, and unavailable (down) resources,
@@ -643,7 +645,6 @@ and includes nodes, cores, and gpus at this time:
  allocated      0        0        0
       down      1        4        0 fluke25
 
-
 With ``-v``, ``flux resource list`` will show a finer grained list
 of resources in each state, instead of a nodelist:
 
@@ -655,12 +656,8 @@ of resources in each state, instead of a nodelist:
   allocated      0        0        0
        down      1        4        0 rank0/core[0-3]
 
-
-.. _draining-resources:
-
-^^^^^^^^^^^^^^^^^^
-Draining Resources
-^^^^^^^^^^^^^^^^^^
+Draining resources
+==================
 
 Resources may be temporarily removed from scheduling via the
 ``flux resource drain`` command. Currently, resources may only be drained
@@ -684,11 +681,8 @@ To return drained resources use ``flux resource undrain``:
  $ sudo flux resource drain
  TIMESTAMP            RANK     REASON                         NODELIST
 
-.. _queue-admin:
-
-^^^^^^^^^^^^^^^^^^^^^^^
-Managing the Flux Queue
-^^^^^^^^^^^^^^^^^^^^^^^
+Managing the Flux queue
+=======================
 
 The queue of jobs is managed by the flux job-manager, which in turn
 makes allocation requests for jobs in priority order to the scheduler.
@@ -708,30 +702,26 @@ This queue can be managed using the ``flux-queue`` command.
     drain           Wait for queue to become empty.
     idle            Wait for queue to become idle.
 
-
 The queue may be listed with the `flux jobs` command.  Refer to `flux-jobs(1) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-jobs.html>`_
 
-~~~~~~~~~~~~~~~~~~~~~~~~
 Disabling job submission
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 By default, the queue is *enabled*, meaning that jobs can be submitted
 into the system. To disable job submission, e..g to prepare the system
 for a shutdown, use ``flux queue disable``. To restore queue access
 use ``flux queue enable``.
 
-~~~~~~~~~~~~~~~~~~~~~~~
 Stopping job allocation
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 The queue may also be stopped with ``flux queue stop``, which disables
 further allocation requests from the job-manager to the scheduler. This
 allows jobs to be submitted, but stops new jobs from being scheduled.
 To restore scheduling use ``flux queue start``.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~
 Flux queue idle and drain
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 The ``flux queue drain`` and ``flux queue idle`` commands can be used
 to wait for the queue to enter a given state. This may be useful when
@@ -758,25 +748,25 @@ command:
  flux-queue: 0 free requests pending to scheduler
  flux-queue: 4 running jobs
 
+Managing Flux jobs
+==================
 
-.. _managing-jobs:
+Expediting/Holding jobs
+-----------------------
 
-^^^^^^^^^^^^^^^^^^
-Managing Flux Jobs
-^^^^^^^^^^^^^^^^^^
+To expedite or hold a job, set its *urgency* to the special values
+EXPEDITE or HOLD.
 
-.. _expedite-jobs:
+.. code-block:: console
 
-~~~~~~~~~~~~~~~
-Expediting Jobs
-~~~~~~~~~~~~~~~
-Expediting and holding jobs is planned, but not currently supported.
+ $ flux job urgency ƒAiVi2Sj EXPEDITE
 
-.. _canceling-jobs:
+.. code-block:: console
 
-~~~~~~~~~~~~~~
-Canceling Jobs
-~~~~~~~~~~~~~~
+ $ flux job urgency ƒAiVi2Sj HOLD
+
+Canceling jobs
+--------------
 
 An active job may be canceled via the ``flux job cancel`` command. An
 instance owner may cancel any job, while a guest may only cancel their
@@ -797,18 +787,8 @@ be used:
 The set of jobs matched by the ``cancelall`` command may also be restricted
 via the ``-s, --states=STATES`` and ``-u, --user=USER`` options.
 
-
-.. _dedicated-application-time:
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-Dedicated Application Time
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _updating-flux:
-
-^^^^^^^^^^^^^^^^^^^^^^
-Updating Flux Software
-^^^^^^^^^^^^^^^^^^^^^^
+Software update
+===============
 
 Flux will eventually support rolling software upgrades, but prior to
 major release 1, Flux software release versions should not be assumed
@@ -822,22 +802,17 @@ combinations.
     the instance.  The version is currently required to match exactly.
 
 .. warning::
-    0.30.0 limitation: job data should be purged when updating to the
+    0.31.0 limitation: job data should be purged when updating to the
     next release of flux-core, as internal representations of data written
     out to the Flux KVS and stored in the content.sqlite file are not yet
     stable.
 
-.. _troubleshooting:
-
----------------
+***************
 Troubleshooting
----------------
+***************
 
-.. _overlay-network:
-
-^^^^^^^^^^^^^^^
-Overlay Network
-^^^^^^^^^^^^^^^
+Overlay network
+===============
 
 The tree-based overlay network interconnects brokers of the system instance.
 The current status of the overlay subtree at any rank can be shown with:
@@ -915,17 +890,8 @@ of RANK may be listed with
 Using ``flux ping`` and ``flux overlay parentof`` iteratively, one should
 be able to isolate the problem rank.
 
-.. _flux-logs:
-
-^^^^
-Logs
-^^^^
-
-.. _systemd-journal:
-
-~~~~~~~~~~~~~~~
 Systemd journal
-~~~~~~~~~~~~~~~
+===============
 
 Flux brokers log information to standard error, which is normally captured
 by the systemd journal.  It may be useful to look at this log when diagnosing
@@ -943,11 +909,8 @@ a problem on a particular node:
  Sep 14 09:53:54 sun1 flux[23182]: broker.info[2]: rc1-success: init->quorum 0.414207s
  Sep 14 09:53:54 sun1 flux[23182]: broker.info[2]: quorum-full: quorum->run 9.3847e-05s
 
-.. _flux-dmesg:
-
-~~~~~~~~~~~~~~~~~~~~~
-Flux logs: flux-dmesg
-~~~~~~~~~~~~~~~~~~~~~
+Broker log buffer
+=================
 
 The rank 0 broker accumulates log information for the full instance in a
 circular buffer.  For some problems, it may be useful to view this log:
@@ -960,10 +923,4 @@ circular buffer.  For some problems, it may be useful to view this log:
  2020-09-14T19:38:41.600791Z sched-simple.debug[0]: alloc: 6115337007267840: rank1/core0
  2020-09-14T19:38:41.703252Z sched-simple.debug[0]: free: rank1/core0
  2020-09-14T19:38:46.588157Z job-ingest.debug[0]: validate-jobspec.py: inactivity timeout
-
-.. _kvs-eventlogs:
-
-~~~~~~~~~~~~~
-KVS Eventlogs
-~~~~~~~~~~~~~
 
