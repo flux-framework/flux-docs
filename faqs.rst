@@ -197,3 +197,40 @@ A special `job shell plugin <https://github.com/flux-framework/flux-pmix>`_,
 offered as a separate package, is required to bootstrap the upcoming openmpi
 5.0.x releases.  Once installed, the plugin is activated by submitting a job
 with the ``-ompi=openmpi@5`` option.
+
+---------------------------------------------------
+Why does the ``flux mini bulksubmit`` command hang?
+---------------------------------------------------
+
+The ``flux mini bulksubmit`` command works similar to GNU parallel or
+``xargs`` and is likely blocked waiting for input from ``stdin``.
+Typical usage is to send output of some command to ``bulksubmit`` and,
+like ``xargs -I``, substitute the input with ``{}``. For example:
+
+.. code-block:: console
+
+ $ seq 1 4 | flux mini bulksubmit --watch echo {}
+ ƒ2jBnW4zK
+ ƒ2jBoz4Gf
+ ƒ2jBoz4Gg
+ ƒ2jBoz4Gh
+ 1
+ 2
+ 3
+ 4
+
+As an alternative to reading from ``stdin``, the ``bulksubmit`` utility can
+also take inputs on the command line separated by ``:::``.
+
+The ``--dry-run`` option to ``flux mini bulksubmit`` may be useful to
+see what would be submitted to Flux without actually running any jobs
+
+.. code-block:: console
+
+ $ flux mini bulksubmit --dry-run echo {} ::: 1 2 3
+ flux-mini: submit echo 1
+ flux-mini: submit echo 2
+ flux-mini: submit echo 3
+
+For more help and examples, see the `BULKSUBMIT <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_
+section of the ``flux-mini(1)`` manual page.
