@@ -454,11 +454,13 @@ And the scripts should be run by ``flux cron``:
 Job prolog/epilog
 =================
 
-As of version 0.31.0, Flux does not support a traditional job prolog and
-epilog that runs on each node before and after job tasks are executed.
-However, Flux does support a "job-manager" prolog and epilog, which
-are run on rank 0 at the same points in a job life cycle. A convenience
-command ``flux perilog-run`` is provided which can simulate a job
+.. warning::
+    0.31.0 limitation: Flux does not yet support a traditional job prolog
+    and epilog that runs on each node before and after job tasks are executed.
+    Flux does support a "job-manager" prolog and epilog, which are run on rank 0
+    at the same points in a job life cycle, described below.
+
+A convenience command ``flux perilog-run`` is provided which can simulate a job
 prolog and epilog by executing a command across the broker ranks assigned
 to a job from the job-manager prolog and epilog.
 
