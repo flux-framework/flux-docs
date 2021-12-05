@@ -850,7 +850,7 @@ listing:
 
 .. code-block:: console
 
- $ flux overlay status -vvv --ghost --pretty --color
+ $ flux overlay status
  0: degraded
  └1: partial
   └3: offline
