@@ -570,12 +570,6 @@ then respawn, awaiting the return of the rank 0 broker.
 To shut down a single node running Flux, simply run the above command
 on that node.
 
-.. warning::
-    0.31.0 limitation: jobs using a node are not automatically canceled
-    when the individual node is shut down.  On an active system, first drain
-    the node as described below, then ensure no jobs are using it before
-    shutting it down.
-
 Configuration update
 ====================
 
