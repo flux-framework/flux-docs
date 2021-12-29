@@ -472,7 +472,7 @@ currently requires three steps
 
     .. code-block:: toml
 
-       # /etc/flux/imp/imp.toml
+       # /etc/flux/imp/conf.d/imp.toml
 
        [run.prolog]
        allowed-users = [ "flux" ]
