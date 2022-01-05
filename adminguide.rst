@@ -472,7 +472,7 @@ currently requires three steps
 
     .. code-block:: toml
 
-       # /etc/flux/imp/imp.toml
+       # /etc/flux/imp/conf.d/imp.toml
 
        [run.prolog]
        allowed-users = [ "flux" ]
@@ -845,21 +845,21 @@ listing:
 .. code-block:: console
 
  $ flux overlay status
- 0: degraded
- └1: partial
-  └3: offline
-   └7: offline
-   └8: offline
-  └4: full
-   └9: full
-   └10: full
- └2: degraded
-  └5: full
-   └11: full
-   └12: full
-  └6: degraded
-   └13: full
-   └14: lost
+ 0 fluke62: degraded
+ ├─ 1 fluke63: full
+ │  ├─ 3 fluke65: full
+ │  │  ├─ 7 fluke70: full
+ │  │  └─ 8 fluke71: full
+ │  └─ 4 fluke67: full
+ │     ├─ 9 fluke72: full
+ │     └─ 10 fluke73: full
+ └─ 2 fluke64: degraded
+    ├─ 5 fluke68: full
+    │  ├─ 11 fluke74: full
+    │  └─ 12 fluke75: full
+    └─ 6 fluke69: degraded
+       ├─ 13 fluke76: full
+       └─ 14 fluke77: lost
 
 To determine if a broker is reachable from the current rank, use:
 
