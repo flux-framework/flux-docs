@@ -13,13 +13,13 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.31.0.
+    version 0.32.0.
 
 .. warning::
-    0.31.0 limitation: the flux system instance is primarily tested on
+    0.32.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
-    0.31.0 limitation: Avoid powering off nodes that are running Flux
+    0.32.0 limitation: Avoid powering off nodes that are running Flux
     without following the recommended shutdown procedure below.  Cluster
     nodes that may require service or have connectivity issues should be
     omitted from the Flux configuration for now.
@@ -254,7 +254,7 @@ Do this once and then copy the certificate to the same location on
 the other nodes, preserving owner and mode.
 
 .. warning::
-    0.31.0 limitation: the system instance tree based overlay network
+    0.32.0 limitation: the system instance tree based overlay network
     is forced by the systemd unit file to be *flat* (no interior router
     nodes), trading scalability for reliability.
 
@@ -290,7 +290,7 @@ preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
 node along with other critical cluster services.
 
 .. warning::
-    0.31.0 limitation: Flux should be completely shut down when the
+    0.32.0 limitation: Flux should be completely shut down when the
     overlay network configuration is modified.
 
 Resources
@@ -355,13 +355,13 @@ This space should be preserved across a reboot as it contains the Flux
 job queue and record of past jobs.
 
 .. warning::
-    0.31.0 limitation: tools for shrinking the content.sqlite file or
+    0.32.0 limitation: tools for shrinking the content.sqlite file or
     purging old job data while retaining other content are not yet available.
 
-    0.31.0 limitation: Flux must be completely stopped to relocate or remove
+    0.32.0 limitation: Flux must be completely stopped to relocate or remove
     the content.sqlite file.
 
-    0.31.0 limitation: Running out of space is not handled gracefully.
+    0.32.0 limitation: Running out of space is not handled gracefully.
     If this happens it is best to stop Flux, remove the content.sqlite file,
     and restart.
 
@@ -454,11 +454,13 @@ And the scripts should be run by ``flux cron``:
 Job prolog/epilog
 =================
 
-As of version 0.31.0, Flux does not support a traditional job prolog and
-epilog that runs on each node before and after job tasks are executed.
-However, Flux does support a "job-manager" prolog and epilog, which
-are run on rank 0 at the same points in a job life cycle. A convenience
-command ``flux perilog-run`` is provided which can simulate a job
+.. warning::
+    0.32.0 limitation: Flux does not yet support a traditional job prolog
+    and epilog that runs on each node before and after job tasks are executed.
+    Flux does support a "job-manager" prolog and epilog, which are run on rank 0
+    at the same points in a job life cycle, described below.
+
+A convenience command ``flux perilog-run`` is provided which can simulate a job
 prolog and epilog by executing a command across the broker ranks assigned
 to a job from the job-manager prolog and epilog.
 
@@ -568,12 +570,6 @@ then respawn, awaiting the return of the rank 0 broker.
 To shut down a single node running Flux, simply run the above command
 on that node.
 
-.. warning::
-    0.31.0 limitation: jobs using a node are not automatically canceled
-    when the individual node is shut down.  On an active system, first drain
-    the node as described below, then ensure no jobs are using it before
-    shutting it down.
-
 Configuration update
 ====================
 
@@ -593,7 +589,7 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.31.0 limitation: all configuration changes except resource exclusion
+    0.32.0 limitation: all configuration changes except resource exclusion
     and instance access have no effect until the Flux broker restarts.
 
 Viewing resource status
@@ -802,7 +798,7 @@ combinations.
     the instance.  The version is currently required to match exactly.
 
 .. warning::
-    0.31.0 limitation: job data should be purged when updating to the
+    0.32.0 limitation: job data should be purged when updating to the
     next release of flux-core, as internal representations of data written
     out to the Flux KVS and stored in the content.sqlite file are not yet
     stable.
@@ -848,7 +844,7 @@ listing:
 
 .. code-block:: console
 
- $ flux overlay status -vvv --ghost --pretty --color
+ $ flux overlay status
  0: degraded
  └1: partial
   └3: offline
