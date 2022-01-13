@@ -13,13 +13,13 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.32.0.
+    version 0.33.0.
 
 .. warning::
-    0.32.0 limitation: the flux system instance is primarily tested on
+    0.33.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
-    0.32.0 limitation: Avoid powering off nodes that are running Flux
+    0.33.0 limitation: Avoid powering off nodes that are running Flux
     without following the recommended shutdown procedure below.  Cluster
     nodes that may require service or have connectivity issues should be
     omitted from the Flux configuration for now.
@@ -254,7 +254,7 @@ Do this once and then copy the certificate to the same location on
 the other nodes, preserving owner and mode.
 
 .. warning::
-    0.32.0 limitation: the system instance tree based overlay network
+    0.33.0 limitation: the system instance tree based overlay network
     is forced by the systemd unit file to be *flat* (no interior router
     nodes), trading scalability for reliability.
 
@@ -290,7 +290,7 @@ preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
 node along with other critical cluster services.
 
 .. warning::
-    0.32.0 limitation: Flux should be completely shut down when the
+    0.33.0 limitation: Flux should be completely shut down when the
     overlay network configuration is modified.
 
 Resources
@@ -355,13 +355,13 @@ This space should be preserved across a reboot as it contains the Flux
 job queue and record of past jobs.
 
 .. warning::
-    0.32.0 limitation: tools for shrinking the content.sqlite file or
+    0.33.0 limitation: tools for shrinking the content.sqlite file or
     purging old job data while retaining other content are not yet available.
 
-    0.32.0 limitation: Flux must be completely stopped to relocate or remove
+    0.33.0 limitation: Flux must be completely stopped to relocate or remove
     the content.sqlite file.
 
-    0.32.0 limitation: Running out of space is not handled gracefully.
+    0.33.0 limitation: Running out of space is not handled gracefully.
     If this happens it is best to stop Flux, remove the content.sqlite file,
     and restart.
 
@@ -454,15 +454,22 @@ And the scripts should be run by ``flux cron``:
 Job prolog/epilog
 =================
 
-.. warning::
-    0.32.0 limitation: Flux does not yet support a traditional job prolog
-    and epilog that runs on each node before and after job tasks are executed.
-    Flux does support a "job-manager" prolog and epilog, which are run on rank 0
-    at the same points in a job life cycle, described below.
+As of 0.33.0, Flux does not support a traditional job prolog/epilog
+which runs as root on the nodes assigned to a job before/after job
+execution. Flux does, however, support a job-manager prolog/epilog,
+which is run at the same point on rank 0 as the instance
+owner (typically user ``flux``), instead of user root.
 
-A convenience command ``flux perilog-run`` is provided which can simulate a job
-prolog and epilog by executing a command across the broker ranks assigned
-to a job from the job-manager prolog and epilog.
+As a temporary solution, a convenience command ``flux perilog-run``
+is provided which can simulate a job prolog and epilog by executing a
+command across the broker ranks assigned to a job from the job-manager
+prolog and epilog.
+
+When using ``flux perilog-run`` to execute job prolog and epilog, the
+job-manager prolog/epilog feature is being used to execute a privileged
+prolog/epilog across the nodes/ranks assigned to a job, via the
+flux-security IMP "run" command support. Therefore, each of these
+components need to be configured, which is explained in the steps below.
 
 To configure a per-node job prolog and epilog, run with root privileges,
 currently requires three steps
@@ -500,7 +507,8 @@ currently requires three steps
 
 
  2. Configure the system instance to load the job-manager ``perilog.so``
-    plugin, which is not active by default:
+    plugin, which is not active by default. This plugin enables job-manager
+    prolog/epilog support in the instance:
 
     .. code-block:: toml
 
@@ -512,7 +520,9 @@ currently requires three steps
        ]
 
  3. Configure ``[job-manager.prolog]`` and ``[job-manager.epilog]`` to
-    execute ``flux perilog-run`` with appropriate arguments:
+    execute ``flux perilog-run`` with appropriate arguments to execute
+    ``flux-imp run prolog`` and ``flux-imp run epilog`` across the ranks
+    assigned to a job:
 
     .. code-block:: toml
 
@@ -528,7 +538,11 @@ currently requires three steps
        ]
 
 Note that the ``flux perilog-run`` command will additionally execute any
-scripts in ``/etc/flux/system/{prolog,epilog}.d`` on rank 0 by default.
+scripts in ``/etc/flux/system/{prolog,epilog}.d`` on rank 0 by default as
+part of the job-manager prolog/epilog. Only place scripts here if there is
+a need to execute scripts as the instance owner (user `flux`) on a single
+rank for each job. If only traditional prolog/epilog support is required,
+these directories can be ignored and should be empty or nonexistent.
 To run scripts from a different directory, use the ``-d, --exec-directory``
 option in the configured ``command``.
 
@@ -589,7 +603,7 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.32.0 limitation: all configuration changes except resource exclusion
+    0.33.0 limitation: all configuration changes except resource exclusion
     and instance access have no effect until the Flux broker restarts.
 
 Viewing resource status
@@ -798,7 +812,7 @@ combinations.
     the instance.  The version is currently required to match exactly.
 
 .. warning::
-    0.32.0 limitation: job data should be purged when updating to the
+    0.33.0 limitation: job data should be purged when updating to the
     next release of flux-core, as internal representations of data written
     out to the Flux KVS and stored in the content.sqlite file are not yet
     stable.
