@@ -454,15 +454,22 @@ And the scripts should be run by ``flux cron``:
 Job prolog/epilog
 =================
 
-.. warning::
-    0.33.0 limitation: Flux does not yet support a traditional job prolog
-    and epilog that runs on each node before and after job tasks are executed.
-    Flux does support a "job-manager" prolog and epilog, which are run on rank 0
-    at the same points in a job life cycle, described below.
+As of 0.33.0, Flux does not support a traditional job prolog/epilog
+which runs as root on the nodes assigned to a job before/after job
+execution. Flux does, however, support a job-manager prolog/epilog,
+which is run at the same point on rank 0 as the instance
+owner (typically user ``flux``), instead of user root.
 
-A convenience command ``flux perilog-run`` is provided which can simulate a job
-prolog and epilog by executing a command across the broker ranks assigned
-to a job from the job-manager prolog and epilog.
+As a temporary solution, a convenience command ``flux perilog-run``
+is provided which can simulate a job prolog and epilog by executing a
+command across the broker ranks assigned to a job from the job-manager
+prolog and epilog.
+
+When using ``flux perilog-run`` to execute job prolog and epilog, the
+job-manager prolog/epilog feature is being used to execute a privileged
+prolog/epilog across the nodes/ranks assigned to a job, via the
+flux-security IMP "run" command support. Therefore, each of these
+components need to be configured, which is explained in the steps below.
 
 To configure a per-node job prolog and epilog, run with root privileges,
 currently requires three steps
@@ -500,7 +507,8 @@ currently requires three steps
 
 
  2. Configure the system instance to load the job-manager ``perilog.so``
-    plugin, which is not active by default:
+    plugin, which is not active by default. This plugin enables job-manager
+    prolog/epilog support in the instance:
 
     .. code-block:: toml
 
@@ -512,7 +520,9 @@ currently requires three steps
        ]
 
  3. Configure ``[job-manager.prolog]`` and ``[job-manager.epilog]`` to
-    execute ``flux perilog-run`` with appropriate arguments:
+    execute ``flux perilog-run`` with appropriate arguments to execute
+    ``flux-imp run prolog`` and ``flux-imp run epilog`` across the ranks
+    assigned to a job:
 
     .. code-block:: toml
 
@@ -528,7 +538,11 @@ currently requires three steps
        ]
 
 Note that the ``flux perilog-run`` command will additionally execute any
-scripts in ``/etc/flux/system/{prolog,epilog}.d`` on rank 0 by default.
+scripts in ``/etc/flux/system/{prolog,epilog}.d`` on rank 0 by default as
+part of the job-manager prolog/epilog. Only place scripts here if there is
+a need to execute scripts as the instance owner (user `flux`) on a single
+rank for each job. If only traditional prolog/epilog support is required,
+these directories can be ignored and should be empty or nonexistent.
 To run scripts from a different directory, use the ``-d, --exec-directory``
 option in the configured ``command``.
 
