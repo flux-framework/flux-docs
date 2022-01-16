@@ -16,13 +16,20 @@ Building the Code
 Spack: Recommended for curious users
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Flux maintains an up-to-date package in the `spack <https://github.com/spack/spack>`_ develop branch. If you’re already using spack, just run the following to install flux and all necessary dependencies:
+Flux maintains an up-to-date package in the `spack
+<https://github.com/spack/spack>`_ develop branch. If you’re already using
+spack, just run the following to install flux and all necessary dependencies:
 
 .. code-block:: console
 
   $ spack install flux-sched
 
-The above command will build and install the latest tagged version of flux-sched and flux-core.  To install the latest master branches, use the ``@master`` version specifier: ``spack install flux-sched@master``. If you want Flux to manage and schedule Nvidia GPUs, include the ``+cuda`` variant: ``spack install flux-sched+cuda``.  This builds a CUDA-aware version of hwloc.
+The above command will build and install the latest tagged version of
+flux-sched and flux-core.  To install the latest master branches, use the
+``@master`` version specifier: ``spack install flux-sched@master``. If
+you want Flux to manage and schedule Nvidia GPUs, include the ``+cuda``
+variant: ``spack install flux-sched+cuda``.  This builds a CUDA-aware
+version of hwloc.
 
 
 For instructions on installing spack, see `Spack's installation documentation <https://spack.readthedocs.io/en/latest/getting_started.html#installation>`_.
@@ -31,7 +38,10 @@ For instructions on installing spack, see `Spack's installation documentation <h
 Docker: Recommended for quick, single-node deployments
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Flux has a continuously updated Docker image available for download on `Docker Hub <https://hub.docker.com/u/fluxrm>`_. If you already have docker installed, just run the following to download the latest Flux docker image and start a container from it:
+Flux has a continuously updated Docker image available for download on
+`Docker Hub <https://hub.docker.com/u/fluxrm>`_. If you already have docker
+installed, just run the following to download the latest Flux docker image
+and start a container from it:
 
 .. code-block:: console
 
@@ -46,7 +56,9 @@ Flux has a continuously updated Docker image available for download on `Docker H
    This installation method is recommended for developers and users curious to
    try single-node instances of Flux.
 
-The default CMD for flux docker images is ``flux start /bin/bash``. To emulate a multi-node deployment within a single container, replace the default CMD by supplying args to ``docker run``:
+The default CMD for flux docker images is ``flux start /bin/bash``. To
+emulate a multi-node deployment within a single container, replace the
+default CMD by supplying args to ``docker run``:
 
 .. code-block:: console
 
@@ -54,7 +66,8 @@ The default CMD for flux docker images is ``flux start /bin/bash``. To emulate a
    $ flux getattr size
    4
 
-If you are developing Flux and want to compile the modified code and run our testsuite within a docker container, you can use our helper script:
+If you are developing Flux and want to compile the modified code and run
+our testsuite within a docker container, you can use our helper script:
 
 .. code-block:: console
 
@@ -85,7 +98,8 @@ If you are developing Flux and want to compile the modified code and run our tes
 Manual Installation: Recommended for developers and contributors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Ensure the latest list of requirements are installed. The current list of build requirements are detailed `here <https://github.com/flux-framework/flux-core#readme>`_.
+Ensure the latest list of requirements are installed. The
+current list of build requirements are detailed `here <https://github.com/flux-framework/flux-core#readme>`_.
 
 Clone current flux-core master:
 
@@ -95,7 +109,8 @@ Clone current flux-core master:
   Initialized empty Git repository in /home/fluxuser/flux-core/.git/
   $ cd flux-core
 
-Build flux-core. In order to build python bindings, ensure you have python-3.6 and python-cffi available in your current environment:
+Build flux-core. In order to build python bindings, ensure you have
+python-3.6 and python-cffi available in your current environment:
 
 .. code-block:: console
 
@@ -107,7 +122,8 @@ Build flux-core. In order to build python bindings, ensure you have python-3.6 a
   $ make -j 8
   ...
 
-Ensure all is right with the world by running the built-in ``make check`` target:
+Ensure all is right with the world by running the built-in ``make check``
+target:
 
 .. code-block:: console
 
@@ -137,7 +153,8 @@ flux-core found in the specified ``--prefix`` using the same
   $ make
   ...
 
-Ensure all is right with the world by running the built-in ``make check`` target:
+Ensure all is right with the world by running the built-in ``make check``
+target:
 
 .. code-block:: console
 
@@ -151,18 +168,24 @@ Ensure all is right with the world by running the built-in ``make check`` target
 Starting a Flux Instance
 ------------------------
 
-In order to use Flux, you first must initiate a Flux *instance* or *session*.
+In order to use Flux, you first must initiate a Flux *instance*.
 
-A Flux session is composed of a hierarchy of ``flux-broker`` processes which are launched via any parallel launch utility that supports PMI. For example, ``srun``, ``mpiexec.hydra``, etc., or locally for testing via the ``flux start`` command.
+A Flux instance is composed of a group of ``flux-broker`` processes
+which are launched via any parallel launch utility that supports PMI. For
+example, ``srun``, ``mpiexec.hydra``, etc., or locally for testing via the
+``flux start`` command with the ``-s, --test-size=N`` option.
 
-To start a Flux session with 4 brokers on the local node, use ``flux start``:
+To start a Flux instance with 4 brokers on the local node, use ``flux start``:
 
 .. code-block:: console
 
   $ flux start --test-size=4
   $
 
-A flux session can be also be started under `Slurm <https://github.com/chaos/slurm>`_ using PMI. To start by using ``srun(1)``, simply run the ``flux start`` command without the ``--size`` option under a Slurm job. You will likely want to start a single broker process per node:
+A Flux instance can be also be started under `Slurm
+<https://github.com/chaos/slurm>`_ using PMI. To start by using ``srun(1)``,
+simply run the ``flux start`` command without the ``--size`` option under
+a Slurm job. You will likely want to start a single broker process per node:
 
 .. code-block:: console
 
@@ -172,15 +195,36 @@ A flux session can be also be started under `Slurm <https://github.com/chaos/slu
   srun: job 1136410 has been allocated resources
   $
 
-After broker wire up is completed, the Flux session starts an “initial program” on rank 0 broker. By default, the initial program is an interactive shell, but an alternate program can be supplied on the ``flux start`` command line. Once the initial program terminates, the Flux session is considered complete and brokers exit.
+An interactive Flux instance can also be started under Flux with the
+:core:man1:`flux-mini` ``alloc`` subcommand:
 
-To get help on any ``flux`` subcommand or API program, the ``flux help`` command may be used. For example, to view the man page for the ``flux-hwloc(1)`` command, use
+.. code-block:: console
+
+  $ flux mini alloc -n144 -N4
+  $
+
+.. note::
+  ``flux mini alloc`` requires the ``-n, --nslots=N`` parameter, which by
+  default will allocate 1 core per slot. The command above will request
+  to allocate 144 core across 4 nodes (for example, for a system with
+  36 cores)
+
+After broker wire up is completed, the Flux instance starts an “initial
+program” on rank 0 broker. By default, the initial program is an
+interactive shell, but an alternate program can be supplied on the ``flux
+start`` command line. Once the initial program terminates, the Flux instance
+is considered complete and brokers exit.
+
+To get help on any ``flux`` subcommand or API function, the ``flux
+help`` command may be used. For example, to view the man page for the
+``flux-hwloc(1)`` command, use
 
 .. code-block:: console
 
   $ flux help hwloc
 
-``flux help`` can also be run by itself to see a list of commonly used Flux commands.
+``flux help`` can also be run by itself to see a list of commonly used
+Flux commands.
 
 .. _interacting:
 
@@ -188,14 +232,35 @@ To get help on any ``flux`` subcommand or API program, the ``flux help`` command
 Interacting with a Flux Session
 -------------------------------
 
-There are several low-level commands of interest to interact with a Flux session. For example, to view the total resources available to the current instance, ``flux hwloc info`` may be used:
+There are several low-level commands of interest to interact with a Flux
+instance. For example, to view the total resources available in the current
+instance, ``flux hwloc info`` may be used:
 
 .. code-block:: console
 
   $ flux hwloc info
   4 Machines, 144 Cores, 144 PUs
 
-The size, current rank, comms URIs, logging levels, as well as other instance parameters are termed “attributes” and can be viewed and manipulated with the ``lsattr``, ``getattr``, and ``setattr`` commands, for example.
+To view the scheduling state of resources use ``flux resource list``:
+
+.. code-block:: console
+
+  $ flux resource list
+       STATE NNODES   NCORES    NGPUS NODELIST
+        free      4      144        0 quartz[2306,2306,2306,2306]
+   allocated      0        0        0
+        down      0        0        0
+
+.. note::
+  Since we are running a test instance with 4 brokers on the same host
+  via the ``--test-size=4`` option, those hosts are repeated in the
+  ``NODELIST`` above. This allows Flux to simulate a multi-node cluster
+  on a single node.
+
+The size, broker rank, URIs, logging levels, as well as other instance
+parameters are termed “broker attributes” and can be viewed and manipulated
+with the ``lsattr``, ``getattr``, and ``setattr`` commands, for example. For
+a description of all attributes see :core:man7:`flux-broker-attributes`
 
 .. code-block:: console
 
@@ -214,9 +279,14 @@ The current log level is also an attribute and can be modified at runtime:
   $ flux getattr log-level
   4
 
+Attributes are per-broker so to set or get a value on a different broker
+rank or across the entire instance ``flux getattr`` or ``flux setattr``
+should be run via :core:man1:`flux-exec`.
+
 To see a list of all attributes and their values, use ``flux lsattr -v``.
 
-Log messages from each broker are kept in a local ring buffer. When log level has been quieted, recent log messages for the local rank may be dumped via the ``flux dmesg`` command:
+Log messages from each broker are kept in a local ring buffer. Recent log
+messages for the local rank may be dumped via the ``flux dmesg`` command:
 
 .. code-block:: console
 
@@ -226,7 +296,9 @@ Log messages from each broker are kept in a local ring buffer. When log level ha
   2016-08-12T17:53:24.075824Z broker.info[0]: Run level 1 Exited (rc=0)
   2016-08-12T17:53:24.075831Z broker.info[0]: Run level 2 starting
 
-Services within a Flux session may be implemented by modules loaded in the ``flux-broker`` process on one or more ranks of the session. To query and manage broker modules, Flux provides a ``flux module`` command:
+Services within a Flux instance may be implemented by modules loaded in the
+``flux-broker`` process on one or more ranks of the instance. To query and
+manage broker modules, Flux provides a ``flux module`` command:
 
 .. code-block:: console
 
@@ -246,23 +318,16 @@ Services within a Flux session may be implemented by modules loaded in the ``flu
   content-sqlite        1126920 EB0D5E9    4  S content-backing
   aggregator            1141184 5E1E0B6    4  S
 
-The most basic functionality of these service modules can be tested with the ``flux ping`` utility, which targets a builtin ``*.ping`` handler registered by default with each module.
+The most basic functionality of these service modules can be tested with
+the :core:man1:`flux-ping` utility, which targets a builtin ``*.ping`` handler
+registered by default with each module.
 
 .. code-block:: console
 
-  flux ping --count=2 kvs
-  kvs.ping pad=0 seq=0 time=0.648 ms (1F18F!09552!0!EEE45)
-  kvs.ping pad=0 seq=1 time=0.666 ms (1F18F!09552!0!EEE45)
+  $ flux ping --count=2 kvs
+  kvs.ping pad=0 seq=0 time=0.402 ms (2da0be18!301c7e16!3e4f235f!9cea08f1)
+  kvs.ping pad=0 seq=1 time=0.307 ms (2da0be18!301c7e16!3e4f235f!9cea08f1)
 
-By default the local (or closest) instance of the service is targeted, but a specific rank can be selected with the ``--rank`` option.
-
-.. code-block:: console
-
-  $ flux ping --rank=3 --count=2 kvs
-  3!kvs.ping pad=0 seq=0 time=1.888 ms (CBF78!09552!0!1!3!BBC94)
-  3!kvs.ping pad=0 seq=1 time=1.792 ms (CBF78!09552!0!1!3!BBC94)
-
-The ``flux-ping`` utility is a good way to test the round-trip latency to any rank within a Flux session.
 
 .. _flux-kvs:
 
@@ -270,7 +335,13 @@ The ``flux-ping`` utility is a good way to test the round-trip latency to any ra
 Flux KVS
 --------
 
-The key-value store (kvs) is a core component of a Flux instance. The ``flux kvs`` command provides a utility to list and manipulate values of the KVS. For example, hwloc information for the current instance is loaded into the kvs by the ``resource-hwloc`` module at instance startup. The resource information is available under the kvs key ``resource.hwloc``. For example, the count of total Cores available on rank 0 can be obtained from the kvs via:
+The key-value store (kvs) is a core component of a Flux instance. The
+``flux kvs`` command provides a utility to list and manipulate values of
+the KVS. For example, hwloc information for the current instance is loaded
+into the kvs by the ``resource-hwloc`` module at instance startup. The
+resource information is available under the kvs key ``resource.hwloc``. For
+example, the count of total Cores available on rank 0 can be obtained from
+the kvs via:
 
 .. code-block:: console
 
@@ -285,7 +356,11 @@ See ``flux help kvs`` for more information.
 Launching Work in a Flux Session
 --------------------------------
 
-Flux has two methods to launch “remote” tasks and parallel work within a session. The ``flux exec`` utility is a low-level remote execution framework which depends on as few other services as possible and is used primarily for testing. By default, ``flux exec`` runs a single copy of the provided ``COMMAND`` on each rank in a session:
+Flux has two methods to launch “remote” tasks and parallel work within
+a instance. The ``flux exec`` utility is a low-level remote execution
+framework which depends on as few other services as possible and is used
+primarily for testing. By default, ``flux exec`` runs a single copy of
+the provided ``COMMAND`` on each rank in a instance:
 
 .. code-block:: console
 
@@ -302,9 +377,18 @@ Though individual ranks may be targeted:
   $ flux exec -r 3 flux getattr rank
   3
 
-The second method for launching and submitting jobs is a Minimal Job Submission Tool named "mini". The "mini" tool consists of a ``flux mini`` frontend command; ``flux job`` is another low-level tool that can be used for querying job information.
+The second method for launching and submitting jobs is a Minimal Job
+Submission Tool ``flux mini``. The "mini" tool consists of several
+subcommands useful for different job submission scenarios:
 
-For a full description of the ``flux mini`` command, see ``flux help mini``.
+ * ``flux mini run`` - interactively run jobs
+ * ``flux mini submit`` - enqueue one or more jobs
+ * ``flux mini batch`` - enqueue a batch script
+ * ``flux mini alloc`` - allocate a new instance for interactive use
+ * ``flux mini bulksubmit`` - enqueue jobs in bulk
+
+For a full description of the ``flux mini`` command, see ``flux help mini``
+or the :core:man1:`flux-mini` man page.
 
 * Run 4 copies of hostname.
 
@@ -330,24 +414,54 @@ For a full description of the ``flux mini`` command, see ``flux help mini``.
 .. code-block:: console
 
   $ flux mini submit -n128 ./hello
-  4095117099008
+  ƒA6oPHNjh
 
 Here, the allocated ID for the job is immediately echoed to stdout.
+
+The ``flux job`` command also includes many subcommands which are useful,
+including
 
 * View output of a job.
 
 .. code-block:: console
 
-  $ flux job attach 4095117099008
+  $ flux job attach ƒA6oPHNjh
   completed MPI_Init in 0.932s.  There are 128 tasks
   completed first barrier
   completed MPI_Finalize
 
-* List jobs.
+* Cancel a pending or running job, or send a signal to a running job
+
+.. code-block:: console
+
+  $ flux job cancel ƒMjstRfzF
+
+or
+
+.. code-block:: console
+
+  $ flux job kill ƒMjstRfzF
+
+* Active jobs can be listed with :core:man1:`flux-jobs`:
 
 .. code-block:: console
 
   $ flux jobs
-          JOBID USER        NAME       STATE    NTASKS NNODES  RUNTIME RANKS
-  1378382512128 fluxuser    sleep      RUN           1      1   5.015s 0
-  1355649384448 fluxuser    sleep      RUN           1      1   6.368s 0
+       JOBID USER     NAME       ST NTASKS NNODES  RUNTIME NODELIST
+   ƒPugMu2Ty fluxuser sleep       R      1      1   1.564s quartz2306
+   ƒPugLR3Bd fluxuser sleep       R      1      1   1.565s quartz2306
+
+* To include jobs which have completed for the current user add the
+  ``-a`` option
+
+.. code-block:: console
+
+  $ flux jobs -a
+       JOBID USER     NAME       ST NTASKS NNODES  RUNTIME NODELIST
+   ƒPugMu2Ty fluxuser sleep       R      1      1   1.564s quartz2306
+   ƒPugLR3Bd fluxuser sleep       R      1      1   1.565s quartz2306
+    ƒP55Ntdd fluxuser sleep      CD      1      1   4.052s quartz2306
+    ƒ8QzNhZh fluxuser hostname   CD      1      1   0.053s quartz2306
+
+By default ``flux jobs -a`` will list up to 1000 jobs. To limit output
+use the ``-c, --count=N`` option.
