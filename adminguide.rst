@@ -115,7 +115,8 @@ A system user named ``flux`` is required, with the following characteristics:
 Software
 ========
 
-The following Flux framework packages are needed for a Flux system instance:
+The following Flux framework packages are needed for a Flux system instance
+and should be installed from your Linux distribution package manager.
 
 flux-core
   All of the core components of Flux, including the Flux broker.
@@ -135,35 +136,14 @@ flux-accounting
   Accounting database of user/bank usage information, and a priority plugin.
   Install on management node (optional, early preview users only).
 
-If installing from your Linux distribution package manager (preferred),
-e.g. RPM or dpkg, you may skip this section.
+.. note::
+    Flux packages are currently maintained only for the
+    `TOSS <https://computing.llnl.gov/projects/toss-speeding-commodity-cluster-computing>`_
+    Red Hat Enterprise Linux based Linux distribution, which is not publicly
+    distributed.  Open an issue in `flux-core <https://github.com/flux-framework/flux-core>`_
+    if you would like to become a maintainer of Flux packages for another Linux
+    distribution so we can share packaging tips and avoid duplicating effort.
 
-If installing from a git repo, follow the instructions in
-:ref:`manual_installation` .
-
-This section assumes you are installing from a source distribution tarball.
-
-In this guide the paths to configuration
-files and executables will assume that Flux software was configured the
-same as standard system packages, e.g. with the following arguments to
-``configure``:
-
-.. code-block:: console
-
- $ ./configure --prefix=/usr --sysconfdir=/etc --with-systemdsystemunitdir=/etc/systemd/system --localstatedir=/var
-
-When configuring ``flux-core`` be sure to compile against ``flux-security``
-by adding ``--with-flux-security`` to the ``configure`` arguments.
-
-After installation of ``flux-security``, ensure the ``flux-imp`` executable
-is installed setuid root.
-
-.. code-block:: console
-
- $ sudo chown root:root /usr/libexec/flux/flux-imp
- $ sudo chmod 4755 /usr/libexec/flux/flux-imp
-
-Ensure this is replicated across all nodes.
 
 *******************
 Configuration files
