@@ -15,11 +15,14 @@ pull_request_rules:
   - name: rebase and merge when passing all checks
     conditions:
       - base=master
+      - status-success="validate commits"
       - label="merge-when-passing"
       - label!="work-in-progress"
+      - "approved-reviews-by=@flux-framework/docs"
       - "#approved-reviews-by>0"
       - "#changes-requested-reviews-by=0"
-   actions:
+      - -title~=^\[*[Ww][Ii][Pp]
+    actions:
       queue:
         name: default
         method: merge
