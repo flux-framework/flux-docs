@@ -85,7 +85,7 @@ If you are developing Flux and want to compile the modified code and run our tes
 Manual Installation: Recommended for developers and contributors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Ensure the latest list of requirements are installed. The current list of build requirements are detailed `here <http://flux-framework.org/docs/requirements/>`_.
+Ensure the latest list of requirements are installed. The current list of build requirements are detailed `here <https://github.com/flux-framework/flux-core#readme>`_.
 
 Clone current flux-core master:
 
