@@ -23,6 +23,7 @@ The framework consists of a suite of projects, tools, and libraries which may be
    contributing
    debugging
    batch
+   hierarchies
    coral
    coral2
    faqs
