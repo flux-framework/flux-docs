@@ -1,5 +1,6 @@
 Pygments>=2.4
-Sphinx
+sphinx==3.4.3
 sphinxcontrib-spelling
 sphinx-rtd-theme>=0.5.2
 sphinx-copybutton
+docutils>=0.14,<0.18

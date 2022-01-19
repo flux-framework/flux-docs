@@ -116,10 +116,10 @@ Checking the output file of one of the batch job:
 .. code-block:: console
 
   $ flux job attach ƒWZEQa8X
-  0: stdout redirected to flux-1125147213824.out
-  0: stderr redirected to flux-1125147213824.out
+  0: stdout redirected to flux-ƒWZEQa8X.out
+  0: stderr redirected to flux-ƒWZEQa8X.out
 
-  $ cat flux-1125147213824.out
+  $ cat flux-ƒWZEQa8X.out
   Print the resources allocated to this batch job
   2 Machines, 4 Cores, 8 PUs
   Use sleep to emulate a parallel program

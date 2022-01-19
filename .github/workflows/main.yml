@@ -20,4 +20,15 @@ jobs:
           sudo apt-get install -y enchant python3-pip &&
           sudo pip3 install --upgrade -r ./requirements.txt
     - name: make check
-      run: 'make check'
+      run: make check
+  make-linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install dependencies
+      run: >-
+          sudo apt-get update -y &&
+          sudo apt-get install -y enchant python3-pip &&
+          sudo pip3 install --upgrade -r ./requirements.txt
+    - name: make linkcheck
+      run: make linkcheck

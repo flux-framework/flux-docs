@@ -21,10 +21,11 @@ The framework consists of a suite of projects, tools, and libraries which may be
    quickstart
    adminguide
    contributing
-   coral
-   coral2
    debugging
    batch
+   hierarchies
+   coral
+   coral2
    faqs
    stats
 

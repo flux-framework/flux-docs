@@ -214,6 +214,7 @@ facto
 IPC
 Iter
 jobid
+jobids
 keylen
 keyval
 keyvalp
@@ -491,3 +492,7 @@ Perlmutter
 glibc
 cron
 fairshare
+resolver
+resolvers
+pstree
+recurse

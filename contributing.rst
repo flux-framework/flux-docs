@@ -6,7 +6,7 @@ Contributing
 
 The Flux Framework team welcomes all contributors for bug fixes, code improvements, new features, simplifications, documentation, and more. Please do not hesitate to `contact us <https://github.com/orgs/flux-framework/people>`_ with any questions or concerns.
 
-This guide details how to contribute to `Flux Framework projects <https://github.com/flux-framework>`_ in a standardized and efficient manner. Our projects follow the Collective Code Construction Contract (`C4.1 <https://github.com/flux-framework/rfc/blob/master/spec_1.adoc>`_) which describes an optimal collaboration model for open source projects, based on the GitHub fork+pull model.
+This guide details how to contribute to `Flux Framework projects <https://github.com/flux-framework>`_ in a standardized and efficient manner. Our projects follow the Collective Code Construction Contract (`C4.1 <https://github.com/flux-framework/rfc/blob/master/spec_1.rst>`_) which describes an optimal collaboration model for open source projects, based on the GitHub fork+pull model.
 
 .. _pull-requests:
 
@@ -28,7 +28,7 @@ any questions, please open an issue and reference it in your PR. To
 contribute to a Flux Framework project:
 
 * `Fork <https://help.github.com/en/github/getting-started-with-github/fork-a-repo>`_ the project.
-* `Clone <https://help.github.com/en/github/getting-started-with-github/fork-a-repo#keep-your-fork-synced>`_ your fork. ``git clone git@github.com:[username]/flux-framework/[project].git``
+* Clone your fork. ``git clone git@github.com:[username]/flux-framework/[project].git``
 * Create a topic branch to contain your change. ``git checkout -b new_feature``
 * Create feature or add fix, and add tests if possible.
 * Make sure everything still passes ``make check``.
@@ -58,9 +58,9 @@ Developer Guidelines
 * Adhere to the coding style guide. The components
   of Flux written in C follow the Kernighan & Ritchie
   coding style, with exceptions enumerated in `RFC 7
-  <https://github.com/flux-framework/rfc/blob/master/spec_7.adoc>`_. The
+  <https://github.com/flux-framework/rfc/blob/master/spec_7.rst>`_. The
   components of Flux written in Python follow the `black code style
-  <https://black.readthedocs.io/en/stable/the_black_code_style.html>`_.
+  <https://black.readthedocs.io/en/stable/the_black_code_style/index.html>`_.
 * Commit etiquette:
 
   * Avoid merge commits.
@@ -76,4 +76,4 @@ Developer Guidelines
   * Each commit should have a message with title and body as described
     in C4.1 (e.g., imperative phrasing, wrap lines at 72 characters).
 
-For more details about C4.1, including commit requirements, see `RFC 1 <https://github.com/flux-framework/rfc/blob/master/spec_1.adoc>`_.
+For more details about C4.1, including commit requirements, see `RFC 1 <https://github.com/flux-framework/rfc/blob/master/spec_1.rst>`_.

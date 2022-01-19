@@ -21,8 +21,8 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import sys
+sys.path.insert(0, os.path.abspath('.'))
 
 
 # -- Project information -----------------------------------------------------
@@ -52,6 +52,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     'sphinxcontrib.spelling',
     'sphinx_copybutton',
+    'domainrefs'
 ]
 
 # sphinxcontrib.spelling settings
@@ -69,6 +70,37 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'venv']
 
 master_doc = 'index'
 source_suffix = '.rst'
+
+domainrefs = {
+    'linux:man1': {
+        'text': '%s(1)',
+        'url': 'http://man7.org/linux/man-pages/man1/%s.1.html',
+    },
+    'linux:man2': {
+        'text': '%s(2)',
+        'url': 'http://man7.org/linux/man-pages/man2/%s.2.html',
+    },
+    'linux:man3': {
+        'text': '%s(3)',
+        'url': 'http://man7.org/linux/man-pages/man3/%s.3.html',
+    },
+    'linux:man7': {
+        'text': '%s(7)',
+        'url': 'http://man7.org/linux/man-pages/man7/%s.7.html',
+    },
+    'core:man1': {
+        'text': '%s(1)',
+        'url': 'https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/%s.html',
+    },
+    'core:man3': {
+        'text': '%s(3)',
+        'url': 'https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man3/%s.html',
+    },
+    'core:man7': {
+        'text': '%s(7)',
+        'url': 'https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/%s.html',
+    },
+}
 
 # -- Options for Intersphinx -------------------------------------------------
 
