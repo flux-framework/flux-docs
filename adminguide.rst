@@ -161,6 +161,7 @@ a typical Flux system instance will read all configuration from
 In this guide, separate files will typically be used for clarity, instead
 of adding all configuration tables to a single TOML file.
 
+See also: :core:man5:`flux-config`.
 
 Multi-user
 ==========
@@ -200,6 +201,8 @@ as its privileged helper for multi-user execution:
  [exec]
  imp = "/usr/libexec/flux/flux-imp"
 
+See also: :core:man5:`flux-config-exec`.
+
 By default, a Flux instance does not allow access to any user other than
 the instance *owner*, in this case the ``flux`` user.  This is not
 suitable for a system instance, so *guest user* access should be enabled.
@@ -213,6 +216,8 @@ in the role of instance owner:
  [access]
  allow-guest-user = true
  allow-root-owner = true
+
+See also: :core:man5:`flux-config-access`.
 
 Network
 =======
@@ -316,6 +321,8 @@ An example resource configuration:
  path = "/etc/flux/system/R"
  exclude = "fluke[3,108]"
 
+See also: :core:man5:`flux-config-resource`.
+
 KVS backing store
 =================
 
@@ -398,6 +405,8 @@ the job manager config file:
    { load = "mf_priority.so" },
  ]
 
+See also: :core:man5:`flux-config-job-manager`.
+
 Automatic updates
 -----------------
 
@@ -422,7 +431,9 @@ The ``job-archive`` module must be configured to run periodically:
  period = 60
  busytimeout = 50
 
-And the scripts should be run by ``flux cron``:
+The scripts should be run by ``flux cron``:
+
+See also: :core:man5:`flux-config-archive`.
 
 .. code-block:: console
 
@@ -524,6 +535,9 @@ rank for each job. If only traditional prolog/epilog support is required,
 these directories can be ignored and should be empty or nonexistent.
 To run scripts from a different directory, use the ``-d, --exec-directory``
 option in the configured ``command``.
+
+See also: :core:man5:`flux-config-job-manager`.
+
 
 *************************
 Day to day administration
