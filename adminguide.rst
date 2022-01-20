@@ -161,6 +161,7 @@ a typical Flux system instance will read all configuration from
 In this guide, separate files will typically be used for clarity, instead
 of adding all configuration tables to a single TOML file.
 
+See also: :core:man5:`flux-config`.
 
 Multi-user
 ==========
@@ -200,6 +201,8 @@ as its privileged helper for multi-user execution:
  [exec]
  imp = "/usr/libexec/flux/flux-imp"
 
+See also: :core:man5:`flux-config-exec`.
+
 By default, a Flux instance does not allow access to any user other than
 the instance *owner*, in this case the ``flux`` user.  This is not
 suitable for a system instance, so *guest user* access should be enabled.
@@ -214,6 +217,8 @@ in the role of instance owner:
  allow-guest-user = true
  allow-root-owner = true
 
+See also: :core:man5:`flux-config-access`.
+
 Network
 =======
 
@@ -224,7 +229,7 @@ available the whole time Flux is running.
 
 Overlay network security requires a certificate to be distributed to all nodes.
 It should be readable only by the ``flux`` user.  To create a new certificate,
-run the ``flux keygen`` utility as the ``flux`` user:
+run :core:man1:`flux-keygen` as the ``flux`` user:
 
 .. code-block:: console
 
@@ -257,8 +262,7 @@ network interface of ``enp0s25``:
     { host = "fluke[3,108,6-103]" },
  ]
 
-For more information on the structure of the bootstrap table, refer to
-`flux-config-bootstrap(5) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man5/flux-config-bootstrap.html>`_.
+See also: :core:man5:`flux-config-bootstrap`.
 
 Hosts are assigned ranks in the overlay network based on their position in the
 host array. In the above example ``fluke3`` is rank 0, ``fluke108`` is rank
@@ -316,6 +320,8 @@ An example resource configuration:
  [resource]
  path = "/etc/flux/system/R"
  exclude = "fluke[3,108]"
+
+See also: :core:man5:`flux-config-resource`.
 
 KVS backing store
 =================
@@ -399,6 +405,8 @@ the job manager config file:
    { load = "mf_priority.so" },
  ]
 
+See also: :core:man5:`flux-config-job-manager`.
+
 Automatic updates
 -----------------
 
@@ -423,7 +431,9 @@ The ``job-archive`` module must be configured to run periodically:
  period = 60
  busytimeout = 50
 
-And the scripts should be run by ``flux cron``:
+The scripts should be run by :core:man1:`flux-cron`:
+
+See also: :core:man5:`flux-config-archive`.
 
 .. code-block:: console
 
@@ -525,6 +535,9 @@ rank for each job. If only traditional prolog/epilog support is required,
 these directories can be ignored and should be empty or nonexistent.
 To run scripts from a different directory, use the ``-d, --exec-directory``
 option in the configured ``command``.
+
+See also: :core:man5:`flux-config-job-manager`.
+
 
 *************************
 Day to day administration
@@ -692,7 +705,7 @@ This queue can be managed using the ``flux-queue`` command.
     drain           Wait for queue to become empty.
     idle            Wait for queue to become idle.
 
-The queue may be listed with the `flux jobs` command.  Refer to `flux-jobs(1) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-jobs.html>`_
+The queue may be listed with the :core:man1:`flux-jobs` command.
 
 Disabling job submission
 ------------------------
