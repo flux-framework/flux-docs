@@ -257,8 +257,7 @@ network interface of ``enp0s25``:
     { host = "fluke[3,108,6-103]" },
  ]
 
-For more information on the structure of the bootstrap table, refer to
-`flux-config-bootstrap(5) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man5/flux-config-bootstrap.html>`_.
+See also: :core:man5:`flux-config-bootstrap`.
 
 Hosts are assigned ranks in the overlay network based on their position in the
 host array. In the above example ``fluke3`` is rank 0, ``fluke108`` is rank
@@ -692,7 +691,7 @@ This queue can be managed using the ``flux-queue`` command.
     drain           Wait for queue to become empty.
     idle            Wait for queue to become idle.
 
-The queue may be listed with the `flux jobs` command.  Refer to `flux-jobs(1) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-jobs.html>`_
+The queue may be listed with the :core:man1:`flux-jobs` command.
 
 Disabling job submission
 ------------------------
