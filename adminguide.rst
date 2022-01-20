@@ -224,7 +224,7 @@ available the whole time Flux is running.
 
 Overlay network security requires a certificate to be distributed to all nodes.
 It should be readable only by the ``flux`` user.  To create a new certificate,
-run the ``flux keygen`` utility as the ``flux`` user:
+run :core:man1:`flux-keygen` as the ``flux`` user:
 
 .. code-block:: console
 
