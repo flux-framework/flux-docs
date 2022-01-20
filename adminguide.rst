@@ -431,7 +431,7 @@ The ``job-archive`` module must be configured to run periodically:
  period = 60
  busytimeout = 50
 
-The scripts should be run by ``flux cron``:
+The scripts should be run by :core:man1:`flux-cron`:
 
 See also: :core:man5:`flux-config-archive`.
 
