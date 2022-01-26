@@ -244,9 +244,8 @@ the other nodes, preserving owner and mode.
     nodes), trading scalability for reliability.
 
 The Flux system instance overlay is currently configured via a cluster
-specific config file. The example here is for a 16 node cluster named
-``fluke`` with hostnames ``fluke1`` through ``fluke16``, and a management
-network interface of ``enp0s25``:
+specific config file. The example here is for a 16 node cluster with
+hostnames ``test1`` through ``test16``.
 
 .. code-block:: toml
 
@@ -254,19 +253,19 @@ network interface of ``enp0s25``:
 
  [bootstrap]
  curve_cert = "/etc/flux/system/curve.cert"
+
  default_port = 8050
- default_bind = "tcp://eno1:%p"
- default_connect = "tcp://e%h:%p"
+ default_bind = "tcp://eth0:%p"
+ default_connect = "tcp://%h:%p"
 
  hosts = [
-    { host = "fluke[3,108,6-103]" },
+    { host = "test[1-16]" },
  ]
 
 See also: :core:man5:`flux-config-bootstrap`.
 
 Hosts are assigned ranks in the overlay network based on their position in the
-host array. In the above example ``fluke3`` is rank 0, ``fluke108`` is rank
-1, etc.
+host array. In the above example ``test1`` is rank 0, ``test2`` is rank 1, etc.
 
 The Flux rank 0 broker hosts the majority of Flux's services, has a critical
 role in overlay network routing, and requires access to persistent storage,
