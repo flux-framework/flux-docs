@@ -104,6 +104,18 @@ domainrefs = {
         'text': '%s(7)',
         'url': 'https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/%s.html',
     },
+    'security:man3': {
+        'text': '%s(3)',
+        'url': 'https://flux-framework.readthedocs.io/projects/flux-security/en/latest/man3/%s.html',
+    },
+    'security:man5': {
+        'text': '%s(5)',
+        'url': 'https://flux-framework.readthedocs.io/projects/flux-security/en/latest/man5/%s.html',
+    },
+    'security:man8': {
+        'text': '%s(8)',
+        'url': 'https://flux-framework.readthedocs.io/projects/flux-security/en/latest/man8/%s.html',
+    },
 }
 
 # -- Options for Intersphinx -------------------------------------------------
@@ -116,6 +128,10 @@ intersphinx_mapping = {
     ),
     "core": (
         "https://flux-framework.readthedocs.io/projects/flux-core/en/latest/",
+        None,
+    ),
+    "security": (
+        "https://flux-framework.readthedocs.io/projects/flux-security/en/latest/",
         None,
     ),
     "workflow-examples": (
