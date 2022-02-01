@@ -161,7 +161,7 @@ a typical Flux system instance will read all configuration from
 In this guide, separate files will typically be used for clarity, instead
 of adding all configuration tables to a single TOML file.
 
-See also: :core:man5:`flux-config`.
+See also: :core:man5:`flux-config` and :security:man5:`flux-config-security`.
 
 Multi-user
 ==========
@@ -179,6 +179,8 @@ First, configure MUNGE as the method used to sign job requests:
  default-type = "munge"
  allowed-types = [ "munge" ]
 
+See also: :security:man5:`flux-config-security-sign`.
+
 Then configure the IMP to ensure that only the ``flux`` user may run
 the ``flux-imp`` executable, and the only allowed job shell is the system
 installed ``flux-shell``.
@@ -190,6 +192,8 @@ installed ``flux-shell``.
  [exec]
  allowed-users = [ "flux" ]
  allowed-shells = [ "/usr/libexec/flux/flux-shell" ]
+
+See also: :security:man5:`flux-config-security-imp`.
 
 The ``job-exec`` module must be configured to use the ``flux-imp`` process
 as its privileged helper for multi-user execution:
@@ -535,7 +539,8 @@ these directories can be ignored and should be empty or nonexistent.
 To run scripts from a different directory, use the ``-d, --exec-directory``
 option in the configured ``command``.
 
-See also: :core:man5:`flux-config-job-manager`.
+See also: :core:man5:`flux-config-job-manager`,
+:security:man5:`flux-config-security-imp`.
 
 
 *************************
