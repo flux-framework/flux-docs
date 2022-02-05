@@ -280,6 +280,24 @@ node along with other critical cluster services.
     0.35.0 limitation: Flux should be completely shut down when the
     overlay network configuration is modified.
 
+Flux enables TCP keepalives to detect compute nodes that are abruptly turned
+off.  If system-wide TCP keepalive parameters are not already tuned to values
+appropriate for cluster software, Flux should configure values for its overlay
+sockets.  The following configures keepalive probes to begin after 30s of
+inactivity, to re-transmit every 10s, and to disconnect after 12 probes are sent
+with no response.  Thus a powered off node is detected after 2.5m.
+
+.. code-block:: toml
+
+ # /etc/flux/system/conf.d/tbon.toml
+
+ [tbon]
+ keepalive_count = 12
+ keepalive_interval = 10
+ keepalive_idle = 30
+
+See also: :core:man5:`flux-config-tbon`.
+
 Resources
 =========
 
