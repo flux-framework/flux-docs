@@ -13,13 +13,13 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.33.0.
+    version 0.35.0.
 
 .. warning::
-    0.33.0 limitation: the flux system instance is primarily tested on
+    0.35.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
-    0.33.0 limitation: Avoid powering off nodes that are running Flux
+    0.35.0 limitation: Avoid powering off nodes that are running Flux
     without following the recommended shutdown procedure below.  Cluster
     nodes that may require service or have connectivity issues should be
     omitted from the Flux configuration for now.
@@ -243,7 +243,7 @@ Do this once and then copy the certificate to the same location on
 the other nodes, preserving owner and mode.
 
 .. warning::
-    0.33.0 limitation: the system instance tree based overlay network
+    0.35.0 limitation: the system instance tree based overlay network
     is forced by the systemd unit file to be *flat* (no interior router
     nodes), trading scalability for reliability.
 
@@ -277,8 +277,26 @@ preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
 node along with other critical cluster services.
 
 .. warning::
-    0.33.0 limitation: Flux should be completely shut down when the
+    0.35.0 limitation: Flux should be completely shut down when the
     overlay network configuration is modified.
+
+Flux enables TCP keepalives to detect compute nodes that are abruptly turned
+off.  If system-wide TCP keepalive parameters are not already tuned to values
+appropriate for cluster software, Flux should configure values for its overlay
+sockets.  The following configures keepalive probes to begin after 30s of
+inactivity, to re-transmit every 10s, and to disconnect after 12 probes are sent
+with no response.  Thus a powered off node is detected after 2.5m.
+
+.. code-block:: toml
+
+ # /etc/flux/system/conf.d/tbon.toml
+
+ [tbon]
+ keepalive_count = 12
+ keepalive_interval = 10
+ keepalive_idle = 30
+
+See also: :core:man5:`flux-config-tbon`.
 
 Resources
 =========
@@ -344,13 +362,13 @@ This space should be preserved across a reboot as it contains the Flux
 job queue and record of past jobs.
 
 .. warning::
-    0.33.0 limitation: tools for shrinking the content.sqlite file or
+    0.35.0 limitation: tools for shrinking the content.sqlite file or
     purging old job data while retaining other content are not yet available.
 
-    0.33.0 limitation: Flux must be completely stopped to relocate or remove
+    0.35.0 limitation: Flux must be completely stopped to relocate or remove
     the content.sqlite file.
 
-    0.33.0 limitation: Running out of space is not handled gracefully.
+    0.35.0 limitation: Running out of space is not handled gracefully.
     If this happens it is best to stop Flux, remove the content.sqlite file,
     and restart.
 
@@ -447,7 +465,7 @@ See also: :core:man5:`flux-config-archive`.
 Job prolog/epilog
 =================
 
-As of 0.33.0, Flux does not support a traditional job prolog/epilog
+As of 0.35.0, Flux does not support a traditional job prolog/epilog
 which runs as root on the nodes assigned to a job before/after job
 execution. Flux does, however, support a job-manager prolog/epilog,
 which is run at the same point on rank 0 as the instance
@@ -600,7 +618,7 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.33.0 limitation: all configuration changes except resource exclusion
+    0.35.0 limitation: all configuration changes except resource exclusion
     and instance access have no effect until the Flux broker restarts.
 
 Viewing resource status
@@ -809,7 +827,7 @@ combinations.
     the instance.  The version is currently required to match exactly.
 
 .. warning::
-    0.33.0 limitation: job data should be purged when updating to the
+    0.35.0 limitation: job data should be purged when updating to the
     next release of flux-core, as internal representations of data written
     out to the Flux KVS and stored in the content.sqlite file are not yet
     stable.
