@@ -35,6 +35,7 @@ The framework consists of a suite of projects, tools, and libraries which may be
    :hidden:
 
    flux-core <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/index.html>
+   flux-sched <https://flux-framework.readthedocs.io/projects/flux-sched/en/latest/index.html>
    flux-security <https://flux-framework.readthedocs.io/projects/flux-security/en/latest/index.html>
    RFCs <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/index.html>
    Workflow Examples <https://flux-framework.readthedocs.io/projects/flux-workflow-examples/en/latest/index.html>
@@ -59,6 +60,7 @@ Manual Pages
 ------------
 
 - :ref:`core:man-pages`
+- :ref:`sched:man-pages`
 - :ref:`security:man-pages`
 
 
