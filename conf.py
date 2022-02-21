@@ -104,6 +104,10 @@ domainrefs = {
         'text': '%s(7)',
         'url': 'https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/%s.html',
     },
+    'sched:man5': {
+        'text': '%s(5)',
+        'url': 'https://flux-framework.readthedocs.io/projects/flux-sched/en/latest/man5/%s.html',
+    },
     'security:man3': {
         'text': '%s(3)',
         'url': 'https://flux-framework.readthedocs.io/projects/flux-security/en/latest/man3/%s.html',
@@ -128,6 +132,10 @@ intersphinx_mapping = {
     ),
     "core": (
         "https://flux-framework.readthedocs.io/projects/flux-core/en/latest/",
+        None,
+    ),
+    "sched": (
+        "https://flux-framework.readthedocs.io/projects/flux-sched/en/latest/",
         None,
     ),
     "security": (
