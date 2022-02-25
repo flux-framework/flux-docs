@@ -449,8 +449,8 @@ The ``job-archive`` module must be configured to run periodically:
 
  [archive]
  dbpath = "/var/lib/flux/job-archive.sqlite"
- period = 60
- busytimeout = 50
+ period = "1m"
+ busytimeout = "50s"
 
 The scripts should be run by :core:man1:`flux-cron`:
 
