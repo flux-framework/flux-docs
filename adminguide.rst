@@ -614,8 +614,9 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.36.0 limitation: all configuration changes except resource exclusion
-    and instance access have no effect until the Flux broker restarts.
+    0.36.0 limitation: most configuration changes have no effect until the
+    Flux broker restarts.  This should be assumed unless otherwise noted.
+    See :core:man5:`flux-config` for more information.
 
 Viewing resource status
 =======================
