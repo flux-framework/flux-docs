@@ -19,10 +19,6 @@ resource manager on a cluster.
     0.36.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
-    0.36.0 limitation: Avoid powering off nodes that are running Flux
-    without following the recommended shutdown procedure below.  Cluster
-    nodes that may require service or have connectivity issues should be
-    omitted from the Flux configuration for now.
 
 ********
 Overview
