@@ -570,6 +570,12 @@ available at that time.  Alternatively, Flux may be started manually, e.g.
 Flux brokers may be started in any order, but they won't come online
 until their parent in the tree based overlay network is available.
 
+If Flux was not shut down properly, for example if the rank 0 broker
+crashed or was killed, then Flux starts in a safe mode with job submission
+and scheduling disabled.  :core:man1:`flux-uptime` shows the general state
+of Flux, and :core:man1:`flux-startlog` prints a record of Flux starts and
+stops, including any crashes.
+
 Stopping Flux
 =============
 
