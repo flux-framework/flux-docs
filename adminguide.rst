@@ -335,6 +335,24 @@ An example resource configuration:
 
 See also: :core:man5:`flux-config-resource`.
 
+Resource Properties
+-------------------
+
+Flux supports the assignment of simple, string-based properties to ranks
+via a ``properties`` field in R. The properties can then be used in
+job constraints specified by users on the command line. To add properties
+to resources, use the ``-p, --property=NAME:RANKS`` option to ``flux R encode``,
+or the ``flux R set-property NAME:RANKS`` command, e.g.:
+
+.. code-block:: console
+
+ $ flux R encode  --hosts=fluke[3,108,6-103] --cores=0-3 --property=foo:2-3
+
+will set the property ``foo`` on target ranks 2 and 3.
+
+Resource properties available in an instance will be displayed in the
+output of the ``flux resource list`` command.
+
 KVS backing store
 =================
 
