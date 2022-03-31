@@ -471,6 +471,57 @@ The scripts should be run by :core:man1:`flux-cron`:
 
  30 * * * * bash -c "flux account update-usage --job-archive_db_path=/var/lib/flux/job-archive.sqlite; flux account-update-fshare; flux account-priority-update"
 
+Job ingest
+==========
+
+Jobs are submitted to Flux via a job-ingest service. This service
+validates all jobs before they are assigned a jobid and announced to
+the job manager. By default, only basic validation is done, but the
+validator supports plugins so that job ingest validation is configurable.
+
+The list of available plugins can be queried via
+``flux job-validator --list-plugins``. The current list of plugins
+distributed with Flux is shown below:
+
+.. code-block:: console
+
+  $ flux job-validator --list-plugins
+  Available plugins:
+  feasibility           Use sched.feasibility RPC to validate job
+  jobspec               Python bindings based jobspec validator
+  require-instance      Require that all jobs are new instances of Flux
+  schema                Validate jobspec using jsonschema
+
+Only the ``jobspec`` plugin is enabled by default.
+
+In a system instance, it may be useful to also enable the ``feasibility``
+and ``require-instance`` validators. This can be done via the ``ingest``
+TOML table, as shown in the example below:
+
+.. code-block:: toml
+
+  [ingest.validator]
+  plugins = [ "jobspec", "feasibility", "require-instance" ]
+
+The ``feasibility`` plugin will allow the scheduler to reject jobs that
+are not feasible given the current resource configuration. Otherwise, these
+jobs are enqueued, but will have a job exception raised once the job is
+considered for scheduling.
+
+The ``require-instance`` plugin rejects jobs that do not start another
+instance of Flux. That is, jobs are required to be submitted via tools
+like ``flux mini batch`` and ``flux mini alloc``, or the equivalent.
+For example, with this plugin enabled, a user running ``flux mini run``
+will have their job rejected with the message:
+
+.. code-block:: console
+
+  $ flux mini run -n 1000 myapp
+  flux-mini: ERROR: [Errno 22] Direct job submission is disabled for this instance. Please use the batch or alloc subcommands of flux-mini(1)
+
+
+See also: :core:man5:`flux-config-ingest`.
+
 Job prolog/epilog
 =================
 
