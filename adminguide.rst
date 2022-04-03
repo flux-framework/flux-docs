@@ -893,12 +893,6 @@ combinations.
     Mismatched broker versions are detected as brokers attempt to join
     the instance.  The version is currently required to match exactly.
 
-.. warning::
-    0.38.0 limitation: job data should be purged when updating to the
-    next release of flux-core, as internal representations of data written
-    out to the Flux KVS and stored in the content.sqlite file are not yet
-    stable.
-
 ***************
 Troubleshooting
 ***************
