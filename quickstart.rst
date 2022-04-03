@@ -184,7 +184,7 @@ To start a Flux instance with 4 brokers on the local node, use ``flux start``:
 
 A Flux instance can be also be started under `Slurm
 <https://github.com/chaos/slurm>`_ using PMI. To start by using ``srun(1)``,
-simply run the ``flux start`` command without the ``--size`` option under
+simply run the ``flux start`` command without the ``--test-size`` option under
 a Slurm job. You will likely want to start a single broker process per node:
 
 .. code-block:: console
