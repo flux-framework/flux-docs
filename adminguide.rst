@@ -457,9 +457,7 @@ The ``job-archive`` module must be configured to run periodically:
  # /etc/flux/system/conf.d/archive.toml``
 
  [archive]
- dbpath = "/var/lib/flux/job-archive.sqlite"
  period = "1m"
- busytimeout = "50s"
 
 See also: :core:man5:`flux-config-archive`.
 
