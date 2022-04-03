@@ -498,6 +498,8 @@ TOML table, as shown in the example below:
 
 .. code-block:: toml
 
+  # /etc/flux/system/conf.d/ingest.toml
+
   [ingest.validator]
   plugins = [ "jobspec", "feasibility", "require-instance" ]
 
