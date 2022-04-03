@@ -765,10 +765,17 @@ for example:
 
  $ sudo flux resource drain fluke7 node is fubar
  $ sudo flux resource drain
- TIMESTAMP            RANK     REASON                         NODELIST
- 2020-12-16T09:00:25  4        node is fubar                  fluke7
+ TIMESTAMP            STATE    RANK     REASON                         NODELIST
+ 2020-12-16T09:00:25  draining 2        node is fubar                  fluke7
 
-Any work running on the drained node is allowed to complete normally.
+Any work running on the "draining" node is allowed to complete normally.
+Once there is nothing running on the node its state changes to "drained":
+
+.. code-block:: console
+
+ $ sudo flux resource drain
+ TIMESTAMP            STATE    RANK     REASON                         NODELIST
+ 2020-12-16T09:00:25  drained  2        node is fubar                  fluke7
 
 To return drained resources use ``flux resource undrain``:
 
@@ -776,7 +783,8 @@ To return drained resources use ``flux resource undrain``:
 
  $ sudo flux resource undrain fluke7
  $ sudo flux resource drain
- TIMESTAMP            RANK     REASON                         NODELIST
+ TIMESTAMP            STATE    RANK     REASON                         NODELIST
+
 
 Managing the Flux queue
 =======================
