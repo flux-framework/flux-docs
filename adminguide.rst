@@ -653,7 +653,7 @@ the following on the rank 0 node:
 
 .. code-block:: console
 
- $ sudo systemctl stop flux
+ $ sudo flux shutdown
 
 This kills any running jobs, but preserves job history and the queue of
 jobs that have been submitted but have not yet allocated resources.
@@ -662,7 +662,12 @@ This state is held in the `content.sqlite` that was configured above.
 The brokers on other nodes will automatically shut down in response,
 then respawn, awaiting the return of the rank 0 broker.
 
-To shut down a single node running Flux, simply run the above command
+To shut down a single node running Flux, simply run
+
+.. code-block:: console
+
+ $ sudo systemctl stop flux
+
 on that node.
 
 Configuration update
