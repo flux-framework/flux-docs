@@ -13,10 +13,10 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.36.0.
+    version 0.38.0.
 
 .. warning::
-    0.36.0 limitation: the flux system instance is primarily tested on
+    0.38.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
 
@@ -239,7 +239,7 @@ Do this once and then copy the certificate to the same location on
 the other nodes, preserving owner and mode.
 
 .. warning::
-    0.36.0 limitation: the system instance tree based overlay network
+    0.38.0 limitation: the system instance tree based overlay network
     is forced by the systemd unit file to be *flat* (no interior router
     nodes), trading scalability for reliability.
 
@@ -273,7 +273,7 @@ preferably local.  Therefore, rank 0 ideally will be placed on a non-compute
 node along with other critical cluster services.
 
 .. warning::
-    0.36.0 limitation: Flux should be completely shut down when the
+    0.38.0 limitation: Flux should be completely shut down when the
     overlay network configuration is modified.
 
 Although Flux automatically drains nodes that are unresponsive, it may take
@@ -335,6 +335,24 @@ An example resource configuration:
 
 See also: :core:man5:`flux-config-resource`.
 
+Resource Properties
+-------------------
+
+Flux supports the assignment of simple, string-based properties to ranks
+via a ``properties`` field in R. The properties can then be used in
+job constraints specified by users on the command line. To add properties
+to resources, use the ``-p, --property=NAME:RANKS`` option to ``flux R encode``,
+or the ``flux R set-property NAME:RANKS`` command, e.g.:
+
+.. code-block:: console
+
+ $ flux R encode  --hosts=fluke[3,108,6-103] --cores=0-3 --property=foo:2-3
+
+will set the property ``foo`` on target ranks 2 and 3.
+
+Resource properties available in an instance will be displayed in the
+output of the ``flux resource list`` command.
+
 KVS backing store
 =================
 
@@ -353,13 +371,13 @@ This space should be preserved across a reboot as it contains the Flux
 job queue and record of past jobs.
 
 .. warning::
-    0.36.0 limitation: tools for shrinking the content.sqlite file or
+    0.38.0 limitation: tools for shrinking the content.sqlite file or
     purging old job data while retaining other content are not yet available.
 
-    0.36.0 limitation: Flux must be completely stopped to relocate or remove
+    0.38.0 limitation: Flux must be completely stopped to relocate or remove
     the content.sqlite file.
 
-    0.36.0 limitation: Running out of space is not handled gracefully.
+    0.38.0 limitation: Running out of space is not handled gracefully.
     If this happens it is best to stop Flux, remove the content.sqlite file,
     and restart.
 
@@ -439,9 +457,7 @@ The ``job-archive`` module must be configured to run periodically:
  # /etc/flux/system/conf.d/archive.toml``
 
  [archive]
- dbpath = "/var/lib/flux/job-archive.sqlite"
  period = "1m"
- busytimeout = "50s"
 
 See also: :core:man5:`flux-config-archive`.
 
@@ -453,10 +469,63 @@ The scripts should be run by :core:man1:`flux-cron`:
 
  30 * * * * bash -c "flux account update-usage --job-archive_db_path=/var/lib/flux/job-archive.sqlite; flux account-update-fshare; flux account-priority-update"
 
+Job ingest
+==========
+
+Jobs are submitted to Flux via a job-ingest service. This service
+validates all jobs before they are assigned a jobid and announced to
+the job manager. By default, only basic validation is done, but the
+validator supports plugins so that job ingest validation is configurable.
+
+The list of available plugins can be queried via
+``flux job-validator --list-plugins``. The current list of plugins
+distributed with Flux is shown below:
+
+.. code-block:: console
+
+  $ flux job-validator --list-plugins
+  Available plugins:
+  feasibility           Use sched.feasibility RPC to validate job
+  jobspec               Python bindings based jobspec validator
+  require-instance      Require that all jobs are new instances of Flux
+  schema                Validate jobspec using jsonschema
+
+Only the ``jobspec`` plugin is enabled by default.
+
+In a system instance, it may be useful to also enable the ``feasibility``
+and ``require-instance`` validators. This can be done via the ``ingest``
+TOML table, as shown in the example below:
+
+.. code-block:: toml
+
+  # /etc/flux/system/conf.d/ingest.toml
+
+  [ingest.validator]
+  plugins = [ "jobspec", "feasibility", "require-instance" ]
+
+The ``feasibility`` plugin will allow the scheduler to reject jobs that
+are not feasible given the current resource configuration. Otherwise, these
+jobs are enqueued, but will have a job exception raised once the job is
+considered for scheduling.
+
+The ``require-instance`` plugin rejects jobs that do not start another
+instance of Flux. That is, jobs are required to be submitted via tools
+like ``flux mini batch`` and ``flux mini alloc``, or the equivalent.
+For example, with this plugin enabled, a user running ``flux mini run``
+will have their job rejected with the message:
+
+.. code-block:: console
+
+  $ flux mini run -n 1000 myapp
+  flux-mini: ERROR: [Errno 22] Direct job submission is disabled for this instance. Please use the batch or alloc subcommands of flux-mini(1)
+
+
+See also: :core:man5:`flux-config-ingest`.
+
 Job prolog/epilog
 =================
 
-As of 0.36.0, Flux does not support a traditional job prolog/epilog
+As of 0.38.0, Flux does not support a traditional job prolog/epilog
 which runs as root on the nodes assigned to a job before/after job
 execution. Flux does, however, support a job-manager prolog/epilog,
 which is run at the same point on rank 0 as the instance
@@ -584,7 +653,7 @@ the following on the rank 0 node:
 
 .. code-block:: console
 
- $ sudo systemctl stop flux
+ $ sudo flux shutdown
 
 This kills any running jobs, but preserves job history and the queue of
 jobs that have been submitted but have not yet allocated resources.
@@ -593,7 +662,12 @@ This state is held in the `content.sqlite` that was configured above.
 The brokers on other nodes will automatically shut down in response,
 then respawn, awaiting the return of the rank 0 broker.
 
-To shut down a single node running Flux, simply run the above command
+To shut down a single node running Flux, simply run
+
+.. code-block:: console
+
+ $ sudo systemctl stop flux
+
 on that node.
 
 Configuration update
@@ -615,7 +689,7 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.36.0 limitation: most configuration changes have no effect until the
+    0.38.0 limitation: most configuration changes have no effect until the
     Flux broker restarts.  This should be assumed unless otherwise noted.
     See :core:man5:`flux-config` for more information.
 
@@ -691,10 +765,17 @@ for example:
 
  $ sudo flux resource drain fluke7 node is fubar
  $ sudo flux resource drain
- TIMESTAMP            RANK     REASON                         NODELIST
- 2020-12-16T09:00:25  4        node is fubar                  fluke7
+ TIMESTAMP            STATE    RANK     REASON                         NODELIST
+ 2020-12-16T09:00:25  draining 2        node is fubar                  fluke7
 
-Any work running on the drained node is allowed to complete normally.
+Any work running on the "draining" node is allowed to complete normally.
+Once there is nothing running on the node its state changes to "drained":
+
+.. code-block:: console
+
+ $ sudo flux resource drain
+ TIMESTAMP            STATE    RANK     REASON                         NODELIST
+ 2020-12-16T09:00:25  drained  2        node is fubar                  fluke7
 
 To return drained resources use ``flux resource undrain``:
 
@@ -702,7 +783,8 @@ To return drained resources use ``flux resource undrain``:
 
  $ sudo flux resource undrain fluke7
  $ sudo flux resource drain
- TIMESTAMP            RANK     REASON                         NODELIST
+ TIMESTAMP            STATE    RANK     REASON                         NODELIST
+
 
 Managing the Flux queue
 =======================
@@ -823,12 +905,6 @@ combinations.
 .. note::
     Mismatched broker versions are detected as brokers attempt to join
     the instance.  The version is currently required to match exactly.
-
-.. warning::
-    0.36.0 limitation: job data should be purged when updating to the
-    next release of flux-core, as internal representations of data written
-    out to the Flux KVS and stored in the content.sqlite file are not yet
-    stable.
 
 ***************
 Troubleshooting
