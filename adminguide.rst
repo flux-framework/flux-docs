@@ -24,7 +24,7 @@ resource manager on a cluster.
 Overview
 ********
 
-The base component of Flux is the ``flux-broker`` executable.  Most of
+The base component of Flux is the :core:man1:`flux-broker` executable.  Most of
 Flux's distributed systems and services that aren't directly associated
 with a running job are embedded in that executable or its dynamically loaded
 plugins.
