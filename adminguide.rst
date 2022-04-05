@@ -93,8 +93,8 @@ and patience.
 Installation
 ************
 
-Prerequisites
-=============
+System Prerequisites
+====================
 
 `MUNGE <https://github.com/dun/munge>`_ is used to sign job requests
 submitted to Flux, so the MUNGE daemon should be installed on all
@@ -105,8 +105,8 @@ Flux assumes a shared UID namespace across the cluster.
 A system user named ``flux`` is required.  This user need not have a valid
 home directory or shell.
 
-Software
-========
+Installing Software Packages
+============================
 
 The following Flux framework packages are needed for a Flux system instance
 and should be installed from your Linux distribution package manager.
