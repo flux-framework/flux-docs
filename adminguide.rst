@@ -744,8 +744,8 @@ into the system. To disable job submission, e..g to prepare the system
 for a shutdown, use ``flux queue disable``. To restore queue access
 use ``flux queue enable``.
 
-Stopping job allocation
------------------------
+Stopping resource allocation
+----------------------------
 
 The queue may also be stopped with ``flux queue stop``, which disables
 further allocation requests from the job-manager to the scheduler. This
