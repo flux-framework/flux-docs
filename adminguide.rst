@@ -315,8 +315,9 @@ enabled.
     purging old job data while retaining other content are not yet available.
 
     0.38.0 limitation: Running out of space is not handled gracefully.
-    If this happens it is best to stop Flux, remove the content.sqlite file,
-    and restart.
+    If this happens, or if the content.sqlite file becomes corrupted due
+    to an improper shutdown, it is best to ensure Flux is stopped, remove
+    ``/var/lib/flux/content.sqlite``, and restart.
 
 Adding Job Prolog/Epilog Scripts
 ================================
