@@ -24,7 +24,7 @@ resource manager on a cluster.
 Overview
 ********
 
-The base component of Flux is the ``flux-broker`` executable.  Most of
+The base component of Flux is the :core:man1:`flux-broker` executable.  Most of
 Flux's distributed systems and services that aren't directly associated
 with a running job are embedded in that executable or its dynamically loaded
 plugins.
@@ -93,8 +93,8 @@ and patience.
 Installation
 ************
 
-Prerequisites
-=============
+System Prerequisites
+====================
 
 `MUNGE <https://github.com/dun/munge>`_ is used to sign job requests
 submitted to Flux, so the MUNGE daemon should be installed on all
@@ -102,14 +102,15 @@ nodes running Flux with the same MUNGE key used across the cluster.
 
 Flux assumes a shared UID namespace across the cluster.
 
-A system user named ``flux`` is required, with the following characteristics:
+A system user named ``flux`` is required.  This user need not have a valid
+home directory or shell.
 
-- same UID across the cluster
-- valid home directory (either shared or unique per node are fine)
-- logins may be disabled
+Flux uses `hwloc <https://www.open-mpi.org/projects/hwloc/>`_ to verify that
+configured resources are present on nodes.  Ensure that the system installed
+version includes any plugins needed for the hardware, especially GPUs.
 
-Software
-========
+Installing Software Packages
+============================
 
 The following Flux framework packages are needed for a Flux system instance
 and should be installed from your Linux distribution package manager.
@@ -310,15 +311,13 @@ The ``job-archive.sqlite`` file is also located there, if job archival is
 enabled.
 
 .. warning::
-    0.38.0 limitation: tools for shrinking the content.sqlite file or
+    0.38.0 limitation: tools for shrinking the ``content.sqlite`` file or
     purging old job data while retaining other content are not yet available.
 
-    0.38.0 limitation: Flux must be completely stopped to relocate or remove
-    the content.sqlite file.
-
     0.38.0 limitation: Running out of space is not handled gracefully.
-    If this happens it is best to stop Flux, remove the content.sqlite file,
-    and restart.
+    If this happens, or if the ``content.sqlite`` file becomes corrupted due
+    to an improper shutdown, it is best to ensure Flux is stopped, remove
+    ``/var/lib/flux/content.sqlite``, and restart.
 
 Adding Job Prolog/Epilog Scripts
 ================================
@@ -585,7 +584,7 @@ the following on the rank 0 node:
 
 This kills any running jobs, but preserves job history and the queue of
 jobs that have been submitted but have not yet allocated resources.
-This state is held in the `content.sqlite` that was configured above.
+This state is held in the ``content.sqlite`` that was configured above.
 
 The brokers on other nodes will automatically shut down in response,
 then respawn, awaiting the return of the rank 0 broker.
@@ -745,8 +744,8 @@ into the system. To disable job submission, e..g to prepare the system
 for a shutdown, use ``flux queue disable``. To restore queue access
 use ``flux queue enable``.
 
-Stopping job allocation
------------------------
+Stopping resource allocation
+----------------------------
 
 The queue may also be stopped with ``flux queue stop``, which disables
 further allocation requests from the job-manager to the scheduler. This
