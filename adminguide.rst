@@ -105,6 +105,10 @@ Flux assumes a shared UID namespace across the cluster.
 A system user named ``flux`` is required.  This user need not have a valid
 home directory or shell.
 
+Flux uses `hwloc <https://www.open-mpi.org/projects/hwloc/>`_ to verify that
+configured resources are present on nodes.  Ensure that the system installed
+version includes any plugins needed for the hardware, especially GPUs.
+
 Installing Software Packages
 ============================
 
