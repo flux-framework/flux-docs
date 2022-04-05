@@ -102,11 +102,8 @@ nodes running Flux with the same MUNGE key used across the cluster.
 
 Flux assumes a shared UID namespace across the cluster.
 
-A system user named ``flux`` is required, with the following characteristics:
-
-- same UID across the cluster
-- valid home directory (either shared or unique per node are fine)
-- logins may be disabled
+A system user named ``flux`` is required.  This user need not have a valid
+home directory or shell.
 
 Software
 ========
