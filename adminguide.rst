@@ -311,11 +311,11 @@ The ``job-archive.sqlite`` file is also located there, if job archival is
 enabled.
 
 .. warning::
-    0.38.0 limitation: tools for shrinking the content.sqlite file or
+    0.38.0 limitation: tools for shrinking the ``content.sqlite`` file or
     purging old job data while retaining other content are not yet available.
 
     0.38.0 limitation: Running out of space is not handled gracefully.
-    If this happens, or if the content.sqlite file becomes corrupted due
+    If this happens, or if the ``content.sqlite`` file becomes corrupted due
     to an improper shutdown, it is best to ensure Flux is stopped, remove
     ``/var/lib/flux/content.sqlite``, and restart.
 
@@ -584,7 +584,7 @@ the following on the rank 0 node:
 
 This kills any running jobs, but preserves job history and the queue of
 jobs that have been submitted but have not yet allocated resources.
-This state is held in the `content.sqlite` that was configured above.
+This state is held in the ``content.sqlite`` that was configured above.
 
 The brokers on other nodes will automatically shut down in response,
 then respawn, awaiting the return of the rank 0 broker.
