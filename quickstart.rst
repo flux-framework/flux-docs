@@ -184,7 +184,7 @@ To start a Flux instance with 4 brokers on the local node, use ``flux start``:
 
 A Flux instance can be also be started under `Slurm
 <https://github.com/chaos/slurm>`_ using PMI. To start by using ``srun(1)``,
-simply run the ``flux start`` command without the ``--size`` option under
+simply run the ``flux start`` command without the ``--test-size`` option under
 a Slurm job. You will likely want to start a single broker process per node:
 
 .. code-block:: console
@@ -217,11 +217,11 @@ is considered complete and brokers exit.
 
 To get help on any ``flux`` subcommand or API function, the ``flux
 help`` command may be used. For example, to view the man page for the
-``flux-hwloc(1)`` command, use
+``flux-top(1)`` command, use
 
 .. code-block:: console
 
-  $ flux help hwloc
+  $ flux help top
 
 ``flux help`` can also be run by itself to see a list of commonly used
 Flux commands.
@@ -234,12 +234,14 @@ Interacting with a Flux Session
 
 There are several low-level commands of interest to interact with a Flux
 instance. For example, to view the total resources available in the current
-instance, ``flux hwloc info`` may be used:
+instance, ``flux resource status`` may be used:
 
 .. code-block:: console
 
-  $ flux hwloc info
-  4 Machines, 144 Cores, 144 PUs
+  $ flux resource status
+      STATUS NNODES RANKS           NODELIST
+       avail      4 0-3             quartz[2306,2306,2306,2306]
+
 
 To view the scheduling state of resources use ``flux resource list``:
 
@@ -337,16 +339,16 @@ Flux KVS
 
 The key-value store (kvs) is a core component of a Flux instance. The
 ``flux kvs`` command provides a utility to list and manipulate values of
-the KVS. For example, hwloc information for the current instance is loaded
-into the kvs by the ``resource-hwloc`` module at instance startup. The
-resource information is available under the kvs key ``resource.hwloc``. For
+the KVS. For example, resource information for the current instance is loaded
+into the kvs by the ``resource`` module at instance startup. The
+resource information is available under the kvs key ``resource.R``. For
 example, the count of total Cores available on rank 0 can be obtained from
 the kvs via:
 
 .. code-block:: console
 
-  $ flux kvs get resource.hwloc.by_rank
-  {"[0-3]": {"NUMANode": 2, "Package": 2, "Core": 36, "PU": 36, "cpuset": "0-35"}}
+  $ flux kvs get resource.R
+  {"version": 1, "execution": {"R_lite": [{"rank": "0-3", "children": {"core": "0-35"}}], "starttime": 0.0, "expiration": 0.0, "nodelist": ["quartz[2306,2306,2306,2306]"]}}
 
 See ``flux help kvs`` for more information.
 
