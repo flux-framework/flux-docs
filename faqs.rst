@@ -64,26 +64,27 @@ Memory exhaustion on a node when running large ensembles with Flux
 
 Flux's in-memory KVS, or more properly, its content-addressable storage
 subsystem, is backed by an `SQLite <https://www.sqlite.org>`_ database file,
-located by default in ``/tmp`` (or ``$TMPDIR``).  On some systems, ``/tmp``
-is a RAM-backed file system.  To minimize Flux's memory footprint on such
-systems, Flux may be launched with the database file redirected to a more
-appropriate location.  For example:
+located by default in *rundir*, which is usually in ``/tmp``.  On some systems,
+``/tmp`` is a RAM-backed file system.  To minimize Flux's memory footprint
+on such systems, Flux may be launched with the database file redirected to
+a more appropriate location by setting the *statedir* broker attribute.  For
+example:
 
 .. code-block:: sh
 
-    flux start -o,-Scontent.backing-path=/scratch/mydir/content.sqlite
+    flux start -o,-Sstatedir=/scratch/mydir
 
 .. _mimic_slurm_jobstep:
 
 Note the following:
 
-* There is only one database file per Flux instance, accessed by the rank 0
-  Flux broker.
-* The directory containing the database file must exist before starting Flux.
-* The database file itself must *not* exist before starting Flux, unless
-  attempting to restart a Flux instance.
-* The database file, if relocated from its default location in the Flux
-  *rundir*, is not automatically cleaned up when Flux exits.
+* The database is only accessed by rank 0 so *statedir* need not be shared
+  with the other ranks.
+* *statedir* must exist before starting Flux.
+* If *statedir* contains ``content.sqlite`` it will be reused.  Unless you are
+  intentionally restarting on the same nodes, remove it before starting Flux.
+* Unlike *rundir*, *statedir* and the ``content.sqlite`` file with in it
+  are not cleaned up when Flux exits.
 
 See also: `flux-broker-attributes(7) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/flux-broker-attributes.html>`_
 
