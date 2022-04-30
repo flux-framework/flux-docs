@@ -38,7 +38,7 @@ machines using:
 .. note::
 
   If you are using an installation of Flux that is not provided by the Flux
-  team and that is configured without ``--enabled-pmix-bootstrap`` (e.g., a
+  team and that is configured without ``--enable-pmix-bootstrap`` (e.g., a
   spack-installed Flux), launching it on CORAL systems requires a shim layer to
   provide `PMI <https://www.mcs.anl.gov/papers/P1760.pdf>`_ on top of the PMIx
   interface provided by the CORAL system launcher ``jsrun``. To load this module
