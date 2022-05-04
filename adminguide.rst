@@ -246,6 +246,10 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  path = "/etc/flux/system/R"
  #exclude = "test[1-2]"
 
+ # Remove inactive jobs from the KVS after one week.
+ [job-manager]
+ inactive-age-limit = "7d"
+
 See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 :core:man5:`flux-config-bootstrap`, :core:man5:`flux-config-tbon`,
 :core:man5:`flux-config-resource`, :core:man5:`flux-config-ingest`,
