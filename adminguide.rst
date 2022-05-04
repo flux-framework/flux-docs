@@ -580,6 +580,13 @@ the following on the rank 0 node:
 This kills any running jobs, but preserves job history and the queue of
 jobs that have been submitted but have not yet allocated resources.
 This state is held in the ``content.sqlite`` that was configured above.
+See also :core:man1:`flux-shutdown`.
+
+.. note::
+    ``flux-shutdown --gc`` should be used from time to time to perform offline
+    KVS garbage collection.  This, in conjunction with configuring inactive
+    job purging, keeps the size of the ``content.sqlite`` database in check
+    and improves Flux startup time.
 
 The brokers on other nodes will automatically shut down in response,
 then respawn, awaiting the return of the rank 0 broker.
