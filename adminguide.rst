@@ -13,10 +13,10 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.39.0.
+    version 0.40.0.
 
 .. warning::
-    0.39.0 limitation: the flux system instance is primarily tested on
+    0.40.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
 
@@ -317,7 +317,7 @@ enabled.
 Adding Job Prolog/Epilog Scripts
 ================================
 
-As of 0.39.0, Flux does not support a traditional job prolog/epilog
+As of 0.40.0, Flux does not support a traditional job prolog/epilog
 which runs as root on the nodes assigned to a job before/after job
 execution. Flux does, however, support a job-manager prolog/epilog,
 which is run at the same point on rank 0 as the instance
@@ -618,7 +618,7 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.39.0 limitation: most configuration changes have no effect until the
+    0.40.0 limitation: most configuration changes have no effect until the
     Flux broker restarts.  This should be assumed unless otherwise noted.
     See :core:man5:`flux-config` for more information.
 
