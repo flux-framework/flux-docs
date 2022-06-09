@@ -59,7 +59,7 @@ resources are available to Flux for scheduling.
   If you are using the ``pmi-shim`` module mentioned above, you will need to set
   ``PMIX_MCA_gds="^ds12,ds21"`` in your environment before calling ``jsrun``. The
   ``PMIX_MCA_gds`` environment variable works around `a bug in OpenPMIx
-  <https://github.com/openpmix/openpmix/issues/1396>`_ that causes a hang when
+  <https://github.com/openpmix/pmi-shim/issues/3>`_ that causes a hang when
   using the PMI compatibility shim.
 
 .. _coral_spectrum_mpi:
