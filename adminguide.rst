@@ -205,14 +205,23 @@ Configuring the Network Certificate
 
 Overlay network security requires a certificate to be distributed to all nodes.
 It should be readable only by the ``flux`` user.  To create a new certificate,
-run :core:man1:`flux-keygen` as the ``flux`` user:
+run :core:man1:`flux-keygen` as the ``flux`` user, then copy the result to
+``/etc/flux/system`` since the ``flux`` user will not have write access to
+this location:
 
 .. code-block:: console
 
- $ sudo -u flux flux keygen /etc/flux/system/curve.cert
+ $ sudo -u flux flux keygen /tmp/curve.cert
+ $ sudo mv /tmp/curve.cert /etc/flux/system/curve.cert
 
 Do this once and then copy the certificate to the same location on
 the other nodes, preserving owner and mode.
+
+.. note::
+    The ``flux`` user only needs read access to the certificate and
+    other files and directories under ``/etc/flux``. Keeping these files
+    and directories non-writable by user ``flux`` adds an extra layer of
+    security for the system instance configuration.
 
 Configuring the Flux System Instance
 ====================================
