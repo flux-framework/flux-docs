@@ -125,13 +125,13 @@ flux-security
   APIs for job signing, and the IMP, a privileged program for starting
   processes as multiple users. Install on all nodes (required).
 
-flux-sched
+flux-sched (optional)
   The Fluxion graph-based scheduler.  Install on management node
-  (optional, but recommended).
+  (optional, but recommended for production multi-user system installs).
 
-flux-accounting
+flux-accounting (optional)
   Accounting database of user/bank usage information, and a priority plugin.
-  Install on management node (optional, early preview users only).
+  Install on management node (early preview users only).
 
 .. note::
     Flux packages are currently maintained only for the
