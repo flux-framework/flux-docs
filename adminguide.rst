@@ -200,6 +200,20 @@ Example file installed path: ``/etc/flux/imp/conf.d/imp.toml``
 
 See also: :security:man5:`flux-config-security-imp`.
 
+Configuring the Network Certificate
+===================================
+
+Overlay network security requires a certificate to be distributed to all nodes.
+It should be readable only by the ``flux`` user.  To create a new certificate,
+run :core:man1:`flux-keygen` as the ``flux`` user:
+
+.. code-block:: console
+
+ $ sudo -u flux flux keygen /etc/flux/system/curve.cert
+
+Do this once and then copy the certificate to the same location on
+the other nodes, preserving owner and mode.
+
 Configuring the Flux System Instance
 ====================================
 
@@ -254,20 +268,6 @@ See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 :core:man5:`flux-config-bootstrap`, :core:man5:`flux-config-tbon`,
 :core:man5:`flux-config-resource`, :core:man5:`flux-config-ingest`,
 :core:man5:`flux-config-archive`, :core:man5:`flux-config-job-manager`.
-
-Configuring the Network Certificate
-===================================
-
-Overlay network security requires a certificate to be distributed to all nodes.
-It should be readable only by the ``flux`` user.  To create a new certificate,
-run :core:man1:`flux-keygen` as the ``flux`` user:
-
-.. code-block:: console
-
- $ sudo -u flux flux keygen /etc/flux/system/curve.cert
-
-Do this once and then copy the certificate to the same location on
-the other nodes, preserving owner and mode.
 
 Configuring Resources
 =====================
