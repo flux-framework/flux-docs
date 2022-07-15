@@ -13,10 +13,10 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.40.0.
+    version 0.41.0.
 
 .. warning::
-    0.40.0 limitation: the flux system instance is primarily tested on
+    0.41.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
 
@@ -115,23 +115,24 @@ Installing Software Packages
 The following Flux framework packages are needed for a Flux system instance
 and should be installed from your Linux distribution package manager.
 
-flux-core
-  All of the core components of Flux, including the Flux broker.
-  flux-core is functional on its own, but cannot run jobs as multiple users,
-  has a simple FIFO scheduler, and does not implement accounting-based job
-  prioritization. Install on all nodes (required).
-
 flux-security
   APIs for job signing, and the IMP, a privileged program for starting
   processes as multiple users. Install on all nodes (required).
 
-flux-sched
-  The Fluxion graph-based scheduler.  Install on management node
-  (optional, but recommended).
+flux-core
+  All of the core components of Flux, including the Flux broker.
+  flux-core is functional on its own, but cannot run jobs as multiple users,
+  has a simple FIFO scheduler, and does not implement accounting-based job
+  prioritization. If building flux-core from source, be sure to configure with
+  ``--with-flux-security``. Install on all nodes (required).
 
-flux-accounting
+flux-sched (optional)
+  The Fluxion graph-based scheduler.  Install on management node
+  (optional, but recommended for production multi-user system installs).
+
+flux-accounting (optional)
   Accounting database of user/bank usage information, and a priority plugin.
-  Install on management node (optional, early preview users only).
+  Install on management node (early preview users only).
 
 .. note::
     Flux packages are currently maintained only for the
@@ -166,7 +167,10 @@ Configuring flux-security
 
 When Flux is built to support multi-user workloads, job requests are signed
 using a library provided by the flux-security project.  This library reads
-a static configuration from ``/etc/flux/security/conf.d/*.toml``.
+a static configuration from ``/etc/flux/security/conf.d/*.toml``. Note
+that for security, these files and their parent directory should be owned
+by ``root`` without write access to other users, so adjust permissions
+accordingly.
 
 Example file installed path: ``/etc/flux/security/conf.d/security.toml``
 
@@ -185,8 +189,11 @@ Configuring the IMP
 ===================
 
 The Independent Minister of Privilege (IMP) is the only program that runs
-as root, by way of the setuid mode bit.  To enhance security, it has a private
-configuration space in ``/etc/flux/imp/conf.d/*.toml``
+as root, by way of the setuid mode bit.  To enhance security, it has a
+private configuration space in ``/etc/flux/imp/conf.d/*.toml``. Note that
+the IMP will verify that files in this path and their parent directories
+are owned by ``root`` without write access from other users, so adjust
+permissions and ownership accordingly.
 
 Example file installed path: ``/etc/flux/imp/conf.d/imp.toml``
 
@@ -199,6 +206,29 @@ Example file installed path: ``/etc/flux/imp/conf.d/imp.toml``
  allowed-shells = [ "/usr/libexec/flux/flux-shell" ]
 
 See also: :security:man5:`flux-config-security-imp`.
+
+Configuring the Network Certificate
+===================================
+
+Overlay network security requires a certificate to be distributed to all nodes.
+It should be readable only by the ``flux`` user.  To create a new certificate,
+run :core:man1:`flux-keygen` as the ``flux`` user, then copy the result to
+``/etc/flux/system`` since the ``flux`` user will not have write access to
+this location:
+
+.. code-block:: console
+
+ $ sudo -u flux flux keygen /tmp/curve.cert
+ $ sudo mv /tmp/curve.cert /etc/flux/system/curve.cert
+
+Do this once and then copy the certificate to the same location on
+the other nodes, preserving owner and mode.
+
+.. note::
+    The ``flux`` user only needs read access to the certificate and
+    other files and directories under ``/etc/flux``. Keeping these files
+    and directories non-writable by user ``flux`` adds an extra layer of
+    security for the system instance configuration.
 
 Configuring the Flux System Instance
 ====================================
@@ -255,20 +285,6 @@ See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 :core:man5:`flux-config-resource`, :core:man5:`flux-config-ingest`,
 :core:man5:`flux-config-archive`, :core:man5:`flux-config-job-manager`.
 
-Configuring the Network Certificate
-===================================
-
-Overlay network security requires a certificate to be distributed to all nodes.
-It should be readable only by the ``flux`` user.  To create a new certificate,
-run :core:man1:`flux-keygen` as the ``flux`` user:
-
-.. code-block:: console
-
- $ sudo -u flux flux keygen /etc/flux/system/curve.cert
-
-Do this once and then copy the certificate to the same location on
-the other nodes, preserving owner and mode.
-
 Configuring Resources
 =====================
 
@@ -317,7 +333,7 @@ enabled.
 Adding Job Prolog/Epilog Scripts
 ================================
 
-As of 0.40.0, Flux does not support a traditional job prolog/epilog
+As of 0.41.0, Flux does not support a traditional job prolog/epilog
 which runs as root on the nodes assigned to a job before/after job
 execution. Flux does, however, support a job-manager prolog/epilog,
 which is run at the same point on rank 0 as the instance
@@ -618,7 +634,7 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.40.0 limitation: most configuration changes have no effect until the
+    0.41.0 limitation: most configuration changes have no effect until the
     Flux broker restarts.  This should be assumed unless otherwise noted.
     See :core:man5:`flux-config` for more information.
 
