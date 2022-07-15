@@ -167,7 +167,10 @@ Configuring flux-security
 
 When Flux is built to support multi-user workloads, job requests are signed
 using a library provided by the flux-security project.  This library reads
-a static configuration from ``/etc/flux/security/conf.d/*.toml``.
+a static configuration from ``/etc/flux/security/conf.d/*.toml``. Note
+that for security, these files and their parent directory should be owned
+by ``root`` without write access to other users, so adjust permissions
+accordingly.
 
 Example file installed path: ``/etc/flux/security/conf.d/security.toml``
 
@@ -186,8 +189,11 @@ Configuring the IMP
 ===================
 
 The Independent Minister of Privilege (IMP) is the only program that runs
-as root, by way of the setuid mode bit.  To enhance security, it has a private
-configuration space in ``/etc/flux/imp/conf.d/*.toml``
+as root, by way of the setuid mode bit.  To enhance security, it has a
+private configuration space in ``/etc/flux/imp/conf.d/*.toml``. Note that
+the IMP will verify that files in this path and their parent directories
+are owned by ``root`` without write access from other users, so adjust
+permissions and ownership accordingly.
 
 Example file installed path: ``/etc/flux/imp/conf.d/imp.toml``
 
