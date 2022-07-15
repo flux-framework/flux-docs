@@ -115,15 +115,16 @@ Installing Software Packages
 The following Flux framework packages are needed for a Flux system instance
 and should be installed from your Linux distribution package manager.
 
+flux-security
+  APIs for job signing, and the IMP, a privileged program for starting
+  processes as multiple users. Install on all nodes (required).
+
 flux-core
   All of the core components of Flux, including the Flux broker.
   flux-core is functional on its own, but cannot run jobs as multiple users,
   has a simple FIFO scheduler, and does not implement accounting-based job
-  prioritization. Install on all nodes (required).
-
-flux-security
-  APIs for job signing, and the IMP, a privileged program for starting
-  processes as multiple users. Install on all nodes (required).
+  prioritization. If building flux-core from source, be sure to configure with
+  ``--with-flux-security``. Install on all nodes (required).
 
 flux-sched (optional)
   The Fluxion graph-based scheduler.  Install on management node
