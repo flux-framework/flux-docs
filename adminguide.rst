@@ -288,10 +288,17 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  [policy.jobspec.defaults.system]
  duration = "1m"
 
+# Jobs that explicitly request more than the following limits are rejected
+ [policy.limits]
+ duration = "2h"
+ job-size.max.nnodes = 8
+ job-size.max.ncores = 32
+
 See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 :core:man5:`flux-config-bootstrap`, :core:man5:`flux-config-tbon`,
 :core:man5:`flux-config-resource`, :core:man5:`flux-config-ingest`,
-:core:man5:`flux-config-archive`, :core:man5:`flux-config-job-manager`.
+:core:man5:`flux-config-archive`, :core:man5:`flux-config-job-manager`,
+:core:man5:`flux-config-policy`.
 
 Configuring Resources
 =====================
