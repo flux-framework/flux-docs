@@ -276,6 +276,10 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  path = "/etc/flux/system/R"
  #exclude = "test[1-2]"
 
+ # Store the kvs root hash in sqlite periodically in case of broker crash
+ [kvs]
+ checkpoint-period = "30m"
+
  # Remove inactive jobs from the KVS after one week.
  [job-manager]
  inactive-age-limit = "7d"
