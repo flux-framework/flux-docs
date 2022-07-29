@@ -284,6 +284,10 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  [job-manager]
  inactive-age-limit = "7d"
 
+ # Jobs submitted without duration get a very short one
+ [policy.jobspec.defaults.system]
+ duration = "1m"
+
 See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 :core:man5:`flux-config-bootstrap`, :core:man5:`flux-config-tbon`,
 :core:man5:`flux-config-resource`, :core:man5:`flux-config-ingest`,
