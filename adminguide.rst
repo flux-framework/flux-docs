@@ -949,6 +949,8 @@ of RANK may be listed with
 Using ``flux ping`` and ``flux overlay parentof`` iteratively, one should
 be able to isolate the problem rank.
 
+See also :core:man1:`flux-overlay`, :core:man1:`flux-ping`.
+
 Systemd journal
 ===============
 
