@@ -288,7 +288,7 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  [policy.jobspec.defaults.system]
  duration = "1m"
 
-# Jobs that explicitly request more than the following limits are rejected
+ # Jobs that explicitly request more than the following limits are rejected
  [policy.limits]
  duration = "2h"
  job-size.max.nnodes = 8
