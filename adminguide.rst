@@ -13,10 +13,10 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.41.0.
+    version 0.42.0.
 
 .. warning::
-    0.41.0 limitation: the flux system instance is primarily tested on
+    0.42.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
 
@@ -276,14 +276,29 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  path = "/etc/flux/system/R"
  #exclude = "test[1-2]"
 
+ # Store the kvs root hash in sqlite periodically in case of broker crash
+ [kvs]
+ checkpoint-period = "30m"
+
  # Remove inactive jobs from the KVS after one week.
  [job-manager]
  inactive-age-limit = "7d"
 
+ # Jobs submitted without duration get a very short one
+ [policy.jobspec.defaults.system]
+ duration = "1m"
+
+# Jobs that explicitly request more than the following limits are rejected
+ [policy.limits]
+ duration = "2h"
+ job-size.max.nnodes = 8
+ job-size.max.ncores = 32
+
 See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 :core:man5:`flux-config-bootstrap`, :core:man5:`flux-config-tbon`,
 :core:man5:`flux-config-resource`, :core:man5:`flux-config-ingest`,
-:core:man5:`flux-config-archive`, :core:man5:`flux-config-job-manager`.
+:core:man5:`flux-config-archive`, :core:man5:`flux-config-job-manager`,
+:core:man5:`flux-config-policy`.
 
 Configuring Resources
 =====================
@@ -333,7 +348,7 @@ enabled.
 Adding Job Prolog/Epilog Scripts
 ================================
 
-As of 0.41.0, Flux does not support a traditional job prolog/epilog
+As of 0.42.0, Flux does not support a traditional job prolog/epilog
 which runs as root on the nodes assigned to a job before/after job
 execution. Flux does, however, support a job-manager prolog/epilog,
 which is run at the same point on rank 0 as the instance
@@ -634,7 +649,7 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.41.0 limitation: most configuration changes have no effect until the
+    0.42.0 limitation: most configuration changes have no effect until the
     Flux broker restarts.  This should be assumed unless otherwise noted.
     See :core:man5:`flux-config` for more information.
 
@@ -933,6 +948,8 @@ of RANK may be listed with
 
 Using ``flux ping`` and ``flux overlay parentof`` iteratively, one should
 be able to isolate the problem rank.
+
+See also :core:man1:`flux-overlay`, :core:man1:`flux-ping`.
 
 Systemd journal
 ===============

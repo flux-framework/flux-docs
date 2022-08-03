@@ -498,3 +498,4 @@ pstree
 recurse
 validator
 validators
+ncores
