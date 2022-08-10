@@ -28,6 +28,7 @@ The framework consists of a suite of projects, tools, and libraries which may be
    coral2
    faqs
    stats
+   flux-accounting-guide
 
 .. toctree::
    :maxdepth: 1
