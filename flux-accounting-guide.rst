@@ -82,6 +82,62 @@ format. An example is shown below:
     bank_C_b                       user_6                   1                   0                 0.5
 
 
+****************************
+Job Usage Factor Calculation
+****************************
+
+An association's job usage represents their usage on a cluster in relation to
+the size of their jobs and how long they ran. The raw job usage value is
+defined as the sum of products of the number of nodes used (``nnodes``) and
+time elapsed (``t_elapsed``):
+
+.. code-block:: console
+
+  RawUsage = sum(nnodes * t_elapsed)
+
+This job usage factor per association has a half-life decay applied to it as
+time passes. By default, this half-life decay is applied to jobs every week
+for four weeks; jobs older than four weeks no longer play a role in determining
+an association's job usage factor. The configuration parameters that determine
+how to represent a half-life for jobs and how long to consider jobs as part of
+an association's overall job usage are represented by **PriorityDecayHalfLife**
+and  **PriorityUsageResetPeriod**, respectively. These parameters are
+configured when the flux-accounting database is first created.
+
+Example Job Usage Calculation
+=============================
+
+Below is an example of how flux-accounting calculates an association's current
+job usage. Let's say a user has the following job records from the most
+recent half-life period (by default, jobs that have completed in the
+last week):
+
+.. code-block:: console
+
+     UserID Username  JobID         T_Submit            T_Run       T_Inactive  Nodes                                                                               R
+  0    1002     1002    102 1605633403.22141 1605635403.22141 1605637403.22141      2  {"version":1,"execution": {"R_lite":[{"rank":"0","children": {"core": "0"}}]}}
+  1    1002     1002    103 1605633403.22206 1605635403.22206 1605637403.22206      2  {"version":1,"execution": {"R_lite":[{"rank":"0","children": {"core": "0"}}]}}
+  2    1002     1002    104 1605633403.22285 1605635403.22286 1605637403.22286      2  {"version":1,"execution": {"R_lite":[{"rank":"0","children": {"core": "0"}}]}}
+  3    1002     1002    105 1605633403.22347 1605635403.22348 1605637403.22348      1  {"version":1,"execution": {"R_lite":[{"rank":"0","children": {"core": "0"}}]}}
+  4    1002     1002    106 1605633403.22416 1605635403.22416 1605637403.22416      1  {"version":1,"execution": {"R_lite":[{"rank":"0","children": {"core": "0"}}]}}
+
+From these job records, we can gather the following information:
+
+* total nodes used (``nnodes``): 8
+* total time elapsed (``t_elapsed``): 10000.0
+
+So, the usage of the association from this current half life is:
+
+.. code-block:: console
+
+  sum(nnodes * t_elapsed) = (2 * 2000) + (2 * 2000) + (2 * 2000) + (1 * 2000) + (1 * 2000)
+                          = 4000 + 4000 + 4000 + 2000 + 2000
+                          = 16000
+
+This current job usage is then added to the association's previous job usage
+stored in the flux-accounting database. This sum then represents the
+association's overall job usage.
+
 ********
 Glossary
 ********
