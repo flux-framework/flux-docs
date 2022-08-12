@@ -54,7 +54,11 @@ How do I efficiently launch a large number of jobs to Flux?
 ------------------------------------------------------------
 
 See `bulksubmit.py <https://github.com/flux-framework/flux-workflow-examples/tree/master/async-bulk-job-submit>`_
-for an example workflow or flux `tree <https://github.com/flux-framework/flux-sched/blob/master/src/cmd/flux-tree>`_.
+for an example workflow. You can also submit many copies of the same job using
+``flux mini submit --cc=IDSET``, or submit many jobs based on a series of
+inputs on ``stdin`` or the command line via ``flux mini bulksubmit``. See the
+`flux-mini <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_
+manual page for more details.
 
 .. _node_memory_exhaustion:
 
