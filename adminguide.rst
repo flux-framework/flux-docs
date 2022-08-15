@@ -280,6 +280,10 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  [kvs]
  checkpoint-period = "30m"
 
+ # Immediately reject jobs with invalid jobspec or unsatisfiable resources
+ [ingest.validator]
+ plugins = [ "jobspec", "feasibility" ]
+
  # Remove inactive jobs from the KVS after one week.
  [job-manager]
  inactive-age-limit = "7d"
