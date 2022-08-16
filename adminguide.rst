@@ -298,11 +298,22 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  job-size.max.nnodes = 8
  job-size.max.ncores = 32
 
+ # Configure the flux-sched (fluxion) scheduler policies
+ [sched-fluxion-qmanager]
+ queue-policy = "easy"
+
+ [sched-fluxion-resource]
+ match-policy = "lonodex"
+ match-format = "rv1_nosched"
+
 See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 :core:man5:`flux-config-bootstrap`, :core:man5:`flux-config-tbon`,
 :core:man5:`flux-config-resource`, :core:man5:`flux-config-ingest`,
 :core:man5:`flux-config-archive`, :core:man5:`flux-config-job-manager`,
-:core:man5:`flux-config-policy`.
+:core:man5:`flux-config-policy`,
+:sched:man5:`flux-config-sched-fluxion-qmanager`,
+:sched:man5:`flux-config-sched-fluxion-resource`.
+
 
 Configuring Resources
 =====================
