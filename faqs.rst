@@ -60,6 +60,64 @@ inputs on ``stdin`` or the command line via ``flux mini bulksubmit``. See the
 `flux-mini <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_
 manual page for more details.
 
+
+.. _overcommit_resources:
+
+---------------------------------------------------
+How can I oversubscribe tasks to resources in Flux?
+---------------------------------------------------
+
+There is no ``--overcommit`` or similar option for Flux at this time.
+However, there are several different ways to accomplish something similar,
+depending on what you want to do.
+
+If you simply want to oversubscribe tasks to resources, you can use the
+``per-resource.`` job shell option. This will tell the job shell to ignore
+the ``tasks`` section of the submitted jobspec, and instead launch the
+designated number of tasks per ``type`` of allocated resource. The currently
+supported types are ``node`` and ``core``. When specifying this option, both
+a ``type`` and ``count`` are required. For example, to launch 100 tasks
+per node across 2 nodes:
+
+.. code-block:: console
+
+ $ flux mini run -o per-resource.type=node -o per-resource.count=100 -N2 COMMAND
+
+Another method to more generally oversubscribe resources is to launch
+multiple Flux brokers per node. This can be done locally for testing, e.g.
+
+.. code-block:: console
+
+ $ flux start -s 4
+
+or can be done by launching a job with multiple ``flux start`` commands
+per node, e.g. to run 8 brokers across 2 nodes
+
+.. code-block:: console
+
+ $ flux mini submit -o cpu-affinity=off -N2 -n8 flux start SCRIPT
+
+One final method is to use the ``alloc-bypass``
+`jobtap plugin <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/flux-jobtap-plugins.html>`_, which allows a job to bypass the
+scheduler entirely by supplying its own resource set. When this plugin
+is loaded, an instance owner can submit a job with the
+``system.alloc-bypass.R`` attribute set to a valid
+`Resource Set Specification <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_20.html>`_. The job will then be executed
+immediately on the specified resources. This is useful for co-locating
+a job with another job, e.g. to run debugger or other services.
+
+.. code-block:: console
+
+ $ flux jobtap load alloc-bypass.so
+ $ flux mini submit -N4 sleep 60
+ ƒ2WU24J4NT
+ $ flux mini run --setattr=system.alloc-bypass.R="$(flux job info ƒ2WU24J4NT R)" -n 4 flux getattr rank
+ 3
+ 2
+ 1
+ 0
+
+
 .. _node_memory_exhaustion:
 
 ------------------------------------------------------------------
