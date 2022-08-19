@@ -1,15 +1,20 @@
 .. _faqs:
 
-==========
+####
 FAQs
-==========
+####
+
 Some frequently asked questions about flux and their answers.
 
 .. _flux_run_mac:
 
------------------------
+
+*****************
+General Questions
+*****************
+
 Does flux run on a mac?
------------------------
+=======================
 
 Not yet. We have an open `issue <https://github.com/flux-framework/flux-core/issues/2892>`_
 on GitHub tracking the progress towards the goal of natively compiling on a
@@ -17,9 +22,8 @@ mac. In the meantime, you can use Docker, see: :ref:`quickstart`.
 
 .. _bug_report_how:
 
-----------------------
 How do I report a bug?
-----------------------
+======================
 
 You can read up on reporting bugs here: :ref:`contributing` or report one
 directly for flux `core <https://github.com/flux-framework/flux-core/issues>`_
@@ -27,9 +31,8 @@ or `sched <https://github.com/flux-framework/flux-sched/issues>`_.
 
 .. _not_managing_all_resources:
 
----------------------------------------------------------------------------------
 Why is Flux not discovering and managing all of the resources on the system/node?
----------------------------------------------------------------------------------
+=================================================================================
 
 This can be due to various bind flags that need to be passed parallel launcher
 that started Flux. For example at LLNL you must pass ``--mpibind=off`` to
@@ -49,9 +52,8 @@ If no output is produced, then your hwloc is not CUDA-enabled.
 
 .. _launch_large_num_jobs:
 
-------------------------------------------------------------
 How do I efficiently launch a large number of jobs to Flux?
-------------------------------------------------------------
+===========================================================
 
 See `bulksubmit.py <https://github.com/flux-framework/flux-workflow-examples/tree/master/async-bulk-job-submit>`_
 for an example workflow. You can also submit many copies of the same job using
@@ -63,9 +65,8 @@ manual page for more details.
 
 .. _overcommit_resources:
 
----------------------------------------------------
 How can I oversubscribe tasks to resources in Flux?
----------------------------------------------------
+===================================================
 
 There is no ``--overcommit`` or similar option for Flux at this time.
 However, there are several different ways to accomplish something similar,
@@ -120,9 +121,8 @@ a job with another job, e.g. to run debugger or other services.
 
 .. _node_memory_exhaustion:
 
-------------------------------------------------------------------
 Memory exhaustion on a node when running large ensembles with Flux
-------------------------------------------------------------------
+==================================================================
 
 Flux's in-memory KVS, or more properly, its content-addressable storage
 subsystem, is backed by an `SQLite <https://www.sqlite.org>`_ database file,
@@ -150,9 +150,8 @@ Note the following:
 
 See also: `flux-broker-attributes(7) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/flux-broker-attributes.html>`_
 
--------------------------------------------
 How do I mimic Slurm's job step semantics ?
--------------------------------------------
+===========================================
 
 Using ``flux mini submit`` to submit a script containing multiple
 ``flux mini run`` invocations will not result in Slurm-style job steps unless
@@ -160,9 +159,8 @@ the job script is prefixed with ``flux start`` .
 
 .. _mpi_bootstrap_fails:
 
-----------------------------------------------------------------------------------------------
 Flux is failing to bootstrap a specific MPI implementation (e.g. OpenMPI, MPICH, Spectrum MPI)
-----------------------------------------------------------------------------------------------
+==============================================================================================
 
 Flux's shell plugins for Intel MPI, MVAPICH, and OpenMPI run by default with
 every job. If you experience any issues bootstrapping these MPIs, use the
@@ -174,9 +172,8 @@ For Spectrum MPI follow the instructions here: :ref:`coral_spectrum_mpi`
 
 .. _message_callback_not_run:
 
------------------------------------------------------
 My message callback is not being run. How do I debug?
------------------------------------------------------
+=====================================================
 
 * Check the error codes from ``flux_msg_handler_addvec``,
   ``flux_register_service``, ``flux_rpc_get``, etc
@@ -189,9 +186,8 @@ My message callback is not being run. How do I debug?
 
 .. _parallel_run_hang:
 
--------------------------------------------------------------------------------
 I'm experiencing a hang while running my parallel application. How can I debug?
--------------------------------------------------------------------------------
+===============================================================================
 
 * Run ``flux mini run/submit`` with the ``-vvv`` argument
 * If it is hanging in startup, try adding the ``PMI_DEBUG`` environment
@@ -199,9 +195,8 @@ I'm experiencing a hang while running my parallel application. How can I debug?
 
 .. _versioning_multi_repo:
 
--------------------------------------------------------------------
 How does the versioning of Flux work with its multi-repo structure?
--------------------------------------------------------------------
+===================================================================
 
 For any given repository, the versioning is typical semantic `versioning <https://semver.org/>`_.
 All of the Flux repos are still < v1.0, so all of our interfaces are subject
@@ -230,9 +225,8 @@ any particular sub-packages/repos versioning.
 
 .. TODO: we should make a table and put it in the docs too
 
-----------------------------------------
 What versions of OpenMPI work with Flux?
-----------------------------------------
+========================================
 
 Flux plugins were added to OpenMPI 3.0.0.  Generally, these plugins enable
 OpenMPI major versions 3 and 4 to work with Flux.  OpenMPI must be configured
@@ -261,9 +255,8 @@ offered as a separate package, is required to bootstrap the upcoming openmpi
 5.0.x releases.  Once installed, the plugin is activated by submitting a job
 with the ``-ompi=openmpi@5`` option.
 
----------------------------------------------------
 Why does the ``flux mini bulksubmit`` command hang?
----------------------------------------------------
+===================================================
 
 The ``flux mini bulksubmit`` command works similar to GNU parallel or
 ``xargs`` and is likely blocked waiting for input from ``stdin``.
