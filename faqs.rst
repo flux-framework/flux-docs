@@ -165,19 +165,6 @@ Using ``flux mini submit`` to submit a script containing multiple
 ``flux mini run`` invocations will not result in Slurm-style job steps unless
 the job script is prefixed with ``flux start`` .
 
-.. _mpi_bootstrap_fails:
-
-Flux is failing to bootstrap a specific MPI implementation (e.g. OpenMPI, MPICH, Spectrum MPI)
-==============================================================================================
-
-Flux's shell plugins for Intel MPI, MVAPICH, and OpenMPI run by default with
-every job. If you experience any issues bootstrapping these MPIs, use the
-``flux mini run/submit -o mpi=`` option when running or submitting, or
-please open an issue: :ref:`bug_report_how`
-
-
-For Spectrum MPI follow the instructions here: :ref:`coral_spectrum_mpi`
-
 .. _message_callback_not_run:
 
 My message callback is not being run. How do I debug?
@@ -242,6 +229,60 @@ section of the ``flux-mini(1)`` manual page.
 *************
 MPI Questions
 *************
+
+.. _mpi_bootstrap_fails:
+
+How do I set MPI-specific options?
+==================================
+
+The environment that Flux presents to MPI is via the :core:man1:`flux-shell`,
+which is the parent process of all MPI processes.  There is typically one
+flux shell per node launched for each job.  A Flux shell plugin offers a
+`PMI <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_13.html>`_
+server that MPI uses to bootstrap itself within the application's call to
+``MPI_Init()``.  Several shell options affect the shell's PMI server:
+
+verbose=2
+   If the shell verbosity level is set to 2 or greater, a trace of the
+   PMI server operations is emitted to stderr, which can help debug an
+   MPI application that is failing within ``MPI_Init()``.
+
+pmi.kvs=NAME
+   Change the implementation of the PMI key-value store.  The default value
+   is ``exchange``, which gathers data to the first shell in the job, and
+   then broadcasts it to the other shells after a barrier.  The other option
+   is ``native`` which uses the Flux KVS.
+
+pmi.exchange.k=N
+   Alter the fanout of the virtual tree based overlay network used in the
+   ``exchange`` kvs method.  The default fanout is 2.  Other values may
+   affect performance for different job sizes.
+
+pmi.clique=TYPE
+   Affect how the ``PMI_process_mapping`` key is generated, which tells MPI
+   which ranks are expected to be co-located on nodes.  The default value is
+   ``pershell`` (one "clique" per shell).  Other possible values are ``single``
+   (all ranks on the same node), or ``none`` (skip generating
+   ``PMI_process_mapping``).
+
+In addition to the PMI server, the shell implements "MPI personalities" as
+lua scripts that are sourced by the shell.  Scripts for generic installs of
+openmpi, mvapich, and Intel MPI are loaded by default from
+``/etc/flux/shell/lua.d``.  Other personalities are optionally loaded from
+``/etc/flux/shell/lua.d/mpi``:
+
+mpi=spectrum
+   IBM Spectrum MPI is an OpenMPI derivative.  See also
+   :ref:`coral_spectrum_mpi`.
+
+MPI personality options may be added by site administrators, or by other
+packages.
+
+Example: launch a Spectrum MPI job with PMI tracing enabled:
+
+.. code-block:: console
+
+ $ flux mini run -ompi=spectrum -overbose=2 -n4 ./hello
 
 What versions of OpenMPI work with Flux?
 ========================================

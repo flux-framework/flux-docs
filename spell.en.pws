@@ -500,3 +500,6 @@ validator
 validators
 ncores
 tmp
+mpi
+lua
+fanout
