@@ -1,15 +1,39 @@
 .. _faqs:
 
-==========
+####
 FAQs
-==========
+####
+
 Some frequently asked questions about flux and their answers.
 
 .. _flux_run_mac:
 
------------------------
+
+*****************
+General Questions
+*****************
+
+What's with the fancy ƒ?
+========================
+
+Flux job IDs and their multiple encodings are described in
+`RFC 19 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_19.html>`_.  The ``ƒ`` prefix denotes the start of the F58 job ID encoding.
+Flux tries to determine if the current locale supports UTF-8 multi-byte
+characters before using ``ƒ``, and if it cannot, substitutes the alternate
+ASCII ``f`` character.  If necessary, you may coerce the latter by setting
+``FLUX_F58_FORCE_ASCII=1`` in your environment.
+
+Most flux tools accept a job ID in any valid encoding.  You can convert from
+F58 to another using the :core:man1:`flux-job` ``id`` subcommand, e.g.
+
+.. code-block:: sh
+
+   $ flux mini submit sleep 3600 | flux job id --to=words
+   airline-alibi-index--tuna-maximum-adam
+   $ flux job cancel airline-alibi-index--tuna-maximum-adam
+
 Does flux run on a mac?
------------------------
+=======================
 
 Not yet. We have an open `issue <https://github.com/flux-framework/flux-core/issues/2892>`_
 on GitHub tracking the progress towards the goal of natively compiling on a
@@ -17,9 +41,8 @@ mac. In the meantime, you can use Docker, see: :ref:`quickstart`.
 
 .. _bug_report_how:
 
-----------------------
 How do I report a bug?
-----------------------
+======================
 
 You can read up on reporting bugs here: :ref:`contributing` or report one
 directly for flux `core <https://github.com/flux-framework/flux-core/issues>`_
@@ -27,9 +50,8 @@ or `sched <https://github.com/flux-framework/flux-sched/issues>`_.
 
 .. _not_managing_all_resources:
 
----------------------------------------------------------------------------------
 Why is Flux not discovering and managing all of the resources on the system/node?
----------------------------------------------------------------------------------
+=================================================================================
 
 This can be due to various bind flags that need to be passed parallel launcher
 that started Flux. For example at LLNL you must pass ``--mpibind=off`` to
@@ -49,9 +71,8 @@ If no output is produced, then your hwloc is not CUDA-enabled.
 
 .. _launch_large_num_jobs:
 
-------------------------------------------------------------
 How do I efficiently launch a large number of jobs to Flux?
-------------------------------------------------------------
+===========================================================
 
 See `bulksubmit.py <https://github.com/flux-framework/flux-workflow-examples/tree/master/async-bulk-job-submit>`_
 for an example workflow. You can also submit many copies of the same job using
@@ -63,9 +84,8 @@ manual page for more details.
 
 .. _overcommit_resources:
 
----------------------------------------------------
 How can I oversubscribe tasks to resources in Flux?
----------------------------------------------------
+===================================================
 
 There is no ``--overcommit`` or similar option for Flux at this time.
 However, there are several different ways to accomplish something similar,
@@ -117,26 +137,31 @@ a job with another job, e.g. to run debugger or other services.
  1
  0
 
-
 .. _node_memory_exhaustion:
 
-------------------------------------------------------------------
-Memory exhaustion on a node when running large ensembles with Flux
-------------------------------------------------------------------
+How do I prevent Flux from filling up /tmp?
+===========================================
 
-Flux's in-memory KVS, or more properly, its content-addressable storage
-subsystem, is backed by an `SQLite <https://www.sqlite.org>`_ database file,
-located by default in *rundir*, which is usually in ``/tmp``.  On some systems,
-``/tmp`` is a RAM-backed file system.  To minimize Flux's memory footprint
-on such systems, Flux may be launched with the database file redirected to
-a more appropriate location by setting the *statedir* broker attribute.  For
-example:
+Flux's key value store is backed by an `SQLite <https://www.sqlite.org>`_
+database file, located by default in *rundir*, typically ``/tmp``.  On some
+systems, ``/tmp`` is a RAM-backed file system with limited space, and in
+some situations such as long running, high throughput workflows, Flux may
+use a lot of it.
+
+Flux may be launched with the database file redirected to another location
+by setting the *statedir* broker attribute.  For example:
 
 .. code-block:: sh
 
-    flux start -o,-Sstatedir=/scratch/mydir
+    $ mkdir -p /home/myuser/jobstate
+    $ rm -f /home/myuser/jobstate/content.sqlite
+    $ flux mini batch --broker-opts=-Sstatedir=/home/myuser/jobdir -N16 ...
 
-.. _mimic_slurm_jobstep:
+Or if launching via :core:man1:`flux-start` use:
+
+.. code-block:: sh
+
+    $ flux start -o,-Sstatedir=/home/myuser/jobdir
 
 Note the following:
 
@@ -148,35 +173,21 @@ Note the following:
 * Unlike *rundir*, *statedir* and the ``content.sqlite`` file with in it
   are not cleaned up when Flux exits.
 
-See also: `flux-broker-attributes(7) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/flux-broker-attributes.html>`_
+See also: :core:man7:`flux-broker-attributes`.
 
--------------------------------------------
+.. _mimic_slurm_jobstep:
+
 How do I mimic Slurm's job step semantics ?
--------------------------------------------
+===========================================
 
 Using ``flux mini submit`` to submit a script containing multiple
 ``flux mini run`` invocations will not result in Slurm-style job steps unless
 the job script is prefixed with ``flux start`` .
 
-.. _mpi_bootstrap_fails:
-
-----------------------------------------------------------------------------------------------
-Flux is failing to bootstrap a specific MPI implementation (e.g. OpenMPI, MPICH, Spectrum MPI)
-----------------------------------------------------------------------------------------------
-
-Flux's shell plugins for Intel MPI, MVAPICH, and OpenMPI run by default with
-every job. If you experience any issues bootstrapping these MPIs, use the
-``flux mini run/submit -o mpi=`` option when running or submitting, or
-please open an issue: :ref:`bug_report_how`
-
-
-For Spectrum MPI follow the instructions here: :ref:`coral_spectrum_mpi`
-
 .. _message_callback_not_run:
 
------------------------------------------------------
 My message callback is not being run. How do I debug?
------------------------------------------------------
+=====================================================
 
 * Check the error codes from ``flux_msg_handler_addvec``,
   ``flux_register_service``, ``flux_rpc_get``, etc
@@ -189,9 +200,8 @@ My message callback is not being run. How do I debug?
 
 .. _parallel_run_hang:
 
--------------------------------------------------------------------------------
 I'm experiencing a hang while running my parallel application. How can I debug?
--------------------------------------------------------------------------------
+===============================================================================
 
 * Run ``flux mini run/submit`` with the ``-vvv`` argument
 * If it is hanging in startup, try adding the ``PMI_DEBUG`` environment
@@ -199,71 +209,8 @@ I'm experiencing a hang while running my parallel application. How can I debug?
 
 .. _versioning_multi_repo:
 
--------------------------------------------------------------------
-How does the versioning of Flux work with its multi-repo structure?
--------------------------------------------------------------------
-
-For any given repository, the versioning is typical semantic `versioning <https://semver.org/>`_.
-All of the Flux repos are still < v1.0, so all of our interfaces are subject
-to change. Once a repo hits v1.0, the interfaces for that repo will only break
-backwards compatibility on major version increments. New features get added in
-minor releases. Etc
-
-The interesting part of the versioning comes from the multi-repo structure.
-Flux-sched is it's own repo with it's own versioning scheme. A release on
-flux-core may not break anything in flux-sched or require changes and thus
-might not warrant a new release. So the flux-core and flux-sched versions do
-not get incremented in lockstep. Already as of June 2020, flux-core is on
-0.16.0 and flux-sched is on 0.8.0. We have the compatibility of the various
-flux-core/flux-sched versions codified in our
-`spack packages <https://github.com/spack/spack/blob/5108fe314b92409027c2821698fabb62c0ec3b5d/var/spack/repos/builtin/packages/flux-sched/package.py>`_,
-and that will get more extensive as we add additional repos like flux-depend
-and flux-accounting.
-
-A 'flux' meta-package (such as in spack or distro package managers) that would
-pull in compatible versions of the various sub-packages/repos is also versioned
-independently of any of its subcomponents. It is a similar situation for the
-flux-docs repo and the documentation up on readthedocs. Each repo has it's own
-documentation and that gets tagged and released along with the code, but the
-high-level "meta" documentation has it's own versioning that is divorced from
-any particular sub-packages/repos versioning.
-
-.. TODO: we should make a table and put it in the docs too
-
-----------------------------------------
-What versions of OpenMPI work with Flux?
-----------------------------------------
-
-Flux plugins were added to OpenMPI 3.0.0.  Generally, these plugins enable
-OpenMPI major versions 3 and 4 to work with Flux.  OpenMPI must be configured
-with the Flux plugins enabled.  Your installed version may be checked with:
-
-.. code-block:: console
-
- $ ompi_info|grep flux
-                 MCA pmix: flux (MCA v2.1.0, API v2.0.0, Component v4.0.3)
-               MCA schizo: flux (MCA v2.1.0, API v1.0.0, Component v4.0.3)
-
-Unfortunately, `an OpenMPI bug <https://github.com/open-mpi/ompi/issues/6730>`_
-broke the Flux plugins in OpenMPI versions 3.0.0-3.0.4, 3.1.0-3.1.4, and
-4.0.0-4.0.1.  The `fix <https://github.com/open-mpi/ompi/pull/6764/commits/d4070d5f58f0c65aef89eea5910b202b8402e48b>`_
-was backported such that the 3.0.5+, 3.1.5+, and 4.0.2+ series do not
-experience this issue.
-
-A slightly different `OpenMPI bug <https://github.com/open-mpi/ompi/pull/8380>`_
-caused segfaults of MPI in ``MPI_Finalize`` when UCX PML was used.
-`The fix <https://github.com/open-mpi/ompi/pull/8380>`_ was backported to
-4.0.6 and 4.1.1.  If you are using UCX PML in OpenMPI, we recommend using
-4.0.6+ or 4.1.1+.
-
-A special `job shell plugin <https://github.com/flux-framework/flux-pmix>`_,
-offered as a separate package, is required to bootstrap the upcoming openmpi
-5.0.x releases.  Once installed, the plugin is activated by submitting a job
-with the ``-ompi=openmpi@5`` option.
-
----------------------------------------------------
 Why does the ``flux mini bulksubmit`` command hang?
----------------------------------------------------
+===================================================
 
 The ``flux mini bulksubmit`` command works similar to GNU parallel or
 ``xargs`` and is likely blocked waiting for input from ``stdin``.
@@ -297,3 +244,145 @@ see what would be submitted to Flux without actually running any jobs
 
 For more help and examples, see the `BULKSUBMIT <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_
 section of the ``flux-mini(1)`` manual page.
+
+*************
+MPI Questions
+*************
+
+.. _mpi_bootstrap_fails:
+
+How do I set MPI-specific options?
+==================================
+
+The environment that Flux presents to MPI is via the :core:man1:`flux-shell`,
+which is the parent process of all MPI processes.  There is typically one
+flux shell per node launched for each job.  A Flux shell plugin offers a
+`PMI <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_13.html>`_
+server that MPI uses to bootstrap itself within the application's call to
+``MPI_Init()``.  Several shell options affect the shell's PMI server:
+
+verbose=2
+   If the shell verbosity level is set to 2 or greater, a trace of the
+   PMI server operations is emitted to stderr, which can help debug an
+   MPI application that is failing within ``MPI_Init()``.
+
+pmi.kvs=NAME
+   Change the implementation of the PMI key-value store.  The default value
+   is ``exchange``, which gathers data to the first shell in the job, and
+   then broadcasts it to the other shells after a barrier.  The other option
+   is ``native`` which uses the Flux KVS.
+
+pmi.exchange.k=N
+   Alter the fanout of the virtual tree based overlay network used in the
+   ``exchange`` kvs method.  The default fanout is 2.  Other values may
+   affect performance for different job sizes.
+
+pmi.clique=TYPE
+   Affect how the ``PMI_process_mapping`` key is generated, which tells MPI
+   which ranks are expected to be co-located on nodes.  The default value is
+   ``pershell`` (one "clique" per shell).  Other possible values are ``single``
+   (all ranks on the same node), or ``none`` (skip generating
+   ``PMI_process_mapping``).
+
+In addition to the PMI server, the shell implements "MPI personalities" as
+lua scripts that are sourced by the shell.  Scripts for generic installs of
+openmpi, mvapich, and Intel MPI are loaded by default from
+``/etc/flux/shell/lua.d``.  Other personalities are optionally loaded from
+``/etc/flux/shell/lua.d/mpi``:
+
+mpi=spectrum
+   IBM Spectrum MPI is an OpenMPI derivative.  See also
+   :ref:`coral_spectrum_mpi`.
+
+MPI personality options may be added by site administrators, or by other
+packages.
+
+Example: launch a Spectrum MPI job with PMI tracing enabled:
+
+.. code-block:: console
+
+ $ flux mini run -ompi=spectrum -overbose=2 -n4 ./hello
+
+What versions of OpenMPI work with Flux?
+========================================
+
+Flux plugins were added to OpenMPI 3.0.0.  Generally, these plugins enable
+OpenMPI major versions 3 and 4 to work with Flux.  OpenMPI must be configured
+with the Flux plugins enabled.  Your installed version may be checked with:
+
+.. code-block:: console
+
+ $ ompi_info|grep flux
+                 MCA pmix: flux (MCA v2.1.0, API v2.0.0, Component v4.0.3)
+               MCA schizo: flux (MCA v2.1.0, API v1.0.0, Component v4.0.3)
+
+Unfortunately, `an OpenMPI bug <https://github.com/open-mpi/ompi/issues/6730>`_
+broke the Flux plugins in OpenMPI versions 3.0.0-3.0.4, 3.1.0-3.1.4, and
+4.0.0-4.0.1.  The `fix <https://github.com/open-mpi/ompi/pull/6764/commits/d4070d5f58f0c65aef89eea5910b202b8402e48b>`_
+was backported such that the 3.0.5+, 3.1.5+, and 4.0.2+ series do not
+experience this issue.
+
+A slightly different `OpenMPI bug <https://github.com/open-mpi/ompi/pull/8380>`_
+caused segfaults of MPI in ``MPI_Finalize`` when UCX PML was used.
+`The fix <https://github.com/open-mpi/ompi/pull/8380>`_ was backported to
+4.0.6 and 4.1.1.  If you are using UCX PML in OpenMPI, we recommend using
+4.0.6+ or 4.1.1+.
+
+A special `job shell plugin <https://github.com/flux-framework/flux-pmix>`_,
+offered as a separate package, is required to bootstrap the upcoming openmpi
+5.0.x releases.  Once installed, the plugin is activated by submitting a job
+with the ``-ompi=openmpi@5`` option.
+
+How should I configure OpenMPI to work with Flux?
+=================================================
+
+There are many ways to configure OpenMPI, but a few configure options
+deserve special mention if MPI programs are to be run by Flux:
+
+enable-static
+   One of the Flux MCA plugins uses ``dlopen()`` internally to access Flux's
+   ``libpmi.so`` library, since unlike the MPICH-derivatives, OpenMPI does
+   not have a built-in simple PMI client. This option prevents OpenMPI from
+   using ``dlopen()`` so that MCA plugin will not be built.  Do not use.
+
+with-flux-pmi
+   Although the Flux MCA plugins are built by default, this is required to
+   ensure configure fails if they cannot be built for some reason.
+
+How do I make OpenMPI print debugging output?
+=============================================
+
+This is not a Flux question but it comes up often enough to mention here.
+You may set OpenMPI MCA parameters via the environment by prefixing the
+parameter with ``OMPI_MCA_``.  For example, to get verbose output from the
+Block Transfer Layer (BTL), set the ``btl_base_verbose`` parameter to an
+integer verbosity level, e.g.
+
+.. code-block:: console
+
+ $ flux mini run --env=OMPI_MCA_btl_base_verbose=99 -N2 -n4 ./hello
+
+To list available MCA parameters containing the string ``_verbose`` use:
+
+.. code-block:: console
+
+ $ ompi_info -a | grep _verbose
+
+How should I configure MVAPICH2 to work with Flux?
+==================================================
+
+These configuration options are pertinent if MPI programs are to be run
+by Flux:
+
+with-pm=hydra
+   Select the built-in PMI-1 "simple" wire protocol client which matches
+   the default PMI environment provided by Flux.
+
+with-pm=slurm
+   This disables the aforementioned PMI-1 client, even if hydra is also
+   specified.  Do not use.
+
+.. note::
+   It appears that ``--with-pm=slurm`` is not required to run MPI programs
+   under SLURM, although it is unclear whether there is a performance impact
+   under SLURM when this option is omitted.

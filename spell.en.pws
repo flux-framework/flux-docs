@@ -499,3 +499,9 @@ recurse
 validator
 validators
 ncores
+tmp
+mpi
+lua
+fanout
+slurm
+ƒ
