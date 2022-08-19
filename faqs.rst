@@ -13,6 +13,25 @@ Some frequently asked questions about flux and their answers.
 General Questions
 *****************
 
+What's with the fancy ƒ?
+========================
+
+Flux job IDs and their multiple encodings are described in
+`RFC 19 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_19.html>`_.  The ``ƒ`` prefix denotes the start of the F58 job ID encoding.
+Flux tries to determine if the current locale supports UTF-8 multi-byte
+characters before using ``ƒ``, and if it cannot, substitutes the alternate
+ASCII ``f`` character.  If necessary, you may coerce the latter by setting
+``FLUX_F58_FORCE_ASCII=1`` in your environment.
+
+Most flux tools accept a job ID in any valid encoding.  You can convert from
+F58 to another using the :core:man1:`flux-job` ``id`` subcommand, e.g.
+
+.. code-block:: sh
+
+   $ flux mini submit sleep 3600 | flux job id --to=words
+   airline-alibi-index--tuna-maximum-adam
+   $ flux job cancel airline-alibi-index--tuna-maximum-adam
+
 Does flux run on a mac?
 =======================
 
