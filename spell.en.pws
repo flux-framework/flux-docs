@@ -503,3 +503,4 @@ tmp
 mpi
 lua
 fanout
+slurm

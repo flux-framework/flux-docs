@@ -313,3 +313,57 @@ A special `job shell plugin <https://github.com/flux-framework/flux-pmix>`_,
 offered as a separate package, is required to bootstrap the upcoming openmpi
 5.0.x releases.  Once installed, the plugin is activated by submitting a job
 with the ``-ompi=openmpi@5`` option.
+
+How should I configure OpenMPI to work with Flux?
+=================================================
+
+There are many ways to configure OpenMPI, but a few configure options
+deserve special mention if MPI programs are to be run by Flux:
+
+enable-static
+   One of the Flux MCA plugins uses ``dlopen()`` internally to access Flux's
+   ``libpmi.so`` library, since unlike the MPICH-derivatives, OpenMPI does
+   not have a built-in simple PMI client. This option prevents OpenMPI from
+   using ``dlopen()`` so that MCA plugin will not be built.  Do not use.
+
+with-flux-pmi
+   Although the Flux MCA plugins are built by default, this is required to
+   ensure configure fails if they cannot be built for some reason.
+
+How do I make OpenMPI print debugging output?
+=============================================
+
+This is not a Flux question but it comes up often enough to mention here.
+You may set OpenMPI MCA parameters via the environment by prefixing the
+parameter with ``OMPI_MCA_``.  For example, to get verbose output from the
+Block Transfer Layer (BTL), set the ``btl_base_verbose`` parameter to an
+integer verbosity level, e.g.
+
+.. code-block:: console
+
+ $ flux mini run --env=OMPI_MCA_btl_base_verbose=99 -N2 -n4 ./hello
+
+To list available MCA parameters containing the string ``_verbose`` use:
+
+.. code-block:: console
+
+ $ ompi_info -a | grep _verbose
+
+How should I configure MVAPICH2 to work with Flux?
+==================================================
+
+These configuration options are pertinent if MPI programs are to be run
+by Flux:
+
+with-pm=hydra
+   Select the built-in PMI-1 "simple" wire protocol client which matches
+   the default PMI environment provided by Flux.
+
+with-pm=slurm
+   This disables the aforementioned PMI-1 client, even if hydra is also
+   specified.  Do not use.
+
+.. note::
+   It appears that ``--with-pm=slurm`` is not required to run MPI programs
+   under SLURM, although it is unclear whether there is a performance impact
+   under SLURM when this option is omitted.
