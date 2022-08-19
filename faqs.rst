@@ -136,8 +136,6 @@ example:
 
     flux start -o,-Sstatedir=/scratch/mydir
 
-.. _mimic_slurm_jobstep:
-
 Note the following:
 
 * The database is only accessed by rank 0 so *statedir* need not be shared
@@ -149,6 +147,8 @@ Note the following:
   are not cleaned up when Flux exits.
 
 See also: `flux-broker-attributes(7) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/flux-broker-attributes.html>`_
+
+.. _mimic_slurm_jobstep:
 
 How do I mimic Slurm's job step semantics ?
 ===========================================
