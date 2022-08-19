@@ -225,36 +225,6 @@ any particular sub-packages/repos versioning.
 
 .. TODO: we should make a table and put it in the docs too
 
-What versions of OpenMPI work with Flux?
-========================================
-
-Flux plugins were added to OpenMPI 3.0.0.  Generally, these plugins enable
-OpenMPI major versions 3 and 4 to work with Flux.  OpenMPI must be configured
-with the Flux plugins enabled.  Your installed version may be checked with:
-
-.. code-block:: console
-
- $ ompi_info|grep flux
-                 MCA pmix: flux (MCA v2.1.0, API v2.0.0, Component v4.0.3)
-               MCA schizo: flux (MCA v2.1.0, API v1.0.0, Component v4.0.3)
-
-Unfortunately, `an OpenMPI bug <https://github.com/open-mpi/ompi/issues/6730>`_
-broke the Flux plugins in OpenMPI versions 3.0.0-3.0.4, 3.1.0-3.1.4, and
-4.0.0-4.0.1.  The `fix <https://github.com/open-mpi/ompi/pull/6764/commits/d4070d5f58f0c65aef89eea5910b202b8402e48b>`_
-was backported such that the 3.0.5+, 3.1.5+, and 4.0.2+ series do not
-experience this issue.
-
-A slightly different `OpenMPI bug <https://github.com/open-mpi/ompi/pull/8380>`_
-caused segfaults of MPI in ``MPI_Finalize`` when UCX PML was used.
-`The fix <https://github.com/open-mpi/ompi/pull/8380>`_ was backported to
-4.0.6 and 4.1.1.  If you are using UCX PML in OpenMPI, we recommend using
-4.0.6+ or 4.1.1+.
-
-A special `job shell plugin <https://github.com/flux-framework/flux-pmix>`_,
-offered as a separate package, is required to bootstrap the upcoming openmpi
-5.0.x releases.  Once installed, the plugin is activated by submitting a job
-with the ``-ompi=openmpi@5`` option.
-
 Why does the ``flux mini bulksubmit`` command hang?
 ===================================================
 
@@ -290,3 +260,37 @@ see what would be submitted to Flux without actually running any jobs
 
 For more help and examples, see the `BULKSUBMIT <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_
 section of the ``flux-mini(1)`` manual page.
+
+*************
+MPI Questions
+*************
+
+What versions of OpenMPI work with Flux?
+========================================
+
+Flux plugins were added to OpenMPI 3.0.0.  Generally, these plugins enable
+OpenMPI major versions 3 and 4 to work with Flux.  OpenMPI must be configured
+with the Flux plugins enabled.  Your installed version may be checked with:
+
+.. code-block:: console
+
+ $ ompi_info|grep flux
+                 MCA pmix: flux (MCA v2.1.0, API v2.0.0, Component v4.0.3)
+               MCA schizo: flux (MCA v2.1.0, API v1.0.0, Component v4.0.3)
+
+Unfortunately, `an OpenMPI bug <https://github.com/open-mpi/ompi/issues/6730>`_
+broke the Flux plugins in OpenMPI versions 3.0.0-3.0.4, 3.1.0-3.1.4, and
+4.0.0-4.0.1.  The `fix <https://github.com/open-mpi/ompi/pull/6764/commits/d4070d5f58f0c65aef89eea5910b202b8402e48b>`_
+was backported such that the 3.0.5+, 3.1.5+, and 4.0.2+ series do not
+experience this issue.
+
+A slightly different `OpenMPI bug <https://github.com/open-mpi/ompi/pull/8380>`_
+caused segfaults of MPI in ``MPI_Finalize`` when UCX PML was used.
+`The fix <https://github.com/open-mpi/ompi/pull/8380>`_ was backported to
+4.0.6 and 4.1.1.  If you are using UCX PML in OpenMPI, we recommend using
+4.0.6+ or 4.1.1+.
+
+A special `job shell plugin <https://github.com/flux-framework/flux-pmix>`_,
+offered as a separate package, is required to bootstrap the upcoming openmpi
+5.0.x releases.  Once installed, the plugin is activated by submitting a job
+with the ``-ompi=openmpi@5`` option.
