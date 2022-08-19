@@ -118,23 +118,31 @@ a job with another job, e.g. to run debugger or other services.
  1
  0
 
-
 .. _node_memory_exhaustion:
 
-Memory exhaustion on a node when running large ensembles with Flux
-==================================================================
+How do I prevent Flux from filling up /tmp?
+===========================================
 
-Flux's in-memory KVS, or more properly, its content-addressable storage
-subsystem, is backed by an `SQLite <https://www.sqlite.org>`_ database file,
-located by default in *rundir*, which is usually in ``/tmp``.  On some systems,
-``/tmp`` is a RAM-backed file system.  To minimize Flux's memory footprint
-on such systems, Flux may be launched with the database file redirected to
-a more appropriate location by setting the *statedir* broker attribute.  For
-example:
+Flux's key value store is backed by an `SQLite <https://www.sqlite.org>`_
+database file, located by default in *rundir*, typically ``/tmp``.  On some
+systems, ``/tmp`` is a RAM-backed file system with limited space, and in
+some situations such as long running, high throughput workflows, Flux may
+use a lot of it.
+
+Flux may be launched with the database file redirected to another location
+by setting the *statedir* broker attribute.  For example:
 
 .. code-block:: sh
 
-    flux start -o,-Sstatedir=/scratch/mydir
+    $ mkdir -p /home/myuser/jobstate
+    $ rm -f /home/myuser/jobstate/content.sqlite
+    $ flux mini batch --broker-opts=-Sstatedir=/home/myuser/jobdir -N16 ...
+
+Or if launching via :core:man1:`flux-start` use:
+
+.. code-block:: sh
+
+    $ flux start -o,-Sstatedir=/home/myuser/jobdir
 
 Note the following:
 
@@ -146,7 +154,7 @@ Note the following:
 * Unlike *rundir*, *statedir* and the ``content.sqlite`` file with in it
   are not cleaned up when Flux exits.
 
-See also: `flux-broker-attributes(7) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/flux-broker-attributes.html>`_
+See also: :core:man7:`flux-broker-attributes`.
 
 .. _mimic_slurm_jobstep:
 
