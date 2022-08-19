@@ -195,36 +195,6 @@ I'm experiencing a hang while running my parallel application. How can I debug?
 
 .. _versioning_multi_repo:
 
-How does the versioning of Flux work with its multi-repo structure?
-===================================================================
-
-For any given repository, the versioning is typical semantic `versioning <https://semver.org/>`_.
-All of the Flux repos are still < v1.0, so all of our interfaces are subject
-to change. Once a repo hits v1.0, the interfaces for that repo will only break
-backwards compatibility on major version increments. New features get added in
-minor releases. Etc
-
-The interesting part of the versioning comes from the multi-repo structure.
-Flux-sched is it's own repo with it's own versioning scheme. A release on
-flux-core may not break anything in flux-sched or require changes and thus
-might not warrant a new release. So the flux-core and flux-sched versions do
-not get incremented in lockstep. Already as of June 2020, flux-core is on
-0.16.0 and flux-sched is on 0.8.0. We have the compatibility of the various
-flux-core/flux-sched versions codified in our
-`spack packages <https://github.com/spack/spack/blob/5108fe314b92409027c2821698fabb62c0ec3b5d/var/spack/repos/builtin/packages/flux-sched/package.py>`_,
-and that will get more extensive as we add additional repos like flux-depend
-and flux-accounting.
-
-A 'flux' meta-package (such as in spack or distro package managers) that would
-pull in compatible versions of the various sub-packages/repos is also versioned
-independently of any of its subcomponents. It is a similar situation for the
-flux-docs repo and the documentation up on readthedocs. Each repo has it's own
-documentation and that gets tagged and released along with the code, but the
-high-level "meta" documentation has it's own versioning that is divorced from
-any particular sub-packages/repos versioning.
-
-.. TODO: we should make a table and put it in the docs too
-
 Why does the ``flux mini bulksubmit`` command hang?
 ===================================================
 
