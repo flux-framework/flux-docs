@@ -71,16 +71,37 @@ If no output is produced, then your hwloc is not CUDA-enabled.
 
 .. _launch_large_num_jobs:
 
-How do I efficiently launch a large number of jobs to Flux?
-===========================================================
+How do I efficiently launch a large number of jobs?
+===================================================
 
-See `bulksubmit.py <https://github.com/flux-framework/flux-workflow-examples/tree/master/async-bulk-job-submit>`_
-for an example workflow. You can also submit many copies of the same job using
-``flux mini submit --cc=IDSET``, or submit many jobs based on a series of
-inputs on ``stdin`` or the command line via ``flux mini bulksubmit``. See the
-`flux-mini <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_
-manual page for more details.
+If you have many jobs to run here are some tips to help improve efficiency
+and throughput:
 
+- Create a batch job or allocation to contain the jobs in a Flux sub-instance.
+  This improves performance over submitting them directly to the Flux system
+  instance and reduces the impact of your jobs on system resources and other
+  users.  See also: :ref:`batch`.
+- If scripting ``flux mini submit`` commands, avoid the pattern of one command
+  per job as each command invocation has a startup cost.  Instead try to
+  combine similar job submissions with ``flux mini submit --cc=IDSET``
+  or `flux-mini builksubmit <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_.
+- By default ``flux mini submit --cc=IDSET`` and ``flux mini bulksubmit``
+  will exit once all jobs have been submitted.  To wait for all jobs to
+  complete before proceeding, use the ``--wait`` or ``--watch`` options to
+  these tools.
+- If multiple commands must be used to submit jobs before waiting for them,
+  consider using ``--flags=waitable`` and ``flux job wait --all`` to wait for
+  jobs to complete and capture any errors.
+- If the jobs to be submitted cannot be combined with the ``flux mini`` tools,
+  develop a workflow management script using the
+  `Flux python interface <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>`_.  The
+  `flux-mini <https://github.com/flux-framework/flux-core/blob/master/src/cmd/flux-mini.py>`_
+  command itself is a python program that can be a useful reference.
+
+Since Flux can be launched as a parallel job within foreign resource managers
+like SLURM and LSF, your efforts to develop an efficient batch or workflow
+management script that runs within a Flux instance can be portable to those
+systems.
 
 .. _overcommit_resources:
 
