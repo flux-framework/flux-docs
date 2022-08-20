@@ -170,19 +170,43 @@ Note the following:
 * *statedir* must exist before starting Flux.
 * If *statedir* contains ``content.sqlite`` it will be reused.  Unless you are
   intentionally restarting on the same nodes, remove it before starting Flux.
-* Unlike *rundir*, *statedir* and the ``content.sqlite`` file with in it
+* Unlike *rundir*, *statedir* and the ``content.sqlite`` file within it
   are not cleaned up when Flux exits.
 
 See also: :core:man7:`flux-broker-attributes`.
 
 .. _mimic_slurm_jobstep:
 
-How do I mimic Slurm's job step semantics ?
-===========================================
+How do I run job steps?
+=======================
 
-Using ``flux mini submit`` to submit a script containing multiple
-``flux mini run`` invocations will not result in Slurm-style job steps unless
-the job script is prefixed with ``flux start`` .
+A Flux batch job or allocation started with ``flux mini batch`` or
+``flux mini alloc`` is actually a full featured Flux instance run as a job
+within the enclosing Flux instance.  Unlike SLURM, Flux does not have a
+separate concept like *steps* for work run in a Flux sub-instance--we just have
+*jobs*.  That said, a batch script in Flux may contain multiple
+``flux mini run`` commands just as a SLURM batch script may contain multiple
+``srun`` commands.
+
+Despite there being only one type of *job* in Flux, running a series of jobs
+within a Flux sub-instance confers several advantages over running them
+directly in the Flux system instance:
+
+- System prolog and epilog scripts typically run before and after each job
+  in the system instance, but are skipped between jobs within a sub-instance.
+- The Flux system instance services all users and active jobs running at that
+  level, but the sub-instance operates independently and is yours alone.
+- Flux accounting may enforce a maximum job count at the system instance level,
+  but the sub-instance counts as a single job no matter how many jobs are run
+  within it.
+- The user has full administrative control over the Flux sub-instance, whereas
+  "guests" have limited access to the system instance.
+
+Flux's nesting design makes it possible to be quite sophisticated in how
+jobs running in a Flux sub-instance are scheduled and managed, since all
+Flux tools and APIs work the same in any Flux instance.
+
+See also: :ref:`batch`.
 
 .. _message_callback_not_run:
 
