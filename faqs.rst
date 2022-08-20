@@ -170,7 +170,7 @@ Note the following:
 * *statedir* must exist before starting Flux.
 * If *statedir* contains ``content.sqlite`` it will be reused.  Unless you are
   intentionally restarting on the same nodes, remove it before starting Flux.
-* Unlike *rundir*, *statedir* and the ``content.sqlite`` file with in it
+* Unlike *rundir*, *statedir* and the ``content.sqlite`` file within it
   are not cleaned up when Flux exits.
 
 See also: :core:man7:`flux-broker-attributes`.
