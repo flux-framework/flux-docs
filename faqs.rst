@@ -50,24 +50,42 @@ or `sched <https://github.com/flux-framework/flux-sched/issues>`_.
 
 .. _not_managing_all_resources:
 
-Why is Flux not discovering and managing all of the resources on the system/node?
-=================================================================================
+Why is Flux ignoring my Nvidia GPUs?
+====================================
 
-This can be due to various bind flags that need to be passed parallel launcher
-that started Flux. For example at LLNL you must pass ``--mpibind=off`` to
-``srun`` and ``--bind=none`` to ``jsrun``.
-
-Also on all systems, Flux relies on hwloc to auto-detect the on-node resources
-available for scheduling.  The hwloc that Flux is linked against must be
-configured with ``--enable-cuda`` for Flux to be able to detect Nvidia GPUs.
-
-You can test to see if your system default hwloc is CUDA-enabled with:
+When Flux is launched via a foreign resource manager like SLURM or LSF,
+it must discover available resources from scratch using
+`hwloc <https://www.open-mpi.org/projects/hwloc/>`_.  To print a resource
+summary, run:
 
 .. code-block:: sh
 
-  lstopo | grep CoProc
+  $ flux resource info
+  16 Nodes, 96 Cores, 16 GPUs
 
-If no output is produced, then your hwloc is not CUDA-enabled.
+The version of hwloc that Flux is using at runtime must have been configured
+with ``--enable-cuda`` for it to be able to detect Nvidia GPUs.  You can test
+to see if hwloc is able to detect installed GPUs with:
+
+.. code-block:: sh
+
+  $ lstopo | grep CoProc
+
+If no output is produced, then hwloc does not see any Nvidia GPUs.
+
+This problem manifests itself differently on a Flux system instance where *R*
+(the resource set) is configured, or when Flux receives *R* as an allocation
+from the enclosing Flux instance.  In these cases Flux checks *R* against
+resources reported by hwloc, and drains any nodes that have missing resources.
+
+Why are resources missing in foreign-launched Flux?
+===================================================
+
+When Flux discovers resources via
+`hwloc <https://www.open-mpi.org/projects/hwloc/>`_, it honors the current
+core and GPU bindings, so if resources are missing, affinity and binding
+from the parent resource manager should be checked.  In Slurm, try
+``--mpibind=off``, in LSF jsrun, try ``--bind=none``.
 
 .. _launch_large_num_jobs:
 
