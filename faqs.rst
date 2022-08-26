@@ -92,8 +92,8 @@ from the parent resource manager should be checked.  In Slurm, try
 How do I efficiently launch a large number of jobs?
 ===================================================
 
-If you have many jobs to run here are some tips to help improve efficiency
-and throughput:
+If you have more than 10K fast-cycling jobs to run, here are some tips that
+may help improve efficiency and throughput:
 
 - Create a batch job or allocation to contain the jobs in a Flux sub-instance.
   This improves performance over submitting them directly to the Flux system
@@ -115,6 +115,14 @@ and throughput:
   `Flux python interface <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>`_.  The
   `flux-mini <https://github.com/flux-framework/flux-core/blob/master/src/cmd/flux-mini.py>`_
   command itself is a python program that can be a useful reference.
+- If jobs produce a significant amount of standard I/O, use the
+  :core:man1:`flux-mini` ``--output`` option to redirect it to files.  By
+  default, standard I/O is captured in the Flux key value store, which holds
+  other job metadata and may become a bottleneck if jobs generate a large
+  amount of output.
+- When handling many fast-cycling jobs, the rank 0 Flux broker may require
+  significant memory and cpu.  Consider excluding that node from scheduling
+  with ``flux resource drain 0``.
 
 Since Flux can be launched as a parallel job within foreign resource managers
 like SLURM and LSF, your efforts to develop an efficient batch or workflow
