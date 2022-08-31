@@ -148,4 +148,17 @@ association
 bank
   An account that contains associations.
 
+
+.. note::
+
+ The design of flux-accounting was driven by LLNL site requirements. Years ago,
+ the design of `Slurm accounting`_ and its `multi-factor priority
+ plugin`_ were driven by similar LLNL site requirements. We chose to
+ reuse terminology and concepts from Slurm to facilitate a smooth transition to
+ Flux. The flux-accounting code base is all completely new, however.
+
 .. _documentation: https://sqlite.org/omitted.html
+
+.. _Slurm accounting: https://slurm.schedmd.com/accounting.html
+
+.. _multi-factor priority plugin: https://slurm.schedmd.com/priority_multifactor.html
