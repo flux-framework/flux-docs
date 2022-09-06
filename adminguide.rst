@@ -305,9 +305,10 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  job-size.max.ncores = 32
 
  # Configure the flux-sched (fluxion) scheduler policies
+ # The 'lonodex' match policy selects node-exclusive scheduling, and can be
+ # commented out if jobs may share nodes.
  [sched-fluxion-qmanager]
  queue-policy = "easy"
-
  [sched-fluxion-resource]
  match-policy = "lonodex"
  match-format = "rv1_nosched"
