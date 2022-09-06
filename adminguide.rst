@@ -280,9 +280,11 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  #norestrict = true
  #exclude = "test[1-2]"
 
- # Store the kvs root hash in sqlite periodically in case of broker crash
+ # Store the kvs root hash in sqlite periodically in case of broker crash.
+ # Recommend offline KVS garbage collection when commit threshold is reached.
  [kvs]
  checkpoint-period = "30m"
+ gc-threshold = 100000
 
  # Immediately reject jobs with invalid jobspec or unsatisfiable resources
  [ingest.validator]
@@ -314,7 +316,7 @@ See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 :core:man5:`flux-config-bootstrap`, :core:man5:`flux-config-tbon`,
 :core:man5:`flux-config-resource`, :core:man5:`flux-config-ingest`,
 :core:man5:`flux-config-archive`, :core:man5:`flux-config-job-manager`,
-:core:man5:`flux-config-policy`,
+:core:man5:`flux-config-policy`, :core:man5:`flux-config-kvs`,
 :sched:man5:`flux-config-sched-fluxion-qmanager`,
 :sched:man5:`flux-config-sched-fluxion-resource`.
 
