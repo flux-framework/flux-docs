@@ -271,9 +271,13 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  tcp_user_timeout = "2m"
 
  # Point to resource definition generated with flux-R(1).
- # Uncomment to exclude nodes (e.g. mgmt, login), from eligibility to run jobs.
+ # Uncomment 'norestrict' if flux broker is constrained to system cores by
+ # systemd or other site policy.  This allows jobs to run on assigned cores.
+ # Uncomment 'exclude' to avoid scheduling jobs on certain nodes (e.g. login,
+ # management, or service nodes).
  [resource]
  path = "/etc/flux/system/R"
+ #norestrict = true
  #exclude = "test[1-2]"
 
  # Store the kvs root hash in sqlite periodically in case of broker crash
