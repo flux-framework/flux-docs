@@ -594,6 +594,8 @@ The scripts should be run by :core:man1:`flux-cron`:
 
  30 * * * * bash -c "flux account update-usage --job-archive_db_path=/var/lib/flux/job-archive.sqlite; flux account-update-fshare; flux account-priority-update"
 
+See also :ref:`flux-accounting-guide`.
+
 
 *************************
 Day to day administration
