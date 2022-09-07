@@ -23,6 +23,7 @@ The framework consists of a suite of projects, tools, and libraries which may be
    debugging
    batch
    hierarchies
+   LLNL Introduction to Flux <https://hpc-tutorials.llnl.gov/flux/>
    coral
    coral2
    adminguide
