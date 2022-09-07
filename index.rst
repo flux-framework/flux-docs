@@ -29,6 +29,7 @@ The framework consists of a suite of projects, tools, and libraries which may be
    adminguide
    flux-accounting-guide
    contributing
+   Flux Python API <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>
    stats
 
 .. toctree::
