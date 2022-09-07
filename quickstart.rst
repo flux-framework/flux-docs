@@ -6,6 +6,13 @@ Quick Start
 
 A quick introduction to Flux and flux-core.
 
+.. note::
+   If your site runs Flux natively, you may wish to check with your help desk
+   to see if you have a site-specific introduction to Flux, since Flux is
+   configurable.  For example, LLNL has published an `Introduction to Flux
+   <https://hpc-tutorials.llnl.gov/flux/>`_.  This document generally assumes
+   you are exploring on your own.
+
 .. _building-code:
 
 -----------------
