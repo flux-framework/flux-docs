@@ -13,10 +13,10 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.42.0.
+    version 0.43.0.
 
 .. warning::
-    0.42.0 limitation: the flux system instance is primarily tested on
+    0.43.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
 
@@ -271,14 +271,20 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  tcp_user_timeout = "2m"
 
  # Point to resource definition generated with flux-R(1).
- # Uncomment to exclude nodes (e.g. mgmt, login), from eligibility to run jobs.
+ # Uncomment 'norestrict' if flux broker is constrained to system cores by
+ # systemd or other site policy.  This allows jobs to run on assigned cores.
+ # Uncomment 'exclude' to avoid scheduling jobs on certain nodes (e.g. login,
+ # management, or service nodes).
  [resource]
  path = "/etc/flux/system/R"
+ #norestrict = true
  #exclude = "test[1-2]"
 
- # Store the kvs root hash in sqlite periodically in case of broker crash
+ # Store the kvs root hash in sqlite periodically in case of broker crash.
+ # Recommend offline KVS garbage collection when commit threshold is reached.
  [kvs]
  checkpoint-period = "30m"
+ gc-threshold = 100000
 
  # Immediately reject jobs with invalid jobspec or unsatisfiable resources
  [ingest.validator]
@@ -299,9 +305,10 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  job-size.max.ncores = 32
 
  # Configure the flux-sched (fluxion) scheduler policies
+ # The 'lonodex' match policy selects node-exclusive scheduling, and can be
+ # commented out if jobs may share nodes.
  [sched-fluxion-qmanager]
  queue-policy = "easy"
-
  [sched-fluxion-resource]
  match-policy = "lonodex"
  match-format = "rv1_nosched"
@@ -310,7 +317,7 @@ See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 :core:man5:`flux-config-bootstrap`, :core:man5:`flux-config-tbon`,
 :core:man5:`flux-config-resource`, :core:man5:`flux-config-ingest`,
 :core:man5:`flux-config-archive`, :core:man5:`flux-config-job-manager`,
-:core:man5:`flux-config-policy`,
+:core:man5:`flux-config-policy`, :core:man5:`flux-config-kvs`,
 :sched:man5:`flux-config-sched-fluxion-qmanager`,
 :sched:man5:`flux-config-sched-fluxion-resource`.
 
@@ -363,7 +370,7 @@ enabled.
 Adding Job Prolog/Epilog Scripts
 ================================
 
-As of 0.42.0, Flux does not support a traditional job prolog/epilog
+As of 0.43.0, Flux does not support a traditional job prolog/epilog
 which runs as root on the nodes assigned to a job before/after job
 execution. Flux does, however, support a job-manager prolog/epilog,
 which is run at the same point on rank 0 as the instance
@@ -588,6 +595,8 @@ The scripts should be run by :core:man1:`flux-cron`:
 
  30 * * * * bash -c "flux account update-usage --job-archive_db_path=/var/lib/flux/job-archive.sqlite; flux account-update-fshare; flux account-priority-update"
 
+See also :ref:`flux-accounting-guide`.
+
 
 *************************
 Day to day administration
@@ -664,9 +673,9 @@ at the time of the next job execution, since these components are executed
 at job launch.
 
 .. warning::
-    0.42.0 limitation: most configuration changes have no effect until the
-    Flux broker restarts.  This should be assumed unless otherwise noted.
-    See :core:man5:`flux-config` for more information.
+    Many configuration changes have no effect until the Flux broker restarts.
+    This should be assumed unless otherwise noted.  See :core:man5:`flux-config`
+    for more information.
 
 Viewing resource status
 =======================
