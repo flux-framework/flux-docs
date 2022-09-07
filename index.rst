@@ -19,16 +19,16 @@ The framework consists of a suite of projects, tools, and libraries which may be
    :caption: Contents
 
    quickstart
-   adminguide
-   contributing
+   faqs
    debugging
    batch
    hierarchies
    coral
    coral2
-   faqs
-   stats
+   adminguide
    flux-accounting-guide
+   contributing
+   stats
 
 .. toctree::
    :maxdepth: 1
