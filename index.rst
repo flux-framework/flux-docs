@@ -69,10 +69,3 @@ Workflow Examples
 -----------------
 
 - :doc:`workflow-examples:index`
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
