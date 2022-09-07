@@ -1,8 +1,8 @@
 .. _stats:
 
-=================
-Stats Quick Start
-=================
+==============================
+Instrumenting Flux with StatsD
+==============================
 
 Flux includes an optional instrumentation facility to collect internal metrics, or "stats",
 and send them to an aggregator for eventual display in a front end graphing tool such as Graphite.

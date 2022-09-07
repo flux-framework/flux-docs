@@ -1,8 +1,8 @@
 .. _coral2:
 
-==============
-CORAL2 Systems
-==============
+==================================
+CORAL2: Native Flux on Cray Shasta
+==================================
 
 The LLNL, LBNL, and ORNL next-generation systems like RZNevada, Perlmutter,
 El Capitan, and Frontier are in various stages of early access. They are

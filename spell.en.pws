@@ -480,6 +480,7 @@ eventlogs
 nodelist
 backported
 statsd
+StatsD
 brubeck
 django
 udp
