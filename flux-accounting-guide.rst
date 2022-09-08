@@ -1,7 +1,7 @@
 .. _flux-accounting-guide:
 
 #####################
-Flux-Accounting Guide
+Flux Accounting Guide
 #####################
 
 *key terms: association, bank*

@@ -1,8 +1,8 @@
 .. _contributing:
 
-============
-Contributing
-============
+================================
+Contributing to Flux Development
+================================
 
 The Flux Framework team welcomes all contributors for bug fixes, code improvements, new features, simplifications, documentation, and more. Please do not hesitate to `contact us <https://github.com/orgs/flux-framework/people>`_ with any questions or concerns.
 

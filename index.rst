@@ -15,20 +15,22 @@ Flux is a flexible framework for resource management, built for your site.
 The framework consists of a suite of projects, tools, and libraries which may be used to build site-custom resource managers for High Performance Computing centers.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :caption: Contents
 
    quickstart
-   adminguide
-   contributing
+   faqs
    debugging
    batch
    hierarchies
+   LLNL Introduction to Flux <https://hpc-tutorials.llnl.gov/flux/>
    coral
    coral2
-   faqs
-   stats
+   adminguide
    flux-accounting-guide
+   contributing
+   Flux Python API <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>
+   stats
 
 .. toctree::
    :maxdepth: 1
@@ -69,10 +71,3 @@ Workflow Examples
 -----------------
 
 - :doc:`workflow-examples:index`
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

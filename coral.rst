@@ -1,8 +1,8 @@
 .. _coral:
 
-==============
-CORAL Systems
-==============
+===============================
+CORAL: Flux launched by IBM LSF
+===============================
 
 The LLNL and ORNL `CORAL systems <https://asc.llnl.gov/CORAL/>`_
 Lassen, Sierra, and Summit are pre-exascale supercomputers built by IBM.  They
