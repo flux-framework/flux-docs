@@ -128,3 +128,59 @@ each binding to 10 CPU cores and 1 GPU on a compute node:
 .. code-block:: sh
 
   flux mini run -N 1 -n 4 -c 10 -g 1 -o mpi=spectrum -o cpu-affinity=per-task -o gpu-affinity=per-task my_mpi_binary
+
+----------------------------
+Launching Flux Interactively
+----------------------------
+
+CORAL systems use IBM's Spectrum LSF scheduler which, unlike Slurm, does not support running ``jsrun`` commands in a pseudo-
+terminal. This limits users' ability to run Flux sessions interactively.
+
+A workaround for this is to submit a script to run Flux for some amount of time as a job, and then connect to that Flux session
+remotely by resolving the URI. Below is an example script to create a 2 node Flux session in the debug queue, which will run for
+two hours. 
+
+.. code-block:: sh
+  
+  #!/bin/bash
+  #BSUB -q pdebug
+  #BSUB -W 120
+  #BSUB -nnodes 3
+  #BSUB -J fluxsesh
+
+  module use /usr/tce/modulefiles/Core
+  module use /usr/global/tools/flux/blueos_3_ppc64le_ib/modulefiles
+  module load pmi-shim
+
+  PMIX_MCA_gds="^ds12,ds21" jsrun -a 1 -c ALL_CPUS -g ALL_GPUS -n 3 --bind=none --smpiargs="-disable_gpu_hooks" flux start sleep inf
+
+When this is submitted, the system will print out a job ID. You can check the status of the job with ``bjobs``:
+
+.. code-block:: sh
+  
+  [elvis@lassen709:~]$ bsub < flux_session_submit.sh 
+  Job <3750480> is submitted to queue <pdebug>.
+  ...
+  [elvis@lassen709:~]$ bjobs
+  JOBID      USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+  3750480    hobbs17 RUN   pdebug     lassen709   1*launch_ho fluxsesh   Jul 25 12:44
+                                                  80*debug_hosts
+
+Once the job starts to run, you can resolve the URI, and connect to the session remotely.
+
+.. code-block:: sh
+  
+  [elvis@lassen709:~]$ flux uri --remote lsf:3750480
+  ssh://lassen32/var/tmp/flux-aXQh0w/local-0
+
+  [elvis@lassen709:~]$ flux proxy ssh://lassen32/var/tmp/flux-aXQh0w/local-0
+  [elvis@lassen709:~]$ flux resource list
+       STATE NNODES   NCORES    NGPUS NODELIST
+        free      2       80        0 lassen[32,34]
+   allocated      0        0        0 
+        down      0        0        0 
+
+.. note::
+
+  In order to connect to remote sessions via ``flux proxy`` SSH keys must be configured. `To set up SSH keys on Livermore 
+  Computing resources, see this Confluence article (login required). <https://lc.llnl.gov/confluence/display/SIERRA/Quickstart+Guide>`_
