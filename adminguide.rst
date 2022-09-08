@@ -333,6 +333,17 @@ be specified on the command line, e.g.
 
  $ flux R encode --hosts=fluke[3,108,6-103] --cores=0-3 >/etc/flux/system/R
 
+If your nodes have different number of processors, then use separate
+invocations of ``flux R encode`` in combination with ``flux R append``.
+In this case, use the ``-r, --ranks=IDSET`` option to ensure each node
+has a different assigned rank, e.g.
+
+.. code-block:: console
+
+  $ (flux R encode -r 0-1 -c 0-3 -H host[0-1] \
+     && flux R encode -r 2-3 -c 0-7 -H host[2-3]) \
+    | flux R append
+
 .. note::
     The rank to hostname mapping represented in R is ignored, and is
     replaced at runtime by the rank to hostname mapping from the bootstrap
