@@ -567,6 +567,16 @@ See also: :core:man5:`flux-config-job-manager`.
 Automatic Accounting Database Updates
 =====================================
 
+If updating flux-accounting to a newer version on a system where a
+flux-accounting DB is already configured and set up, it is important to update
+the database schema, as tables and columns may have been added or removed in
+the newer version. The flux-accounting database schema can be updated with the
+following command:
+
+.. code-block:: console
+
+ $ flux account-update-db
+
 A series of actions should run periodically to keep the accounting
 system in sync with Flux:
 
