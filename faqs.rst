@@ -276,6 +276,84 @@ My message callback is not being run. How do I debug?
 * ``FLUX_O_TRACE`` is passed as a flag to
   `flux_open(3) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man3/flux_open.html>`_
 
+.. _pending_hang:
+
+Why is my job not running?
+==========================
+
+If :core:man1:`flux-jobs` shows your job in one of the pending states, you
+can probe deeper to understand what is going on.  First, run ``flux-jobs``
+with a custom output format that shows more detail about pending states,
+for example:
+
+.. code-block:: console
+
+  $ flux jobs --format="{id.f58:>12} {name:<10.10} {urgency:<3} {priority:<12} {state:<8.8} {dependencies}"
+           JOBID NAME       URG PRI          STATE    DEPENDENCIES
+     ƒABLQgbbf3d sleep      16  16           SCHED
+     ƒABLQty9fSX sleep      16  16           SCHED
+     ƒABLR7sqQkf sleep      16  16           SCHED
+     ƒABLRJnt85u sleep      16  16           SCHED
+     ƒABLRVunjfu sleep      16  16           SCHED
+     ƒABLRgR7eVd sleep      16  16           SCHED
+     ƒABLQJnzDfV sleep      16  16           RUN
+
+The job state machine is defined in
+`RFC 21 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_21.html>`_.
+Normally a job advances from NEW to DEPEND, PRIORITY, SCHED, RUN, CLEANUP, and
+finally INACTIVE.  A job can be blocked in any of the following states:
+
+DEPEND
+  The job is awaiting resolution of a dependency.  A job submitted without
+  explicit dependencies may still acquire them.  For example, flux-accounting
+  may add a ``max-running-jobs-user-limit`` dependency when a user has too many
+  jobs running, and resolve it once some jobs complete.
+
+PRIORITY
+  The job is awaiting priority assignment.  Flux-accounting may hold a job in
+  this state if the user's bank is not yet configured.
+
+SCHED
+  The job is waiting for the scheduler to allocate resources.  A job may be
+  held this state indefinitely by setting its *urgency* to zero.  Otherwise,
+  the scheduler decides which job to run next depending on the job's *priority*
+  value, availability of the requested resources, and the scheduler's algorithm.
+
+Note that the job's priority value defaults to the urgency, but a Flux system
+instance may be configured to use the flux-accounting multi-factor priority
+plugin, which sets priority based on factors that include historical and
+administrative information such as bank assignments and allocations.
+
+The job state transitions are driven by job *events*, also defined in `RFC 21
+<https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_21.html>`_.
+Sometimes it is helpful to see the detailed events when diagnosing a
+stuck job.  A job eventlog can be printed using the following command:
+
+.. code-block:: console
+
+  $ flux job eventlog --time-format=offset ƒABFhJBw1dh
+  0.000000 submit userid=5588 urgency=16 flags=0 version=1
+  0.014319 validate
+  0.027185 depend
+  0.027262 priority priority=16
+
+This job is blocked in the SCHED state, having not yet received an allocation
+from the scheduler.  Job events may also be viewed in real time when a job is
+submitted with ``flux mini run``, for example:
+
+.. code-block:: console
+
+  $ flux mini run -vv -N2 sleep 60
+  jobid: ƒABKQfqHf3u
+  0.000s: job.submit {"userid":5588,"urgency":16,"flags":0,"version":1}
+  0.015s: job.validate
+  0.028s: job.depend
+  0.028s: job.priority {"priority":16}
+  0.036s: job.alloc {"annotations":{"sched":{"queue":"debug"}}}
+  0.037s: job.prolog-start {"description":"job-manager.prolog"}
+  0.524s: job.prolog-finish {"description":"job-manager.prolog","status":0}
+  0.538s: job.start
+
 .. _parallel_run_hang:
 
 I'm experiencing a hang while running my parallel application. How can I debug?
