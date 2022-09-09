@@ -262,20 +262,6 @@ Flux tools and APIs work the same in any Flux instance.
 
 See also: :ref:`batch`.
 
-.. _message_callback_not_run:
-
-My message callback is not being run. How do I debug?
-=====================================================
-
-* Check the error codes from ``flux_msg_handler_addvec``,
-  ``flux_register_service``, ``flux_rpc_get``, etc
-* Use ``FLUX_O_TRACE`` and ``FLUX_HANDLE_TRACE`` to see messages moving
-  through the overlay
-* ``FLUX_HANDLE_TRACE`` is set when starting a Flux instance:
-  ``FLUX_HANDLE_TRACE=t flux start``
-* ``FLUX_O_TRACE`` is passed as a flag to
-  `flux_open(3) <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man3/flux_open.html>`_
-
 .. _pending_hang:
 
 Why is my job not running?
@@ -669,3 +655,20 @@ something like this:
    ƒABRxM89qL3: completed first barrier in 0.008s
    ƒABRxM89qL3: completed MPI_Finalize in 0.003s
    1.116s: flux-shell[0]: DEBUG: exit 0
+
+************************
+Flux Developer Questions
+************************
+
+.. _message_callback_not_run:
+
+My message callback is not being run. How do I debug?
+=====================================================
+
+* Check the error codes from ``flux_msg_handler_addvec``,
+  ``flux_register_service``, ``flux_rpc_get``, etc
+* Use ``FLUX_O_TRACE`` and ``FLUX_HANDLE_TRACE`` to see messages moving
+  through the overlay
+* ``FLUX_HANDLE_TRACE`` is set when starting a Flux instance:
+  ``FLUX_HANDLE_TRACE=t flux start``
+* ``FLUX_O_TRACE`` is passed as a flag to :core:man3:`flux_open`.
