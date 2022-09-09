@@ -356,12 +356,47 @@ submitted with ``flux mini run``, for example:
 
 .. _parallel_run_hang:
 
-I'm experiencing a hang while running my parallel application. How can I debug?
-===============================================================================
+Why is my running job stuck?
+============================
 
-* Run ``flux mini run/submit`` with the ``-vvv`` argument
-* If it is hanging in startup, try adding the ``PMI_DEBUG`` environment
-  variable: ``PMI_DEBUG=t flux mini run my_app.exe``
+If a job is getting to RUN state but still isn't getting started, it may be
+helpful to look at job's exec eventlog, which is separate from the primary
+eventlog described in :ref:`pending_hang`
+
+.. code-block:: console
+
+  $ flux job eventlog --path=guest.exec.eventlog --time-format=offset ƒABaWMZ7UmD
+  0.000000 init
+  0.004929 starting
+  0.348570 shell.init leader-rank=6 size=2 service="5588-shell-68203540434124800"
+  0.358706 shell.start task-count=2
+  2.360860 shell.task-exit localid=0 rank=0 state="Exited" pid=10034 wait_status=0 signaled=0 exitcode=0
+  2.416990 complete status=0
+  2.417061 done
+
+These events may also be viewed in real time, combined with the primary
+eventlog when a job is submitted by ``flux mini run``:
+
+.. code-block:: console
+
+  $ flux mini run -vvv -N2 sleep 2
+  jobid: ƒABaWMZ7UmD
+  0.000s: job.submit {"userid":5588,"urgency":16,"flags":0,"version":1}
+  0.015s: job.validate
+  0.028s: job.depend
+  0.028s: job.priority {"priority":16}
+  0.038s: job.alloc {"annotations":{"sched":{"queue":"debug"}}}
+  0.038s: job.prolog-start {"description":"job-manager.prolog"}
+  0.520s: job.prolog-finish {"description":"job-manager.prolog","status":0}
+  0.532s: job.start
+  0.522s: exec.init
+  0.527s: exec.starting
+  0.871s: exec.shell.init {"leader-rank":6,"size":2,"service":"5588-shell-68203540434124800"}
+  0.881s: exec.shell.start {"task-count":2}
+  2.883s: exec.shell.task-exit {"localid":0,"rank":0,"state":"Exited","pid":10034,"wait_status":0,"signaled":0,"exitcode":0}
+  2.939s: exec.complete {"status":0}
+  2.939s: exec.done
+  2.939s: job.finish {"status":0}
 
 .. _bulksubmit_hang:
 
