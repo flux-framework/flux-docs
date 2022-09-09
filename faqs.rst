@@ -550,3 +550,87 @@ with-pm=slurm
    It appears that ``--with-pm=slurm`` is not required to run MPI programs
    under SLURM, although it is unclear whether there is a performance impact
    under SLURM when this option is omitted.
+
+.. _mpi_init_problems:
+
+Why is MPI_Init() failing/hanging?
+==================================
+
+If your MPI application is not advancing past ``MPI_Init()``, there may be a
+problem with the PMI handshake which MPI uses to obtain process and networking
+information.  To debug this, try getting a server side PMI protocol trace by
+running your job with ``-o verbose=2``.  A healthy MPICH PMI handshake looks
+something like this:
+
+.. code-block:: console
+
+   $ flux mini run -o verbose=2 -N2 ./hello
+   0.731s: flux-shell[1]: DEBUG: 1: tasks [1] on cores 0-3
+   0.739s: flux-shell[1]: DEBUG: Loading /usr/local/etc/flux/shell/initrc.lua
+   0.744s: flux-shell[1]: TRACE: Sucessfully loaded flux.shell module
+   0.744s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/initrc.lua
+   0.757s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/intel_mpi.lua
+   0.758s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/mvapich.lua
+   0.782s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/openmpi.lua
+   0.906s: flux-shell[1]: DEBUG: libpals: jobtap plugin not loaded: disabling operation
+   0.721s: flux-shell[0]: DEBUG: 0: task_count=2 slot_count=2 cores_per_slot=1 slots_per_node=1
+   0.722s: flux-shell[0]: DEBUG: 0: tasks [0] on cores 0-3
+   0.730s: flux-shell[0]: DEBUG: Loading /usr/local/etc/flux/shell/initrc.lua
+   0.739s: flux-shell[0]: TRACE: Sucessfully loaded flux.shell module
+   0.739s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/initrc.lua
+   0.753s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/intel_mpi.lua
+   0.758s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/mvapich.lua
+   0.784s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/openmpi.lua
+   0.792s: flux-shell[0]: DEBUG: output: batch timeout = 0.500s
+   0.921s: flux-shell[0]: DEBUG: libpals: jobtap plugin not loaded: disabling operation
+   1.054s: flux-shell[0]: TRACE: pmi: 0: C: cmd=init pmi_version=1 pmi_subversion=1
+   1.054s: flux-shell[0]: TRACE: pmi: 0: S: cmd=response_to_init rc=0 pmi_version=1 pmi_subversion=1
+   1.054s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_maxes
+   1.054s: flux-shell[0]: TRACE: pmi: 0: S: cmd=maxes rc=0 kvsname_max=64 keylen_max=64 vallen_max=1024
+   1.055s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_appnum
+   1.055s: flux-shell[0]: TRACE: pmi: 0: S: cmd=appnum rc=0 appnum=0
+   1.055s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_my_kvsname
+   1.055s: flux-shell[0]: TRACE: pmi: 0: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
+   1.055s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get kvsname=ƒABRxM89qL3 key=PMI_process_mapping
+   1.055s: flux-shell[0]: TRACE: pmi: 0: S: cmd=get_result rc=0 value=(vector,(0,2,1))
+   1.056s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_my_kvsname
+   1.056s: flux-shell[0]: TRACE: pmi: 0: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
+   1.059s: flux-shell[0]: TRACE: pmi: 0: C: cmd=put kvsname=ƒABRxM89qL3 key=P0-businesscard value=description#picl6$port#41401$ifname#192.168.88.251$
+   1.059s: flux-shell[0]: TRACE: pmi: 0: S: cmd=put_result rc=0
+   1.060s: flux-shell[0]: TRACE: pmi: 0: C: cmd=barrier_in
+   1.059s: flux-shell[1]: TRACE: pmi: 1: C: cmd=init pmi_version=1 pmi_subversion=1
+   1.059s: flux-shell[1]: TRACE: pmi: 1: S: cmd=response_to_init rc=0 pmi_version=1 pmi_subversion=1
+   1.060s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_maxes
+   1.060s: flux-shell[1]: TRACE: pmi: 1: S: cmd=maxes rc=0 kvsname_max=64 keylen_max=64 vallen_max=1024
+   1.060s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_appnum
+   1.060s: flux-shell[1]: TRACE: pmi: 1: S: cmd=appnum rc=0 appnum=0
+   1.060s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_my_kvsname
+   1.060s: flux-shell[1]: TRACE: pmi: 1: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
+   1.061s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get kvsname=ƒABRxM89qL3 key=PMI_process_mapping
+   1.061s: flux-shell[1]: TRACE: pmi: 1: S: cmd=get_result rc=0 value=(vector,(0,2,1))
+   1.062s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_my_kvsname
+   1.062s: flux-shell[1]: TRACE: pmi: 1: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
+   1.065s: flux-shell[1]: TRACE: pmi: 1: C: cmd=put kvsname=ƒABRxM89qL3 key=P1-businesscard value=description#picl7$port#35977$ifname#192.168.88.250$
+   1.065s: flux-shell[1]: TRACE: pmi: 1: S: cmd=put_result rc=0
+   1.065s: flux-shell[1]: TRACE: pmi: 1: C: cmd=barrier_in
+   1.069s: flux-shell[1]: TRACE: pmi: 1: S: cmd=barrier_out rc=0
+   1.066s: flux-shell[0]: TRACE: pmi: 0: S: cmd=barrier_out rc=0
+   1.084s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get kvsname=ƒABRxM89qL3 key=P1-businesscard
+   1.084s: flux-shell[0]: TRACE: pmi: 0: S: cmd=get_result rc=0 value=description#picl7$port#35977$ifname#192.168.88.250$
+   1.093s: flux-shell[0]: TRACE: pmi: 0: C: cmd=finalize
+   1.093s: flux-shell[0]: TRACE: pmi: 0: S: cmd=finalize_ack rc=0
+   1.093s: flux-shell[0]: TRACE: pmi: 0: S: pmi finalized
+   1.093s: flux-shell[0]: TRACE: pmi: 0: C: pmi EOF
+   1.089s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get kvsname=ƒABRxM89qL3 key=P0-businesscard
+   1.089s: flux-shell[1]: TRACE: pmi: 1: S: cmd=get_result rc=0 value=description#picl6$port#41401$ifname#192.168.88.251$
+   1.094s: flux-shell[1]: TRACE: pmi: 1: C: cmd=finalize
+   1.094s: flux-shell[1]: TRACE: pmi: 1: S: cmd=finalize_ack rc=0
+   1.094s: flux-shell[1]: TRACE: pmi: 1: S: pmi finalized
+   1.095s: flux-shell[1]: TRACE: pmi: 1: C: pmi EOF
+   1.099s: flux-shell[1]: DEBUG: task 1 complete status=0
+   1.107s: flux-shell[1]: DEBUG: exit 0
+   1.097s: flux-shell[0]: DEBUG: task 0 complete status=0
+   ƒABRxM89qL3: completed MPI_Init in 0.084s.  There are 2 tasks
+   ƒABRxM89qL3: completed first barrier in 0.008s
+   ƒABRxM89qL3: completed MPI_Finalize in 0.003s
+   1.116s: flux-shell[0]: DEBUG: exit 0
