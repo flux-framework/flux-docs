@@ -134,17 +134,20 @@ systems.
 How can I oversubscribe tasks to resources in Flux?
 ===================================================
 
-There is no ``--overcommit`` or similar option for Flux at this time.
-However, there are several different ways to accomplish something similar,
-depending on what you want to do.
+There are several ways to decouple a job's task count from the quantity
+of allocated resources, depending on what you want to do.
 
 If you simply want to oversubscribe tasks to resources, you can use the
-``per-resource.`` job shell option. This will tell the job shell to ignore
-the ``tasks`` section of the submitted jobspec, and instead launch the
-designated number of tasks per ``type`` of allocated resource. The currently
-supported types are ``node`` and ``core``. When specifying this option, both
-a ``type`` and ``count`` are required. For example, to launch 100 tasks
-per node across 2 nodes:
+:core:man1:`flux-mini` per-resource options instead of the more common
+per-task options.  For example, to launch 100 tasks per node across 2 nodes:
+
+.. code-block:: console
+
+  $ flux mini run --tasks-per-node=100 -N2 COMMAND
+
+The per-resource options were added to ``flux-mini`` in flux-core 0.43.0.
+In earlier versions, the same effect can be achieved by setting the
+``per-resource.`` job shell options directly:
 
 .. code-block:: console
 
