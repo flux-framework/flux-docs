@@ -6,12 +6,12 @@ FAQs
 
 Some frequently asked questions about flux and their answers.
 
-.. _flux_run_mac:
-
 
 *****************
 General Questions
 *****************
+
+.. _fluid_encoding:
 
 What's with the fancy ƒ?
 ========================
@@ -31,6 +31,8 @@ F58 to another using the :core:man1:`flux-job` ``id`` subcommand, e.g.
    $ flux mini submit sleep 3600 | flux job id --to=words
    airline-alibi-index--tuna-maximum-adam
    $ flux job cancel airline-alibi-index--tuna-maximum-adam
+
+.. _flux_run_mac:
 
 Does flux run on a mac?
 =======================
@@ -77,6 +79,8 @@ This problem manifests itself differently on a Flux system instance where *R*
 (the resource set) is configured, or when Flux receives *R* as an allocation
 from the enclosing Flux instance.  In these cases Flux checks *R* against
 resources reported by hwloc, and drains any nodes that have missing resources.
+
+.. _missing_resources:
 
 Why are resources missing in foreign-launched Flux?
 ===================================================
@@ -281,7 +285,7 @@ I'm experiencing a hang while running my parallel application. How can I debug?
 * If it is hanging in startup, try adding the ``PMI_DEBUG`` environment
   variable: ``PMI_DEBUG=t flux mini run my_app.exe``
 
-.. _versioning_multi_repo:
+.. _bulksubmit_hang:
 
 Why does the ``flux mini bulksubmit`` command hang?
 ===================================================
@@ -377,6 +381,8 @@ Example: launch a Spectrum MPI job with PMI tracing enabled:
 
  $ flux mini run -ompi=spectrum -overbose=2 -n4 ./hello
 
+.. _openmpi_versions:
+
 What versions of OpenMPI work with Flux?
 ========================================
 
@@ -407,6 +413,8 @@ offered as a separate package, is required to bootstrap the upcoming openmpi
 5.0.x releases.  Once installed, the plugin is activated by submitting a job
 with the ``-ompi=openmpi@5`` option.
 
+.. _openmpi_config:
+
 How should I configure OpenMPI to work with Flux?
 =================================================
 
@@ -422,6 +430,8 @@ enable-static
 with-flux-pmi
    Although the Flux MCA plugins are built by default, this is required to
    ensure configure fails if they cannot be built for some reason.
+
+.. _openmpi_debug:
 
 How do I make OpenMPI print debugging output?
 =============================================
@@ -441,6 +451,8 @@ To list available MCA parameters containing the string ``_verbose`` use:
 .. code-block:: console
 
  $ ompi_info -a | grep _verbose
+
+.. _mvapich2_config:
 
 How should I configure MVAPICH2 to work with Flux?
 ==================================================
