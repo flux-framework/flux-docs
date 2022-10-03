@@ -138,6 +138,41 @@ This current job usage is then added to the association's previous job usage
 stored in the flux-accounting database. This sum then represents the
 association's overall job usage.
 
+****************************
+Multi-Factor Priority Plugin
+****************************
+
+The multi-factor priority plugin is a jobtap_ plugin that generates
+an integer job priority for incoming jobs in a Flux system instance. It uses
+a number of factors to calculate a priority and, in the future, can add more
+factors. Each factor has an associated integer weight that determines its
+importance in the overall priority calculation. The current factors present in
+the multi-factor priority plugin are:
+
+* **fair-share**: the ratio between the amount of resources allocated vs. resources
+  consumed.
+
+* **urgency**: a user-controlled factor to prioritize their own jobs.
+
+In addition to generating an integer priority for submitted jobs in a Flux
+system instance, the multi-factor priority plugin also enforces per-association
+job limits to regulate use of the system. The two per-association limits
+enforced by this plugin are:
+
+* **max_active_jobs**: a limit on how many *active* jobs an association can have at
+  any given time. Jobs submitted after this limit has been hit will be rejected
+  with a message saying that the association has hit their active jobs limit.
+
+* **max_running_jobs**: a limit on how many *running* jobs an association can have
+  at any given time. Jobs submitted after this limit has been hit will be held
+  by adding a ``max-running-jobs-user-limit`` dependency until one of the
+  association's currently running jobs finishes running.
+
+Both "types" of jobs, *running* and *active*, are based on Flux's definitions
+of job states_. *Active* jobs can be in any state but INACTIVE. *Running* jobs
+are jobs in both RUN and CLEANUP states.
+
+
 ********
 Glossary
 ********
@@ -162,3 +197,7 @@ bank
 .. _Slurm accounting: https://slurm.schedmd.com/accounting.html
 
 .. _multi-factor priority plugin: https://slurm.schedmd.com/priority_multifactor.html
+
+.. _jobtap: https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/flux-jobtap-plugins.html#flux-jobtap-plugins-7
+
+.. _states: https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_21.html
