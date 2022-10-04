@@ -543,21 +543,26 @@ parameters are assumed, including the accounting database path of
 
 .. code-block:: console
 
- $ flux account create-db
+ $ sudo -u flux flux account create-db
+
+.. note::
+    The flux accounting commands should always be run as the flux user. If they
+    are run as root, some commands that rewrite the database could change the
+    owner to root, causing flux-accounting scripts run from flux cron to fail.
 
 Banks must be added to the system, for example:
 
 .. code-block:: console
 
- $ flux account add-bank root 1
- $ flux account add-bank --parent-bank=root sub_bank_A 1
+ $ sudo -u flux flux account add-bank root 1
+ $ sudo -u flux flux account add-bank --parent-bank=root sub_bank_A 1
 
 Users that are permitted to run on the system must be assigned banks,
 for example:
 
 .. code-block:: console
 
- $ flux account add-user --username=user1234 --bank=sub_bank_A
+ $ sudo -u flux flux account add-user --username=user1234 --bank=sub_bank_A
 
 Enabling Multi-factor Priority
 ==============================
@@ -586,7 +591,7 @@ following command:
 
 .. code-block:: console
 
- $ flux account-update-db
+ $ sudo -u flux flux account-update-db
 
 A series of actions should run periodically to keep the accounting
 system in sync with Flux:
