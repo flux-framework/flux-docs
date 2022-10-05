@@ -573,8 +573,51 @@ will have their job rejected with the message:
   $ flux mini run -n 1000 myapp
   flux-mini: ERROR: [Errno 22] Direct job submission is disabled for this instance. Please use the batch or alloc subcommands of flux-mini(1)
 
-
 See also: :core:man5:`flux-config-ingest`.
+
+Adding Queues
+=============
+
+It may be useful to configure a Flux system instance with multiple queues.
+Each queue should be associated with a non-overlapping resource subset,
+identified by property name.  It is good practice for queues to create a
+new property that has the same name as the queue.
+
+When queues are defined, all jobs must specify a queue at submission time.
+If that is inconvenient, then ``policy.jobspec.defaults.system.queue`` may
+define a default queue.
+
+Finally, queues can override the ``[policy]`` table on a per queue basis.
+This is useful for setting queue-specific limits.
+
+Here is an example that puts these concepts together:
+
+.. code-block:: toml
+
+ [policy]
+ jobspec.defaults.system.duration = "1m"
+ jobspec.defaults.system.queue = "debug"
+ limits.job-size.max.nnodes = 8
+
+ [[resource.config]]
+ hosts = "test[1-4]"
+ properties = ["debug"]
+
+ [[resource.config]]
+ hosts = "test[5-16]"
+ properties = ["batch"]
+
+ [queues.debug]
+ requires = ["debug"]
+ policy.limits.job-size.max.nnodes = 1
+ policy.limits.duration = "30m"
+
+ [queues.batch]
+ requires = ["batch"]
+ policy.limits.job-size.min.nnodes = 4
+ policy.limits.duration = "4h"
+
+See also: :core:man5:`flux-config-policy`, :core:man5:`flux-config-queues`.
 
 
 ***************
