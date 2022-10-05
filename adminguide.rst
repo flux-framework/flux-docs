@@ -13,32 +13,36 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.43.0.
+    version 0.44.0.
 
 .. warning::
-    0.43.0 limitation: the flux system instance is primarily tested on
+    0.44.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
 
-********
-Overview
-********
+***********************
+Overview and Background
+***********************
 
-The base component of Flux is the :core:man1:`flux-broker` executable.  Most of
-Flux's distributed systems and services that aren't directly associated
-with a running job are embedded in that executable or its dynamically loaded
-plugins.
+Flux Architecture
+=================
 
-Flux is often used in *single-user mode*, where a Flux instance (a ranked
-set of brokers) is launched as a parallel job, and the *instance owner*
-(the user that submitted the parallel job) has control of, and exclusive
-access to, the resources assigned to the instance.  In fact, this user
-has complete administrative control over the single user instance, including
-the ability to alter Flux software.
+The base component of Flux is the :core:man1:`flux-broker` executable.  A Flux
+instance consists of one or more ranked Flux brokers communicating over a
+tree-based overlay network.  Most of Flux's distributed systems and services
+that aren't directly associated with a running job are embedded in the broker
+executable or its dynamically loaded plugins.
 
-When Flux is deployed as the native resource manager on a cluster, its brokers
-still execute with the credentials of a non-privileged instance owner, but the
-Flux instance operates somewhat differently:
+Flux may be used in *single-user mode*, where a Flux instance is launched as
+a parallel job, and the *instance owner* (the user that submitted the parallel
+job) has control of, and exclusive access to, the Flux instance and its
+assigned resources.  On a system running Flux natively, batch jobs and
+allocations are examples of single user Flux instances.
+
+When Flux is deployed as the *system instance*, or native resource manager on
+a cluster, its brokers still run with the credentials of a non-privileged
+system user, typically ``flux``.  However, to support multiple users and
+act as a long running service, it behaves somewhat differently:
 
 - The Flux broker is started directly by systemd on each node instead of
   being launched as a process in a parallel job.
@@ -66,14 +70,6 @@ Flux instance operates somewhat differently:
 The same Flux executables are used in both single user and system modes,
 with operation differentiated only by configuration.
 
-Although a Flux single user instance can be launched by any resource manager
-or process launcher, a single user Flux instance has access to a richer
-environment when it is launched by a Flux system instance.  For example,
-the Fluxion graph scheduler can hierarchically schedule advanced resource types
-when its resources are statically configured at the system level;  otherwise,
-Fluxion is limited to resource types and relationships that can be dynamically
-probed.
-
 .. figure:: images/adminarch.png
    :alt: Flux system instance architecture
    :align: center
@@ -81,13 +77,91 @@ probed.
    Fox prevents Frog from submitting jobs on a cluster with Flux
    as the system resource manager.
 
-Some aspects of Flux have matured in the single user environment, however Flux
-has a ways to go to reach feature parity with system level resource managers
-like SLURM.  Flux limitations are documented in warning boxes throughout this
-text.  Most are expected to be short term obstacles as Flux system capability
-is expanded to meet deployment goals in 2022.  During this period of
-development and testing, we appreciate your design feedback, bug reports,
-and patience.
+Software Components
+===================
+
+Flux was conceived as a resource manager toolkit rather than a monolithic
+project, with the idea to make components like the scheduler replaceable.
+In addition, several parts of flux can be extended with plugins.  At this
+time the primary component types are
+
+broker modules
+  Each broker module runs in its own thread as part of the broker executable,
+  communicating with other components using messages.  Broker modules are
+  dynamically loadable with the :core:man1:`flux-module` command.  Core
+  services like the KVS, job manager, and scheduler are implemented using
+  broker modules.
+
+jobtap plugins
+  The job manager orchestrates a job's life cycle.  Jobtap plugins extend the
+  job manager, arranging for callbacks at different points in the job life
+  cycle.  Jobtap plugins may be dynamically loaded with the
+  :core:man1:`flux-jobtap` command.  An example of a jobtap plugin is the Flux
+  accounting multi-factor priority plugin, which updates a job's priority value
+  when it enters the PRIORITY state.
+
+shell plugins
+  When a job is started, the :core:man1:`flux-shell` is the process parent
+  of job tasks on each node.  Shell plugins extend the job environment and
+  can be configured on a per-job basis using the ``--setopt`` option of
+  the :core:man1:`flux-mini` commands.  ``affinity``, ``pmi``, and ``pty``
+  are examples of Flux shell plugins.
+
+Independently developed Flux components are generally packaged and versioned
+separately.  Each package may provide one or more of the above components
+as well as man pages and :core:man1:`flux` subcommands.  At this stage of Flux
+development, it is good practice to combine only contemporaneously released
+components as the interfaces are not stable yet.
+
+File Formats and Data Types
+===========================
+
+Since some parts of Flux are developed independently, some effort has been
+made to standardize file formats and data types to ensure components work
+together and provide a consistent user experience.  System administrators may
+find it useful to be aware of some of them.
+
+hostlist
+  A compact way of representing an ordered list of hostnames, compatible with
+  legacy tools in use at LLNL and defined by
+  `RFC 29 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_29.html>`_.
+
+idset
+  A compact way of representing an unordered set of integers, defined by
+  `RFC 22 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_22.html>`_.
+
+TOML
+  `Tom's Oblivious Minimal Language <https://github.com/toml-lang/toml>`_
+  is the file format used in Flux configuration files.
+
+JSON
+  `Javascript Object Notation <https://json-spec.readthedocs.io/reference.html>`_
+  is used throughout Flux in messages and other file formats.
+
+eventlog
+  An ordered log of timestamped events, stored in the Flux KVS and defined by
+  `RFC 18 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_18.html>`_.
+  Eventlogs are used to record job events, capture standard I/O streams,
+  and record resource status changes.
+
+FSD
+  Flux Standard Duration, a string format used to represent a length of time,
+  defined by
+  `RFC 23 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_23.html>`_.
+
+jobspec
+  A job request (JSON or YAML), defined by
+  `RFC 25 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_25.html>`_ and
+  `RFC 14 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_14.html>`_.
+
+R
+  A resource set (JSON), defined by
+  `RFC 20 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_20.html>`_.
+
+FLUID
+  Flux Locally Unique ID, used for Flux job IDs, defined by
+  `RFC 19 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_19.html>`_.
+
 
 ************
 Installation
@@ -126,9 +200,8 @@ flux-core
   prioritization. If building flux-core from source, be sure to configure with
   ``--with-flux-security``. Install on all nodes (required).
 
-flux-sched (optional)
-  The Fluxion graph-based scheduler.  Install on management node
-  (optional, but recommended for production multi-user system installs).
+flux-sched
+  The Fluxion graph-based scheduler.
 
 flux-accounting (optional)
   Accounting database of user/bank usage information, and a priority plugin.
@@ -270,15 +343,24 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  [tbon]
  tcp_user_timeout = "2m"
 
- # Point to resource definition generated with flux-R(1).
  # Uncomment 'norestrict' if flux broker is constrained to system cores by
  # systemd or other site policy.  This allows jobs to run on assigned cores.
  # Uncomment 'exclude' to avoid scheduling jobs on certain nodes (e.g. login,
  # management, or service nodes).
  [resource]
- path = "/etc/flux/system/R"
  #norestrict = true
  #exclude = "test[1-2]"
+
+ [[resource.config]]
+ hosts = "test[1-15]"
+ cores = "0-7"
+ gpus = "0"
+
+ [[resource.config]]
+ hosts = "test16"
+ cores = "0-63"
+ gpus = "0-1"
+ properties = ["fatnode"]
 
  # Store the kvs root hash in sqlite periodically in case of broker crash.
  # Recommend offline KVS garbage collection when commit threshold is reached.
@@ -325,44 +407,19 @@ See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 Configuring Resources
 =====================
 
-The system resource configuration may be generated in RFC 20 (R version 1)
-form using ``flux R encode``.  At minimum, a hostlist and core idset must
-be specified on the command line, e.g.
+The Flux system instance must be configured with a static resource set.
+The ``resource.config`` TOML array in the example above is the preferred
+way to configure clusters with a resource set consisting of only nodes,
+cores, and GPUs.
 
-.. code-block:: console
+More complex resource sets may be represented by generating a file in
+RFC 20 (R version 1) form with scheduler extensions using a combination of
+``flux R encode`` and ``flux ion-R encode`` and then configuring
+``resource.path`` to its fully-qualified file path.  The details of this
+method are beyond the scope of this document.
 
- $ flux R encode --hosts=fluke[3,108,6-103] --cores=0-3 >/etc/flux/system/R
-
-If your nodes have different number of processors, then use separate
-invocations of ``flux R encode`` in combination with ``flux R append``.
-In this case, use the ``-r, --ranks=IDSET`` option to ensure each node
-has a different assigned rank, e.g.
-
-.. code-block:: console
-
-  $ (flux R encode -r 0-1 -c 0-3 -H host[0-1] \
-     && flux R encode -r 2-3 -c 0-7 -H host[2-3]) \
-    | flux R append
-
-.. note::
-    The rank to hostname mapping represented in R is ignored, and is
-    replaced at runtime by the rank to hostname mapping from the bootstrap
-    hosts array (see above).
-
-Flux supports the assignment of simple, string-based properties to ranks
-via a ``properties`` field in R. The properties can then be used in
-job constraints specified by users on the command line. To add properties
-to resources, use the ``-p, --property=NAME:RANKS`` option to ``flux R encode``,
-or the ``flux R set-property NAME:RANKS`` command, e.g.:
-
-.. code-block:: console
-
- $ flux R encode  --hosts=fluke[3,108,6-103] --cores=0-3 --property=foo:2-3
-
-will set the property ``foo`` on target ranks 2 and 3.
-
-Resource properties available in an instance will be displayed in the
-output of the ``flux resource list`` command.
+When Flux is running, ``flux resource list`` shows the configured resource
+set and any resource properties.
 
 Persistent Storage on Rank 0
 ============================
@@ -381,7 +438,7 @@ enabled.
 Adding Job Prolog/Epilog Scripts
 ================================
 
-As of 0.43.0, Flux does not support a traditional job prolog/epilog
+As of 0.44.0, Flux does not support a traditional job prolog/epilog
 which runs as root on the nodes assigned to a job before/after job
 execution. Flux does, however, support a job-manager prolog/epilog,
 which is run at the same point on rank 0 as the instance
@@ -516,8 +573,51 @@ will have their job rejected with the message:
   $ flux mini run -n 1000 myapp
   flux-mini: ERROR: [Errno 22] Direct job submission is disabled for this instance. Please use the batch or alloc subcommands of flux-mini(1)
 
-
 See also: :core:man5:`flux-config-ingest`.
+
+Adding Queues
+=============
+
+It may be useful to configure a Flux system instance with multiple queues.
+Each queue should be associated with a non-overlapping resource subset,
+identified by property name.  It is good practice for queues to create a
+new property that has the same name as the queue.
+
+When queues are defined, all jobs must specify a queue at submission time.
+If that is inconvenient, then ``policy.jobspec.defaults.system.queue`` may
+define a default queue.
+
+Finally, queues can override the ``[policy]`` table on a per queue basis.
+This is useful for setting queue-specific limits.
+
+Here is an example that puts these concepts together:
+
+.. code-block:: toml
+
+ [policy]
+ jobspec.defaults.system.duration = "1m"
+ jobspec.defaults.system.queue = "debug"
+ limits.job-size.max.nnodes = 8
+
+ [[resource.config]]
+ hosts = "test[1-4]"
+ properties = ["debug"]
+
+ [[resource.config]]
+ hosts = "test[5-16]"
+ properties = ["batch"]
+
+ [queues.debug]
+ requires = ["debug"]
+ policy.limits.job-size.max.nnodes = 1
+ policy.limits.duration = "30m"
+
+ [queues.batch]
+ requires = ["batch"]
+ policy.limits.job-size.min.nnodes = 4
+ policy.limits.duration = "4h"
+
+See also: :core:man5:`flux-config-policy`, :core:man5:`flux-config-queues`.
 
 
 ***************
