@@ -343,15 +343,24 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  [tbon]
  tcp_user_timeout = "2m"
 
- # Point to resource definition generated with flux-R(1).
  # Uncomment 'norestrict' if flux broker is constrained to system cores by
  # systemd or other site policy.  This allows jobs to run on assigned cores.
  # Uncomment 'exclude' to avoid scheduling jobs on certain nodes (e.g. login,
  # management, or service nodes).
  [resource]
- path = "/etc/flux/system/R"
  #norestrict = true
  #exclude = "test[1-2]"
+
+ [[resource.config]]
+ hosts = "test[1-15]"
+ cores = "0-7"
+ gpus = "0"
+
+ [[resource.config]]
+ hosts = "test16"
+ cores = "0-63"
+ gpus = "0-1"
+ properties = ["fatnode"]
 
  # Store the kvs root hash in sqlite periodically in case of broker crash.
  # Recommend offline KVS garbage collection when commit threshold is reached.
@@ -398,44 +407,19 @@ See also: :core:man5:`flux-config-exec`, :core:man5:`flux-config-access`
 Configuring Resources
 =====================
 
-The system resource configuration may be generated in RFC 20 (R version 1)
-form using ``flux R encode``.  At minimum, a hostlist and core idset must
-be specified on the command line, e.g.
+The Flux system instance must be configured with a static resource set.
+The ``resource.config`` TOML array in the example above is the preferred
+way to configure clusters with a resource set consisting of only nodes,
+cores, and GPUs.
 
-.. code-block:: console
+More complex resource sets may be represented by generating a file in
+RFC 20 (R version 1) form with scheduler extensions using a combination of
+``flux R encode`` and ``flux ion-R encode`` and then configuring
+``resource.path`` to its fully-qualified file path.  The details of this
+method are beyond the scope of this document.
 
- $ flux R encode --hosts=fluke[3,108,6-103] --cores=0-3 >/etc/flux/system/R
-
-If your nodes have different number of processors, then use separate
-invocations of ``flux R encode`` in combination with ``flux R append``.
-In this case, use the ``-r, --ranks=IDSET`` option to ensure each node
-has a different assigned rank, e.g.
-
-.. code-block:: console
-
-  $ (flux R encode -r 0-1 -c 0-3 -H host[0-1] \
-     && flux R encode -r 2-3 -c 0-7 -H host[2-3]) \
-    | flux R append
-
-.. note::
-    The rank to hostname mapping represented in R is ignored, and is
-    replaced at runtime by the rank to hostname mapping from the bootstrap
-    hosts array (see above).
-
-Flux supports the assignment of simple, string-based properties to ranks
-via a ``properties`` field in R. The properties can then be used in
-job constraints specified by users on the command line. To add properties
-to resources, use the ``-p, --property=NAME:RANKS`` option to ``flux R encode``,
-or the ``flux R set-property NAME:RANKS`` command, e.g.:
-
-.. code-block:: console
-
- $ flux R encode  --hosts=fluke[3,108,6-103] --cores=0-3 --property=foo:2-3
-
-will set the property ``foo`` on target ranks 2 and 3.
-
-Resource properties available in an instance will be displayed in the
-output of the ``flux resource list`` command.
+When Flux is running, ``flux resource list`` shows the configured resource
+set and any resource properties.
 
 Persistent Storage on Rank 0
 ============================
