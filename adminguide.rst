@@ -200,9 +200,8 @@ flux-core
   prioritization. If building flux-core from source, be sure to configure with
   ``--with-flux-security``. Install on all nodes (required).
 
-flux-sched (optional)
-  The Fluxion graph-based scheduler.  Install on management node
-  (optional, but recommended for production multi-user system installs).
+flux-sched
+  The Fluxion graph-based scheduler.
 
 flux-accounting (optional)
   Accounting database of user/bank usage information, and a priority plugin.
