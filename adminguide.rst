@@ -20,9 +20,12 @@ resource manager on a cluster.
     a 128 node cluster.
 
 
-********
-Overview
-********
+***********************
+Overview and Background
+***********************
+
+Flux Architecture
+=================
 
 The base component of Flux is the :core:man1:`flux-broker` executable.  A Flux
 instance consists of one or more ranked Flux brokers communicating over a
@@ -73,6 +76,92 @@ with operation differentiated only by configuration.
 
    Fox prevents Frog from submitting jobs on a cluster with Flux
    as the system resource manager.
+
+Software Components
+===================
+
+Flux was conceived as a resource manager toolkit rather than a monolithic
+project, with the idea to make components like the scheduler replaceable.
+In addition, several parts of flux can be extended with plugins.  At this
+time the primary component types are
+
+broker modules
+  Each broker module runs in its own thread as part of the broker executable,
+  communicating with other components using messages.  Broker modules are
+  dynamically loadable with the :core:man1:`flux-module` command.  Core
+  services like the KVS, job manager, and scheduler are implemented using
+  broker modules.
+
+jobtap plugins
+  The job manager orchestrates a job's life cycle.  Jobtap plugins extend the
+  job manager, arranging for callbacks at different points in the job life
+  cycle.  Jobtap plugins may be dynamically loaded with the
+  :core:man1:`flux-jobtap` command.  An example of a jobtap plugin is the Flux
+  accounting multi-factor priority plugin, which updates a job's priority value
+  when it enters the PRIORITY state.
+
+shell plugins
+  When a job is started, the :core:man1:`flux-shell` is the process parent
+  of job tasks on each node.  Shell plugins extend the job environment and
+  can be configured on a per-job basis using the ``--setopt`` option of
+  the :core:man1:`flux-mini` commands.  ``affinity``, ``pmi``, and ``pty``
+  are examples of Flux shell plugins.
+
+Independently developed Flux components are generally packaged and versioned
+separately.  Each package may provide one or more of the above components
+as well as man pages and :core:man1:`flux` subcommands.  At this stage of Flux
+development, it is good practice to combine only contemporaneously released
+components as the interfaces are not stable yet.
+
+File Formats and Data Types
+===========================
+
+Since some parts of Flux are developed independently, some effort has been
+made to standardize file formats and data types to ensure components work
+together and provide a consistent user experience.  System administrators may
+find it useful to be aware of some of them.
+
+hostlist
+  A compact way of representing an ordered list of hostnames, compatible with
+  legacy tools in use at LLNL and defined by
+  `RFC 29 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_29.html>`_.
+
+idset
+  A compact way of representing an unordered set of integers, defined by
+  `RFC 22 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_22.html>`_.
+
+TOML
+  `Tom's Oblivious Minimal Language <https://github.com/toml-lang/toml>`_
+  is the file format used in Flux configuration files.
+
+JSON
+  `Javascript Object Notation <https://json-spec.readthedocs.io/reference.html>`_
+  is used throughout Flux in messages and other file formats.
+
+eventlog
+  An ordered log of timestamped events, stored in the Flux KVS and defined by
+  `RFC 18 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_18.html>`_.
+  Eventlogs are used to record job events, capture standard I/O streams,
+  and record resource status changes.
+
+FSD
+  Flux Standard Duration, a string format used to represent a length of time,
+  defined by
+  `RFC 23 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_23.html>`_.
+
+jobspec
+  A job request (JSON or YAML), defined by
+  `RFC 25 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_25.html>`_ and
+  `RFC 14 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_14.html>`_.
+
+R
+  A resource set (JSON), defined by
+  `RFC 20 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_20.html>`_.
+
+FLUID
+  Flux Locally Unique ID, used for Flux job IDs, defined by
+  `RFC 19 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_19.html>`_.
+
 
 ************
 Installation
