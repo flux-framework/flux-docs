@@ -617,9 +617,18 @@ Here is an example that puts these concepts together:
  policy.limits.job-size.min.nnodes = 4
  policy.limits.duration = "4h"
 
-See also: :core:man5:`flux-config-policy`, :core:man5:`flux-config-queues`,
-:core:man5:`flux-config-resource`.
+When named queues are configured, :core:man1:`flux-queue` may be used to
+list them:
 
+.. code-block:: console
+
+ $ flux queue status
+ batch: Job submission is enabled
+ debug: Job submission is enabled
+ Scheduling is enabled
+
+See also: :core:man5:`flux-config-policy`, :core:man5:`flux-config-queues`,
+:core:man5:`flux-config-resource`, :core:man1:`flux-queue`.
 
 ***************
 Flux Accounting
