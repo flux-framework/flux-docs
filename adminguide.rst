@@ -597,7 +597,6 @@ Here is an example that puts these concepts together:
  [policy]
  jobspec.defaults.system.duration = "1m"
  jobspec.defaults.system.queue = "debug"
- limits.job-size.max.nnodes = 8
 
  [[resource.config]]
  hosts = "test[1-4]"
@@ -609,16 +608,66 @@ Here is an example that puts these concepts together:
 
  [queues.debug]
  requires = ["debug"]
- policy.limits.job-size.max.nnodes = 1
  policy.limits.duration = "30m"
 
  [queues.batch]
  requires = ["batch"]
- policy.limits.job-size.min.nnodes = 4
  policy.limits.duration = "4h"
 
-See also: :core:man5:`flux-config-policy`, :core:man5:`flux-config-queues`.
+When named queues are configured, :core:man1:`flux-queue` may be used to
+list them:
 
+.. code-block:: console
+
+ $ flux queue status
+ batch: Job submission is enabled
+ debug: Job submission is enabled
+ Scheduling is enabled
+
+See also: :core:man5:`flux-config-policy`, :core:man5:`flux-config-queues`,
+:core:man5:`flux-config-resource`, :core:man1:`flux-queue`.
+
+Policy Limits
+=============
+
+Job duration and size are unlimited by default, or limited by the scheduler
+feasibility check discussed above, if configured.  When policy limits are
+configured, the job request is compared against them *after* any configured
+jobspec defaults are set, and *before* the scheduler feasibility check.
+If the job would exceed a duration or job size policy limit, the job submission
+is rejected.
+
+.. warning::
+  flux-sched 0.25.0 limitation: jobs that specify nodes but not cores may
+  escape flux-core's ``ncores`` policy limit, and jobs that specify cores but
+  not nodes may escape the ``nnodes`` policy limit.  The flux-sched feasibility
+  check will eventually cover this case.  Until then, be sure to set both
+  ``nnodes`` *and* ``ncores`` limits when configuring job size policy limits.
+
+Limits are global when set in the top level ``[policy]`` table.  Global limits
+may be overridden by a ``policy`` table within a ``[queues]`` entry.  Here is
+an example which implements duration and job size limits for two queues:
+
+.. code-block:: toml
+
+ # Global defaults
+ [policy]
+ jobspec.defaults.system.duration = "1m"
+ jobspec.defaults.system.queue = "debug"
+
+ [queues.debug]
+ requires = ["debug"]
+ policy.limits.duration = "30m"
+ policy.limits.job-size.max.nnodes = 2
+ policy.limits.job-size.max.ncores = 16
+
+ [queues.batch]
+ requires = ["batch"]
+ policy.limits.duration = "8h"
+ policy.limits.job-size.max.nnodes = 16
+ policy.limits.job-size.max.ncores = 128
+
+See also: :core:man5:`flux-config-policy`.
 
 ***************
 Flux Accounting
