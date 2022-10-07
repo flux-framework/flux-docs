@@ -11,7 +11,7 @@ the administration and management of flux-accounting components alongside a
 system instance install of Flux.
 
 .. note::
-    flux-accounting is still beta software and many of the interfaces 
+    flux-accounting is still beta software and many of the interfaces
     documented in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-accounting
@@ -29,15 +29,15 @@ database works with flux-core to calculate job priorities submitted by users,
 enforce basic job accounting limits, and calculate fair-share values for
 users based on previous job usage.
 
-Each user belongs to at least one bank. This user/bank combination is known 
-as an *association*, and henceforth will be referred to as an *association* 
-throughout the rest of this document.  
+Each user belongs to at least one bank. This user/bank combination is known
+as an *association*, and henceforth will be referred to as an *association*
+throughout the rest of this document.
 
 .. note::
     In order to interact with the flux-accounting database, you must have read
     and write permissions to the directory that the database resides in. The
     SQLite documentation_ states that since "SQLite reads and writes an ordinary
-    disk file, the only access permissions that can be applied are the normal 
+    disk file, the only access permissions that can be applied are the normal
     file access permissions of the underlying operating system."
 
 The front-end commands provided by flux-accounting allow an administrator to
@@ -60,7 +60,7 @@ consists of the following tables:
 +--------------------------+--------------------------------------------------+
 
 To view all associations in a flux-accounting database, the ``flux
-account-shares`` command will print this DB information in a hierarchical 
+account-shares`` command will print this DB information in a hierarchical
 format. An example is shown below:
 
 .. code-block:: console
