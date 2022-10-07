@@ -17,6 +17,36 @@ system instance install of Flux.
     This document is in DRAFT form and currently applies to flux-accounting
     version 0.18.1.
 
+********
+Overview
+********
+
+By default, a Flux system instance treats users equally and schedules work
+based on demand, without consideration of a user's history of resource
+consumption, or what share of available resources their organization considers
+they should be entitled to use relative to other competing users.
+
+Flux-accounting adds a database which stores site policy, *banks* with
+with user/project associations, and metrics representing historical usage.
+It also adds a Flux jobtap plugin that sets the priority on each job that
+enters the system based on multiple factors including *fair share* values.
+The priority determines the order in which jobs are considered by the scheduler
+for resource allocation.  In addition, the jobtap plugin holds or rejects job
+requests that exceed user/project specific limits or have exhausted their
+bank allocations.
+
+The database is populated and queried with command line tools prefixed with
+``flux account``.  Accounting scripts are run regularly by
+:core:man1:`flux-cron` to pull historical job information from the Flux
+``job-archive`` database to the accounting database, and to push bank and limit
+data to the jobtap plugin.
+
+At this time, the database is expected to be installed on a cluster management
+node, co-located with the rank 0 Flux broker, managing accounts for that
+cluster only.  Sites would typically populate the database and keep it up to
+date automatically using information regularly pulled or pushed from an
+external source like an identity management system.
+
 ***********************
 Database Administration
 ***********************
