@@ -162,6 +162,70 @@ FLUID
   Flux Locally Unique ID, used for Flux job IDs, defined by
   `RFC 19 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_19.html>`_.
 
+Security
+========
+
+The Flux brokers that make up a system instance are started on each node by
+systemd.  The brokers run as an unprivileged system user, typically ``flux``.
+This user is termed the *instance owner*.  The instance owner has complete
+control of the Flux instance.
+
+A tree-based overlay network is established among brokers, rooted at the
+management node.  This network is secured and encrypted using the
+`ZeroMQ CURVE <https://rfc.zeromq.org/spec:25>`_ mechanism.  This requires
+a single CURVE certificate to be generated and installed on all nodes,
+typically ``/etc/flux/system/curve.cert``, before Flux begins operation.
+The certificate must be readable by the instance owner but should be carefully
+protected from access by other users since disclosure could allow overlay
+network security to be bypassed.
+
+On each node, users and tools may connect to the local system instance broker
+via a UNIX domain socket at a well known location, usually ``/run/flux/local``.
+Users are authenticated on this socket using the SO_PEERCRED socket option.
+Once connected, a user may inject messages into the overlay network.  Messages
+are stamped by the broker at ingress with the user's authenticated userid,
+and a *role mask* that identifies any special capabilities granted to the user.
+Messages that are sent by the ``flux`` user are stamped with the instance owner
+role, while other users, or *guests*, are stamped with a role that grants
+minimal access.  Note that the ``root`` user is considered a guest user with
+no special privilege in Flux, but sites can choose to grant ``root`` the owner
+role by configuration if desired.  See :security:man5:`flux-config-security`.
+
+Messages are used for remote procedure calls.  A Flux service may allow or deny
+an RPC request depending on its message rolemask or userid.  For example,
+only the instance owner can drain a node because the drain service only allows
+drain request messages that have the owner role.  Similarly, any job can be
+canceled by a cancel request message with the owner role, but in addition, jobs
+can be canceled by guests whose message userid matches the target job userid.
+
+A Flux job is launched when brokers launch one :core:man1:`flux-shell` per
+node with the credentials of the user that submitted the job.  When that is a
+guest user, Flux employs a setuid helper called the :security:man8:`flux-imp`
+to launch the shells with the guest credentials.  The shells in turn launch
+one or more user processes that compose the parallel job.
+
+The IMP is restricted by configuration to only allow the ``flux`` user to run
+it, and to only launch the system Flux job shell executable.  In addition, job
+requests are signed by the submitting user with
+`MUNGE <https://github.com/dun/munge>`_, and the IMP verifies this signature
+before starting the shells.  The current working directory of the job, the
+environment, and the executable command line are examples of job request data
+protected by the MUNGE signature.
+
+When Flux starts a batch job or allocation, it starts an independent,
+single-user Flux instance with brokers running as the submitting user.  The new
+instance owner has complete control over this Flux instance, which cannot use
+the IMP to launch jobs as guests, and does not permit guests to connect to
+its UNIX domain sockets.  Its overlay network is also secured with the ZeroMQ
+CURVE mechanism, but instead of starting with a shared certificate read from
+disk, each broker generates a certificate in memory on the fly, then exchanges
+public keys and socket endpoints with peer brokers using the PMI service
+offered by the Flux shells of the enclosing instance.  In other words, the
+single-user Flux instance bootstraps like an MPI parallel program.
+
+See also:
+`RFC 12 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_12.html>`_,
+`RFC 15 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_15.html>`_.
 
 ************
 Installation
