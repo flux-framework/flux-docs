@@ -268,8 +268,9 @@ flux-sched
   The Fluxion graph-based scheduler.
 
 flux-accounting (optional)
-  Accounting database of user/bank usage information, and a priority plugin.
-  Install on management node (early preview users only).
+  Management of limits for individual users/projects, banks, and prioritization
+  based on fair-share accounting.  For more information on how to configure
+  run flux-accounting, please refer to :ref:`flux-accounting-guide`.
 
 .. note::
     Flux packages are currently maintained only for the
@@ -732,110 +733,6 @@ an example which implements duration and job size limits for two queues:
  policy.limits.job-size.max.ncores = 128
 
 See also: :core:man5:`flux-config-policy`.
-
-***************
-Flux Accounting
-***************
-
-If ``flux-accounting`` is installed, some additional setup on the management
-node is needed.  All commands shown below should be run as the ``flux`` user.
-
-.. note::
-    The flux-accounting database must contain user bank assignments for
-    all users allowed to run on the system.  If a site has an identity
-    management system that adds and removes user access, the accounting
-    database should be included in its update process so it remains in sync
-    with access controls.
-
-Accounting Database Creation
-============================
-
-The accounting database is created with the command below.  Default
-parameters are assumed, including the accounting database path of
-``/var/lib/flux/FluxAccounting.db``.
-
-.. code-block:: console
-
- $ sudo -u flux flux account create-db
-
-.. note::
-    The flux accounting commands should always be run as the flux user. If they
-    are run as root, some commands that rewrite the database could change the
-    owner to root, causing flux-accounting scripts run from flux cron to fail.
-
-Banks must be added to the system, for example:
-
-.. code-block:: console
-
- $ sudo -u flux flux account add-bank root 1
- $ sudo -u flux flux account add-bank --parent-bank=root sub_bank_A 1
-
-Users that are permitted to run on the system must be assigned banks,
-for example:
-
-.. code-block:: console
-
- $ sudo -u flux flux account add-user --username=user1234 --bank=sub_bank_A
-
-Enabling Multi-factor Priority
-==============================
-
-When flux-accounting is installed, the job manager uses a multi-factor
-priority plugin to calculate job priorities.  The Flux system instance must
-configure the ``job-manager`` to load this plugin.
-
-.. code-block:: toml
-
- [job-manager]
- plugins = [
-   { load = "mf_priority.so" },
- ]
-
-See also: :core:man5:`flux-config-job-manager`.
-
-Automatic Accounting Database Updates
-=====================================
-
-If updating flux-accounting to a newer version on a system where a
-flux-accounting DB is already configured and set up, it is important to update
-the database schema, as tables and columns may have been added or removed in
-the newer version. The flux-accounting database schema can be updated with the
-following command:
-
-.. code-block:: console
-
- $ sudo -u flux flux account-update-db
-
-A series of actions should run periodically to keep the accounting
-system in sync with Flux:
-
-- The job-archive module scans inactive jobs and dumps them to a sqlite
-  database.
-- A script reads the archive database and updates the job usage data in the
-  accounting database.
-- A script updates the per-user fair share factors in the accounting database.
-- A script pushes updated factors to the multi-factor priority plugin.
-
-The Flux system instance must configure the ``job-archive`` module to run
-periodically:
-
-.. code-block:: toml
-
- [archive]
- period = "1m"
-
-See also: :core:man5:`flux-config-archive`.
-
-The scripts should be run by :core:man1:`flux-cron`:
-
-.. code-block:: console
-
- # /etc/flux/system/cron.d/accounting
-
- 30 * * * * bash -c "flux account update-usage --job-archive_db_path=/var/lib/flux/job-archive.sqlite; flux account-update-fshare; flux account-priority-update"
-
-See also :ref:`flux-accounting-guide`.
-
 
 *************************
 Day to day administration

@@ -6,10 +6,6 @@ Flux Accounting Guide
 
 *key terms: association, bank*
 
-The *Flux Accounting Administrator's Guide* documents relevant information for
-the administration and management of flux-accounting components alongside a
-system instance install of Flux.
-
 .. note::
     flux-accounting is still beta software and many of the interfaces
     documented in this guide may change with regularity.
@@ -46,6 +42,113 @@ node, co-located with the rank 0 Flux broker, managing accounts for that
 cluster only.  Sites would typically populate the database and keep it up to
 date automatically using information regularly pulled or pushed from an
 external source like an identity management system.
+
+******************************
+Installation and Configuration
+******************************
+
+System Prerequisites
+====================
+
+The :ref:`admin-guide` documents relevant information for
+the administration and management of a Flux system instance.
+
+The following instructions assume that Flux is configured and working, that
+the Flux *statedir* (``/var/lib/flux``) is writable by the ``flux`` user,
+and that the ``flux`` user is the system instance owner.
+
+Installing Software Packages
+============================
+
+The ``flux-accounting`` package should be installed on the management node
+from your Linux distribution package manager.
+
+Accounting Database Creation
+============================
+
+The accounting database is created with the command below.  Default
+parameters are assumed, including the accounting database path of
+``/var/lib/flux/FluxAccounting.db``.
+
+.. code-block:: console
+
+ $ sudo -u flux flux account create-db
+
+.. note::
+    The flux accounting commands should always be run as the flux user. If they
+    are run as root, some commands that rewrite the database could change the
+    owner to root, causing flux-accounting scripts run from flux cron to fail.
+
+Banks must be added to the system, for example:
+
+.. code-block:: console
+
+ $ sudo -u flux flux account add-bank root 1
+ $ sudo -u flux flux account add-bank --parent-bank=root sub_bank_A 1
+
+Users that are permitted to run on the system must be assigned banks,
+for example:
+
+.. code-block:: console
+
+ $ sudo -u flux flux account add-user --username=user1234 --bank=sub_bank_A
+
+Enabling Multi-factor Priority
+==============================
+
+When flux-accounting is installed, the job manager uses a multi-factor
+priority plugin to calculate job priorities.  The Flux system instance must
+configure the ``job-manager`` to load this plugin.
+
+.. code-block:: toml
+
+ [job-manager]
+ plugins = [
+   { load = "mf_priority.so" },
+ ]
+
+See also: :core:man5:`flux-config-job-manager`.
+
+Automatic Accounting Database Updates
+=====================================
+
+If updating flux-accounting to a newer version on a system where a
+flux-accounting DB is already configured and set up, it is important to update
+the database schema, as tables and columns may have been added or removed in
+the newer version. The flux-accounting database schema can be updated with the
+following command:
+
+.. code-block:: console
+
+ $ sudo -u flux flux account-update-db
+
+A series of actions should run periodically to keep the accounting
+system in sync with Flux:
+
+- The job-archive module scans inactive jobs and dumps them to a sqlite
+  database.
+- A script reads the archive database and updates the job usage data in the
+  accounting database.
+- A script updates the per-user fair share factors in the accounting database.
+- A script pushes updated factors to the multi-factor priority plugin.
+
+The Flux system instance must configure the ``job-archive`` module to run
+periodically:
+
+.. code-block:: toml
+
+ [archive]
+ period = "1m"
+
+See also: :core:man5:`flux-config-archive`.
+
+The scripts should be run by :core:man1:`flux-cron`:
+
+.. code-block:: console
+
+ # /etc/flux/system/cron.d/accounting
+
+ 30 * * * * bash -c "flux account update-usage --job-archive_db_path=/var/lib/flux/job-archive.sqlite; flux account-update-fshare; flux account-priority-update"
 
 ***********************
 Database Administration
