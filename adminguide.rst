@@ -107,6 +107,32 @@ shell plugins
   the :core:man1:`flux-mini` commands.  ``affinity``, ``pmi``, and ``pty``
   are examples of Flux shell plugins.
 
+connectors
+  Flux commands open a connection to a particular Flux instance by specifying
+  a URI.  The *scheme* portion of the URI may refer to a *native* connection
+  method such as ``local`` or ``ssh``.  Native connection methods are
+  implemented as plugins called *connectors*.  See :core:man3:`flux_open`.
+
+URI resolver plugins
+  Other URI schemes must be *resolved* to a native form before they can be used.
+  Resolvers for new schemes may be added as plugins.  For example, the ``lsf``
+  resolver plugin enables LSF users to connect to Flux instances running as LSF
+  jobs by specifying a ``lsf:JOBID`` URI.  See :core:man1:`flux-uri`.
+
+validator plugins
+  Jobs may be rejected at ingest if their jobspec fails one of a set of
+  configured validator plugins.  The basic validator ensures the jobspec
+  conforms to the jobspec specification.  The ``feasibility`` plugin rejects
+  job that the scheduler determines would be unable to run given the instance's
+  resource set.  The ``require-instance`` plugin rejects jobs that do not run
+  in a new Flux instance.  See :core:man5:`flux-config-ingest`.
+
+frobnicator plugins
+  The frobnicator allows a set of configured plugins to modify jobspec at
+  submission time.  For example the ``defaults`` plugin sets configured default
+  values for jobspec attributes such as *duration* and *queue*.  See
+  :core:man5:`flux-config-ingest`.
+
 Independently developed Flux components are generally packaged and versioned
 separately.  Each package may provide one or more of the above components
 as well as man pages and :core:man1:`flux` subcommands.  At this stage of Flux
