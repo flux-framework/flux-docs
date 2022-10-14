@@ -34,6 +34,22 @@ F58 to another using the :core:man1:`flux-job` ``id`` subcommand, e.g.
 
 .. _flux_run_mac:
 
+With copy-and-paste, auto-completion, globbing, etc., it shouldn't be necessary
+to *type* a job ID with the ``ƒ`` prefix that often, but should you need to,
+use your terminal's method for inputting a
+`Unicode U+0192 <https://codepoints.net/U+0192?lang=en>`_:
+
+gnome terminal
+   Press ``ctrl`` + ``shift`` + ``U`` then type ``0192`` and press ``space``
+   or ``enter``.
+
+mac
+   Press ``option`` + ``f``.
+
+If your `Konsole <https://konsole.kde.org/>`_ terminal displays ``ƒ`` as ``Æ``,
+check that Settings →  Edit →  Profile →  Advanced →  Encoding: Default
+Character Encoding is set to ``UTF-8``, not ``ISO8859-1``.
+
 Does flux run on a mac?
 =======================
 
