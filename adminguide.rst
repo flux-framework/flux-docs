@@ -448,6 +448,8 @@ Example file installed path: ``/etc/flux/system/conf.d/system.toml``
  default_bind = "tcp://eth0:%p"
  default_connect = "tcp://%h:%p"
 
+ # Rank 0 is the TBON parent of all brokers unless explicitly set with
+ # parent directives.
  hosts = [
     { host = "test[1-16]" },
  ]
