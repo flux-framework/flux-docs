@@ -27,11 +27,10 @@ Overview and Background
 Flux Architecture
 =================
 
-The base component of Flux is the :core:man1:`flux-broker` executable.  A Flux
-instance consists of one or more ranked Flux brokers communicating over a
+A *Flux instance* consists of one or more Flux brokers communicating over a
 tree-based overlay network.  Most of Flux's distributed systems and services
-that aren't directly associated with a running job are embedded in the broker
-executable or its dynamically loaded plugins.
+that aren't directly associated with a running job are embedded in the
+:core:man1:`flux-broker` executable or its dynamically loaded plugins.
 
 Flux may be used in *single-user mode*, where a Flux instance is launched as
 a parallel job, and the *instance owner* (the user that submitted the parallel
@@ -42,7 +41,7 @@ allocations are examples of single user Flux instances.
 When Flux is deployed as the *system instance*, or native resource manager on
 a cluster, its brokers still run with the credentials of a non-privileged
 system user, typically ``flux``.  However, to support multiple users and
-act as a long running service, it behaves somewhat differently:
+act as a long running service, it must be configured to behave differently:
 
 - The Flux broker is started directly by systemd on each node instead of
   being launched as a process in a parallel job.
