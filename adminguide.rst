@@ -281,7 +281,9 @@ and should be installed from your Linux distribution package manager.
 
 flux-security
   APIs for job signing, and the IMP, a privileged program for starting
-  processes as multiple users. Install on all nodes (required).
+  processes as multiple users. Install on all nodes (required).  If building
+  flux-security from source, be sure to configure ``--with-pam`` to include
+  Pluggable Authentication Modules (PAM) support.
 
 flux-core
   All of the core components of Flux, including the Flux broker.
@@ -369,7 +371,27 @@ Example file installed path: ``/etc/flux/imp/conf.d/imp.toml``
  allowed-users = [ "flux" ]
  allowed-shells = [ "/usr/libexec/flux/flux-shell" ]
 
+ # Enable the "flux" PAM stack (requires PAM configuration file)
+ pam-support = true
+
 See also: :security:man5:`flux-config-security-imp`.
+
+Configuring PAM
+---------------
+
+If PAM support is enabled in the IMP config, the ``flux`` PAM stack must
+exist and have at least one ``auth`` and one ``session`` module.
+
+Example file installed path: ``/etc/pam.d/flux``
+
+.. code-block:: console
+
+  auth    required pam_localuser.so
+  session required pam_limits.so
+
+The ``pam_limits.so`` module is useful for setting default job resource
+limits.  If it is not used, jobs run in the system instance may inherit
+inappropriate limits from ``flux-broker``.
 
 Configuring the Network Certificate
 ===================================
