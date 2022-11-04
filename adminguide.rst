@@ -299,6 +299,10 @@ flux-accounting (optional)
   based on fair-share accounting.  For more information on how to configure
   run flux-accounting, please refer to :ref:`flux-accounting-guide`.
 
+flux-pam (optional)
+  A PAM module that can enable users to login to compute nodes that are
+  running their jobs.
+
 .. note::
     Flux packages are currently maintained only for the
     `TOSS <https://computing.llnl.gov/projects/toss-speeding-commodity-cluster-computing>`_
@@ -375,8 +379,8 @@ Example file installed path: ``/etc/flux/imp/conf.d/imp.toml``
 
 See also: :security:man5:`flux-config-security-imp`.
 
-Configuring PAM
----------------
+Configuring the Flux PAM Stack
+------------------------------
 
 If PAM support is enabled in the IMP config, the ``flux`` PAM stack must
 exist and have at least one ``auth`` and one ``session`` module.
@@ -782,6 +786,22 @@ an example which implements duration and job size limits for two queues:
  policy.limits.job-size.max.ncores = 128
 
 See also: :core:man5:`flux-config-policy`.
+
+Use PAM to Restrict Access to Compute Nodes
+===========================================
+
+If Pluggable Authentication Modules (PAM) are in use within a cluster, it may
+be convenient to use the ``pam_flux.so`` *account* module to configure a PAM
+stack that denies users access to compute nodes unless they have a job running
+there.
+
+Install the ``flux-pam`` package to make the ``pam_flux.so`` module available
+to be added to one or more PAM stacks, e.g.
+
+.. code-block:: console
+
+  account  sufficient pam_flux.so
+
 
 *************************
 Day to day administration
