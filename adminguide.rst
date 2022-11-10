@@ -272,6 +272,26 @@ Flux uses `hwloc <https://www.open-mpi.org/projects/hwloc/>`_ to verify that
 configured resources are present on nodes.  Ensure that the system installed
 version includes any plugins needed for the hardware, especially GPUs.
 
+A Word about Core Dumps
+-----------------------
+
+It is helpful to enable core dumps from the system instance ``flux-broker``
+(especially rank 0) so that useful bug reports can be filed should the broker
+crash.  Usually :linux:man8:`systemd-coredump` handles this, which makes core
+files and stack traces accessible with :linux:man1:`coredumpctl`.
+
+Some sites choose instead to configure the ``kernel.core_pattern``
+:linux:man8:`sysctl` parameter to a relative file path, which directs core
+files to the program's current working directory.  Please note that the system
+instance broker runs as the ``flux`` user with a working directory of ``/``
+and thus would not have write permission on its current working directory.
+
+.. note::
+  If you do observe a ``flux-broker`` crash, please open a github issue at
+  https://github.com/flux-framework/flux-core/issues and include the Flux
+  version, relevant log messages from ``journalctl -u flux``, and a stack
+  trace, if available.
+
 Installing Software Packages
 ============================
 
