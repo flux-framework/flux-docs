@@ -88,6 +88,10 @@ domainrefs = {
         'text': '%s(7)',
         'url': 'http://man7.org/linux/man-pages/man7/%s.7.html',
     },
+    'linux:man8': {
+        'text': '%s(8)',
+        'url': 'http://man7.org/linux/man-pages/man8/%s.8.html',
+    },
     'core:man1': {
         'text': '%s(1)',
         'url': 'https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/%s.html',
