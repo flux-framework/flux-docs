@@ -1,4 +1,6 @@
-.. Copyright 2020 Lawrence Livermore National Security, LLC
+:hide-navigation:
+
+.. Copyright 2020-2023 Lawrence Livermore National Security, LLC
    (c.f. AUTHORS, NOTICE.LLNS, COPYING)
 
    SPDX-License-Identifier: (LGPL-3.0)
@@ -10,6 +12,9 @@
 
 Welcome to Flux's documentation!
 ================================
+
+.. image:: images/logo.png
+  :width: 600px
 
 Flux is a flexible framework for resource management, built for your site.
 The framework consists of a suite of projects, tools, and libraries which may be used to build site-custom resource managers for High Performance Computing centers.
@@ -35,13 +40,8 @@ The framework consists of a suite of projects, tools, and libraries which may be
 .. toctree::
    :maxdepth: 1
    :caption: Sub-Projects
-   :hidden:
 
-   flux-core <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/index.html>
-   flux-sched <https://flux-framework.readthedocs.io/projects/flux-sched/en/latest/index.html>
-   flux-security <https://flux-framework.readthedocs.io/projects/flux-security/en/latest/index.html>
-   RFCs <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/index.html>
-   Workflow Examples <https://flux-framework.readthedocs.io/projects/flux-workflow-examples/en/latest/index.html>
+   projects
 
 
 Contributor Relevant RFCs

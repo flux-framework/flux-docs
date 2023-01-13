@@ -604,7 +604,7 @@ something like this:
    $ flux mini run -o verbose=2 -N2 ./hello
    0.731s: flux-shell[1]: DEBUG: 1: tasks [1] on cores 0-3
    0.739s: flux-shell[1]: DEBUG: Loading /usr/local/etc/flux/shell/initrc.lua
-   0.744s: flux-shell[1]: TRACE: Sucessfully loaded flux.shell module
+   0.744s: flux-shell[1]: TRACE: Successfully loaded flux.shell module
    0.744s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/initrc.lua
    0.757s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/intel_mpi.lua
    0.758s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/mvapich.lua
@@ -613,7 +613,7 @@ something like this:
    0.721s: flux-shell[0]: DEBUG: 0: task_count=2 slot_count=2 cores_per_slot=1 slots_per_node=1
    0.722s: flux-shell[0]: DEBUG: 0: tasks [0] on cores 0-3
    0.730s: flux-shell[0]: DEBUG: Loading /usr/local/etc/flux/shell/initrc.lua
-   0.739s: flux-shell[0]: TRACE: Sucessfully loaded flux.shell module
+   0.739s: flux-shell[0]: TRACE: Successfully loaded flux.shell module
    0.739s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/initrc.lua
    0.753s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/intel_mpi.lua
    0.758s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/mvapich.lua

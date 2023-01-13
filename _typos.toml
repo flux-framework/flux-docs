@@ -1,0 +1,5 @@
+# Ignore until we can skip regex
+# https://github.com/crate-ci/typos/issues/651
+[type.rst]
+extend-glob = ["faqs.rst"]
+check-file = false

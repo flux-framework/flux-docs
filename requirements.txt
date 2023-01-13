@@ -1,6 +1,16 @@
 Pygments>=2.4
-sphinx==3.4.3
+sphinx
 sphinxcontrib-spelling
 sphinx-rtd-theme>=0.5.2
 sphinx-copybutton
-docutils>=0.14,<0.18
+docutils
+Jinja2<3.1
+markupsafe==2.0.1
+# waiting on dark mode
+# sphinx_material
+sphinx-immaterial
+recommonmark
+sphinx_markdown_tables
+sphinx-copybutton
+readthedocs-sphinx-search
+myst-parser
