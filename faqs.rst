@@ -4,7 +4,40 @@
 FAQs
 ####
 
-Some frequently asked questions about flux and their answers.
+Some frequently asked questions about flux and their answers! 🤔️
+
+.. _background_faq:
+
+
+**********
+Background
+**********
+
+What is Flux Framework?
+=======================
+
+Flux is a flexible framework for resource management, built for your site. 
+The core framework here consists of a suite of projects, tools, and libraries which may be used to build site-custom resource managers for 
+High Performance Computing centers. The set of core projects are described in this documentation, and our
+larger family of projects can be seen on `our portal page <https://flux-framework.org>`_.
+
+What does it mean for a cluster to deploy Flux?
+===============================================
+
+Most of the time when someone talks about Flux, they will be describing the combined install 
+of several projects here that manifest in a full cluster to submit workflows.
+This cluster is comparable to other job managers like SLURM or SGE in that it can be installed
+as the main workload manager for a site.
+
+Where does Flux work?
+=====================
+
+You likely are associating Flux with high performance computing in that it is comparable 
+to other job managers. However, Flux has a unique ability to nest, meaning you (as a user) could 
+launch a Flux Instance under a slurm allocation, for example. Along with scheduler nesting,  
+you can easily demo Flux in a container, or even used in Kubernetes with the  
+`Flux Operator <https://flux-framework.org/flux-operator>`_. We have a vision for Flux to
+allow for converged computing, or making it easy to move between traditional HPC and cloud.
 
 
 *****************
@@ -50,7 +83,7 @@ If your `Konsole <https://konsole.kde.org/>`_ terminal displays ``ƒ`` as ``Æ``
 check that Settings →  Edit →  Profile →  Advanced →  Encoding: Default
 Character Encoding is set to ``UTF-8``, not ``ISO8859-1``.
 
-Does flux run on a mac?
+Does flux run on a Mac?
 =======================
 
 Not yet. We have an open `issue <https://github.com/flux-framework/flux-core/issues/2892>`_
@@ -65,6 +98,10 @@ How do I report a bug?
 You can read up on reporting bugs here: :ref:`contributing` or report one
 directly for flux `core <https://github.com/flux-framework/flux-core/issues>`_
 or `sched <https://github.com/flux-framework/flux-sched/issues>`_.
+
+*******************
+Resources Questions
+*******************
 
 .. _not_managing_all_resources:
 
@@ -107,47 +144,6 @@ core and GPU bindings, so if resources are missing, affinity and binding
 from the parent resource manager should be checked.  In Slurm, try
 ``--mpibind=off``, in LSF jsrun, try ``--bind=none``.
 
-.. _launch_large_num_jobs:
-
-How do I efficiently launch a large number of jobs?
-===================================================
-
-If you have more than 10K fast-cycling jobs to run, here are some tips that
-may help improve efficiency and throughput:
-
-- Create a batch job or allocation to contain the jobs in a Flux sub-instance.
-  This improves performance over submitting them directly to the Flux system
-  instance and reduces the impact of your jobs on system resources and other
-  users.  See also: :ref:`batch`.
-- If scripting ``flux mini submit`` commands, avoid the pattern of one command
-  per job as each command invocation has a startup cost.  Instead try to
-  combine similar job submissions with ``flux mini submit --cc=IDSET``
-  or `flux-mini builksubmit <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_.
-- By default ``flux mini submit --cc=IDSET`` and ``flux mini bulksubmit``
-  will exit once all jobs have been submitted.  To wait for all jobs to
-  complete before proceeding, use the ``--wait`` or ``--watch`` options to
-  these tools.
-- If multiple commands must be used to submit jobs before waiting for them,
-  consider using ``--flags=waitable`` and ``flux job wait --all`` to wait for
-  jobs to complete and capture any errors.
-- If the jobs to be submitted cannot be combined with the ``flux mini`` tools,
-  develop a workflow management script using the
-  `Flux python interface <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>`_.  The
-  `flux-mini <https://github.com/flux-framework/flux-core/blob/master/src/cmd/flux-mini.py>`_
-  command itself is a python program that can be a useful reference.
-- If jobs produce a significant amount of standard I/O, use the
-  :core:man1:`flux-mini` ``--output`` option to redirect it to files.  By
-  default, standard I/O is captured in the Flux key value store, which holds
-  other job metadata and may become a bottleneck if jobs generate a large
-  amount of output.
-- When handling many fast-cycling jobs, the rank 0 Flux broker may require
-  significant memory and cpu.  Consider excluding that node from scheduling
-  with ``flux resource drain 0``.
-
-Since Flux can be launched as a parallel job within foreign resource managers
-like SLURM and LSF, your efforts to develop an efficient batch or workflow
-management script that runs within a Flux instance can be portable to those
-systems.
 
 .. _overcommit_resources:
 
@@ -244,6 +240,53 @@ Note the following:
   are not cleaned up when Flux exits.
 
 See also: :core:man7:`flux-broker-attributes`.
+
+**************
+Jobs Questions
+**************
+
+.. _launch_large_num_jobs:
+
+How do I efficiently launch a large number of jobs?
+===================================================
+
+If you have more than 10K fast-cycling jobs to run, here are some tips that
+may help improve efficiency and throughput:
+
+- Create a batch job or allocation to contain the jobs in a Flux sub-instance.
+  This improves performance over submitting them directly to the Flux system
+  instance and reduces the impact of your jobs on system resources and other
+  users.  See also: :ref:`batch`.
+- If scripting ``flux mini submit`` commands, avoid the pattern of one command
+  per job as each command invocation has a startup cost.  Instead try to
+  combine similar job submissions with ``flux mini submit --cc=IDSET``
+  or `flux-mini builksubmit <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_.
+- By default ``flux mini submit --cc=IDSET`` and ``flux mini bulksubmit``
+  will exit once all jobs have been submitted.  To wait for all jobs to
+  complete before proceeding, use the ``--wait`` or ``--watch`` options to
+  these tools.
+- If multiple commands must be used to submit jobs before waiting for them,
+  consider using ``--flags=waitable`` and ``flux job wait --all`` to wait for
+  jobs to complete and capture any errors.
+- If the jobs to be submitted cannot be combined with the ``flux mini`` tools,
+  develop a workflow management script using the
+  `Flux python interface <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>`_.  The
+  `flux-mini <https://github.com/flux-framework/flux-core/blob/master/src/cmd/flux-mini.py>`_
+  command itself is a python program that can be a useful reference.
+- If jobs produce a significant amount of standard I/O, use the
+  :core:man1:`flux-mini` ``--output`` option to redirect it to files.  By
+  default, standard I/O is captured in the Flux key value store, which holds
+  other job metadata and may become a bottleneck if jobs generate a large
+  amount of output.
+- When handling many fast-cycling jobs, the rank 0 Flux broker may require
+  significant memory and cpu.  Consider excluding that node from scheduling
+  with ``flux resource drain 0``.
+
+Since Flux can be launched as a parallel job within foreign resource managers
+like SLURM and LSF, your efforts to develop an efficient batch or workflow
+management script that runs within a Flux instance can be portable to those
+systems.
+
 
 .. _mimic_slurm_jobstep:
 

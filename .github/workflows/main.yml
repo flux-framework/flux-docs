@@ -1,3 +1,4 @@
+name: flux-docs build and check
 on: pull_request
 jobs:
   check-pr:
@@ -24,4 +25,4 @@ jobs:
     - name: Check Spelling
       uses: crate-ci/typos@7ad296c72fa8265059cc03d1eda562fbdfcd6df2 # v1.9.0
       with:
-        files: "*.rst"
+        files: "*.rst */*.rst */*/*.rst"
