@@ -19,31 +19,13 @@ A quick introduction to Flux and flux-core.
 Building the Code
 -----------------
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Spack: Recommended for curious users
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _docker_installation:
 
-Flux maintains an up-to-date package in the `spack
-<https://github.com/spack/spack>`_ develop branch. If you’re already using
-spack, just run the following to install flux and all necessary dependencies:
+^^^^^^
+Docker
+^^^^^^
 
-.. code-block:: console
-
-  $ spack install flux-sched
-
-The above command will build and install the latest tagged version of
-flux-sched and flux-core.  To install the latest master branches, use the
-``@master`` version specifier: ``spack install flux-sched@master``. If
-you want Flux to manage and schedule Nvidia GPUs, include the ``+cuda``
-variant: ``spack install flux-sched+cuda``.  This builds a CUDA-aware
-version of hwloc.
-
-
-For instructions on installing spack, see `Spack's installation documentation <https://spack.readthedocs.io/en/latest/getting_started.html#installation>`_.
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Docker: Recommended for quick, single-node deployments
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    Recommended for quick, single-node deployments
 
 Flux has a continuously updated Docker image available for download on
 `Docker Hub <https://hub.docker.com/u/fluxrm>`_. If you already have docker
@@ -99,11 +81,40 @@ our testsuite within a docker container, you can use our helper script:
 .. note::
    Both the flux-core and flux-sched repositories have the ``docker-run-checks.sh`` helper script
 
+.. _spack_installation:
+
+^^^^^
+Spack
+^^^^^
+
+    Recommended for curious users
+
+Flux maintains an up-to-date package in the `spack
+<https://github.com/spack/spack>`_ develop branch. If you’re already using
+spack, just run the following to install flux and all necessary dependencies:
+
+.. code-block:: console
+
+  $ spack install flux-sched
+
+The above command will build and install the latest tagged version of
+flux-sched and flux-core.  To install the latest master branches, use the
+``@master`` version specifier: ``spack install flux-sched@master``. If
+you want Flux to manage and schedule Nvidia GPUs, include the ``+cuda``
+variant: ``spack install flux-sched+cuda``.  This builds a CUDA-aware
+version of hwloc.
+
+
+For instructions on installing spack, see `Spack's installation documentation <https://spack.readthedocs.io/en/latest/getting_started.html#installation>`_.
+
 .. _manual_installation:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Manual Installation: Recommended for developers and contributors
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
+Manual Installation
+^^^^^^^^^^^^^^^^^^^
+
+
+   Recommended for developers and contributors
 
 Ensure the latest list of requirements are installed. The
 current list of build requirements are detailed `here <https://github.com/flux-framework/flux-core#readme>`_.

@@ -25,24 +25,16 @@ The framework consists of a suite of projects, tools, and libraries which may be
 
    quickstart
    faqs
-   debugging
-   batch
-   hierarchies
-   LLNL Introduction to Flux <https://hpc-tutorials.llnl.gov/flux/>
-   coral
-   coral2
-   adminguide
-   flux-accounting-guide
+   jobs/index
+   tutorials/index
+   guides/index
    contributing
-   Flux Python API <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>
-   stats
 
 .. toctree::
    :maxdepth: 1
    :caption: Sub-Projects
 
    projects
-
 
 Contributor Relevant RFCs
 -------------------------
@@ -65,9 +57,3 @@ Manual Pages
 - :ref:`core:man-pages`
 - :ref:`sched:man-pages`
 - :ref:`security:man-pages`
-
-
-Workflow Examples
------------------
-
-- :doc:`workflow-examples:index`
