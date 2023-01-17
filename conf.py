@@ -26,9 +26,6 @@ import sys
 import sphinx_immaterial
 from recommonmark.transform import AutoStructify  # noqa
 
-FORCE_CLASSIC = os.environ.get("SPHINX_MATERIAL_FORCE_CLASSIC", False)
-FORCE_CLASSIC = FORCE_CLASSIC in ("1", "true")
-
 sys.path.insert(0, os.path.abspath("."))
 
 # -- Project information -----------------------------------------------------
@@ -57,7 +54,6 @@ if rtd_version not in ["stable", "latest"]:
 extensions = [
     "sphinx.ext.intersphinx",
     "sphinxcontrib.spelling",
-    "sphinx_copybutton",
     "domainrefs",
     "myst_parser",
     "sphinx.ext.autosummary",
@@ -69,7 +65,6 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     "sphinx_markdown_tables",
-    "sphinx_search.extension",
 ]
 
 # sphinxcontrib.spelling settings
@@ -299,13 +294,6 @@ html_theme_options = {
 
 todo_include_todos = True
 sphinx_immaterial_bundle_source_maps = True
-
-if FORCE_CLASSIC:
-    print("!!!!!!!!! Forcing classic !!!!!!!!!!!")
-    html_theme = "classic"
-    html_theme_options = {}
-    html_sidebars = {"**": ["globaltoc.html", "localtoc.html", "searchbox.html"]}
-
 
 # Custom sphinx material variables
 theme_logo_icon = "images/flux-logo.png"

@@ -11,6 +11,4 @@ markupsafe==2.0.1
 sphinx-immaterial
 recommonmark
 sphinx_markdown_tables
-sphinx-copybutton
-readthedocs-sphinx-search
 myst-parser
