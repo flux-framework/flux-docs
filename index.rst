@@ -29,6 +29,7 @@ The framework consists of a suite of projects, tools, and libraries which may be
    tutorials/index
    guides/index
    contributing
+   glossary
 
 .. toctree::
    :maxdepth: 1
