@@ -4,7 +4,9 @@
 Quick Start
 ============
 
-A quick introduction to Flux and flux-core.
+A quick introduction to Flux and flux-core. For reference, the :ref:`Glossary`
+contains definitions for a number of terms, Flux-specific concepts, and
+acronyms mentioned in this guide and throughout our documentation site.
 
 .. note::
    If your site runs Flux natively, you may wish to check with your help desk
@@ -188,8 +190,8 @@ Starting a Flux Instance
 
 In order to use Flux, you first must initiate a Flux *instance*.
 
-A Flux instance is composed of a group of ``flux-broker`` processes
-which are launched via any parallel launch utility that supports PMI. For
+A Flux instance is composed of a group of :ref:`flux-broker<flux-broker>` processes
+which are launched via any parallel launch utility that supports :ref:`PMI<pmi>`. For
 example, ``srun``, ``mpiexec.hydra``, etc., or locally for testing via the
 ``flux start`` command with the ``-s, --test-size=N`` option.
 
@@ -200,7 +202,7 @@ To start a Flux instance with 4 brokers on the local node, use ``flux start``:
   $ flux start --test-size=4
   $
 
-A Flux instance can be also be started under `Slurm
+A Flux :ref:`instance<flux-instance>` can be also be started under `Slurm
 <https://github.com/chaos/slurm>`_ using PMI. To start by using ``srun(1)``,
 simply run the ``flux start`` command without the ``--test-size`` option under
 a Slurm job. You will likely want to start a single broker process per node:
@@ -355,7 +357,7 @@ registered by default with each module.
 Flux KVS
 --------
 
-The key-value store (kvs) is a core component of a Flux instance. The
+The :ref:`kvs<kvs>` (Key-Value Store) is a core component of a Flux instance. The
 ``flux kvs`` command provides a utility to list and manipulate values of
 the KVS. For example, resource information for the current instance is loaded
 into the kvs by the ``resource`` module at instance startup. The
