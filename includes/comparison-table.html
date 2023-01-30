@@ -1,0 +1,51 @@
+<style>
+.comparison-table {
+  width: 100% !important;
+}
+</style>
+</style>
+<script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
+<script>
+$(function() {    
+  var tables = document.getElementsByClassName('comparison-table') 
+  for (var t=0, len=tables.length; t<len; t++){
+    var table = tables[t]
+      if (!table){
+        continue
+      }
+      var cells = table.getElementsByTagName('td');
+      for (var i=0, len=cells.length; i<len; i++){
+        cell = cells[i]
+        if (!cell){
+          continue
+        }
+        var text = cells[i].outerText
+        console.log(text)
+        if (text.includes("no")){
+          cells[i].style.backgroundColor = '#ff8c8c';
+        }
+        if (text.includes("yes")){
+          cells[i].style.backgroundColor = "#96f096";
+        }
+        if (text.includes("outdated")){
+          cells[i].style.backgroundColor = "#FFFFEE";
+        }
+        if (text.includes("n/a")){
+          cells[i].style.backgroundColor = "#F0F0F0";
+        }
+        if (text.includes("only")){
+          cells[i].style.backgroundColor = "#FFFFEE";
+        }
+        if (text.includes("limited")){
+          cells[i].style.backgroundColor = "#FFFFEE";
+        }
+        if (text.includes("some")){
+           cells[i].style.backgroundColor = "#FFFFEE";
+        }
+        // Always dark
+        cells[i].style.color = "#333";
+        
+      }
+    }
+});
+</script>

@@ -39,6 +39,12 @@ you can easily demo Flux in a container, or even used in Kubernetes with the
 `Flux Operator <https://flux-framework.org/flux-operator>`_. We have a vision for Flux to
 allow for converged computing, or making it easy to move between traditional HPC and cloud.
 
+How does Flux compare to other managers?
+========================================
+
+Flux has similarities to many other resource managers, but we do a variety of things quite differently. 
+Check out this comparison table here (:ref:`comparison-table`) for a detailed list!"
+Do you want to add or correct a feature? Please `let us know <https://github.com/flux-framework/flux-docs/issues>`_
 
 *****************
 General Questions
