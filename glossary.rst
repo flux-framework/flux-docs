@@ -9,6 +9,14 @@ throughout the various guides and docs on our sites.
 
 ------------------------------------------------------------------------------
 
+.. _eventlog:
+
+**Eventlog**
+  An ordered log of timestamped events, stored in the Flux KVS and defined by
+  `RFC 18 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_18.html>`_.
+  Eventlogs are used to record job events, capture standard I/O streams,
+  and record resource status changes.
+
 .. _flux-broker:
 
 **Flux Broker**
@@ -22,14 +30,6 @@ throughout the various guides and docs on our sites.
 **Flux Instance**
   A group of flux-broker processes which are launched via any parallel launch
   utility that supports PMI (Process Manager Interface).
-
-.. _eventlog:
-
-**Eventlog**
-  An ordered log of timestamped events, stored in the Flux KVS and defined by
-  `RFC 18 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_18.html>`_.
-  Eventlogs are used to record job events, capture standard I/O streams,
-  and record resource status changes.
 
 .. _fluid:
 
