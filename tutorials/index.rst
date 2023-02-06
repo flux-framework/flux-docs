@@ -13,3 +13,4 @@ find a tutorial of interest.
 
    lab/index
    integrations/index
+   commands/index

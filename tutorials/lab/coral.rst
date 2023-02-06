@@ -24,9 +24,12 @@ If you are using the ORNL system Summit, run:
 
   module use /sw/summit/modulefiles/ums/gen007flux/linux-rhel8-ppc64le/Core
 
-------------------
+
+.. _launch-flux-on-lassen:
+
+--------------
 Launching Flux
-------------------
+--------------
 
 You can load the latest Flux-team managed installation on LLNL and ORNL CORAL
 machines using:
