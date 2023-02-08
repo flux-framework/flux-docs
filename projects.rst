@@ -25,6 +25,14 @@ Flux Security
 
  -  Read the `flux-security documentation <https://flux-framework.readthedocs.io/projects/flux-security/en/latest/index.html>`_
 
+----
+Dyad
+----
+
+DYAD (Dynamic and Asynchronous Data Streamliner) is tool to manage data dependency between jobs in a transparent fashion. It automatically synchronizes file accesses and transfers between producer and consumer jobs to enhance the productivity and portability of scientific workflows.
+
+ -  Read the `dyad documentation <https://dyad.readthedocs.io/en/latest/index.html#>`_
+
 --------------------
 Request for Comments
 --------------------
