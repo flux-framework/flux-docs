@@ -7,6 +7,7 @@ Welcome to the Command Tutorials! These tutorials should help you to map specifi
 with your use case, and then see detailed usage. 
 
  - ``flux proxy`` (:ref:`ssh-across-clusters`): "Send commands to a flux instance across clusters using ssh"
+ - ``flux-mini-submit`` (:ref:`flux-mini-submit`): "Submit a job in a Flux instance"
 
 This section is currently 🚧️ under construction 🚧️, so please come back later to see more command tutorials!
 
@@ -16,3 +17,4 @@ This section is currently 🚧️ under construction 🚧️, so please come bac
    :caption: Command Tutorials
 
    ssh-across-clusters
+   flux-mini-submit
