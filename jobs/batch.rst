@@ -14,7 +14,7 @@ has access to fully featured resource manager instance, and may not only
 serially execute work on allocated resources, but load custom modules
 or customize parameters of existing modules, monitor
 and update status of allocated resources, and even submit
-more batch jobs to run further sub-instances of Flux.
+more batch jobs to run further subinstances of Flux.
 
 .. note::
    In the following, batch jobs will be described using single-user Flux,

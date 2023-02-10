@@ -259,7 +259,7 @@ How do I efficiently launch a large number of jobs?
 If you have more than 10K fast-cycling jobs to run, here are some tips that
 may help improve efficiency and throughput:
 
-- Create a batch job or allocation to contain the jobs in a Flux sub-instance.
+- Create a batch job or allocation to contain the jobs in a Flux subinstance.
   This improves performance over submitting them directly to the Flux system
   instance and reduces the impact of your jobs on system resources and other
   users.  See also: :ref:`batch`.
@@ -302,27 +302,27 @@ How do I run job steps?
 A Flux batch job or allocation started with ``flux mini batch`` or
 ``flux mini alloc`` is actually a full featured Flux instance run as a job
 within the enclosing Flux instance.  Unlike SLURM, Flux does not have a
-separate concept like *steps* for work run in a Flux sub-instance--we just have
+separate concept like *steps* for work run in a Flux subinstance--we just have
 *jobs*.  That said, a batch script in Flux may contain multiple
 ``flux mini run`` commands just as a SLURM batch script may contain multiple
 ``srun`` commands.
 
 Despite there being only one type of *job* in Flux, running a series of jobs
-within a Flux sub-instance confers several advantages over running them
+within a Flux subinstance confers several advantages over running them
 directly in the Flux system instance:
 
 - System prolog and epilog scripts typically run before and after each job
-  in the system instance, but are skipped between jobs within a sub-instance.
+  in the system instance, but are skipped between jobs within a subinstance.
 - The Flux system instance services all users and active jobs running at that
-  level, but the sub-instance operates independently and is yours alone.
+  level, but the subinstance operates independently and is yours alone.
 - Flux accounting may enforce a maximum job count at the system instance level,
-  but the sub-instance counts as a single job no matter how many jobs are run
+  but the subinstance counts as a single job no matter how many jobs are run
   within it.
-- The user has full administrative control over the Flux sub-instance, whereas
+- The user has full administrative control over the Flux subinstance, whereas
   "guests" have limited access to the system instance.
 
 Flux's nesting design makes it possible to be quite sophisticated in how
-jobs running in a Flux sub-instance are scheduled and managed, since all
+jobs running in a Flux subinstance are scheduled and managed, since all
 Flux tools and APIs work the same in any Flux instance.
 
 See also: :ref:`batch`.
