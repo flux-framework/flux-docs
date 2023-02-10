@@ -15,7 +15,7 @@ Create a Flux Instance
 First, let's create the allocation on the first cluster. We typically want to ask for an allocation,
 and run flux start via our job manager. Here we might be on a login node:
 
-.. code-block:: sh
+.. code-block:: console
 
     # slurm specific
     $ salloc -N4 --exclusive
@@ -25,7 +25,7 @@ And then we get our allocation! You might adapt this command to be more specific
 After you run flux start, you are inside of a Flux instance on your allocation! 
 Let's run a simple job on our allocation. This first example will ask to see the hostnames of your nodes:
 
-.. code-block:: sh
+.. code-block:: console
 
     noodle:~$ flux mini run -N 4 hostname
     noodle220
@@ -35,7 +35,7 @@ Let's run a simple job on our allocation. This first example will ask to see the
 
 You can sanity check the resources you have within the instance by then running:
 
-.. code-block:: sh
+.. code-block:: console
     
     noodle:~$ flux resource list
          STATE NNODES   NCORES    NGPUS NODELIST
@@ -46,7 +46,7 @@ You can sanity check the resources you have within the instance by then running:
 
 And you can echo ``$FLUX_URI`` to see the path of the socket that you will also need later:
 
-.. code-block:: sh
+.. code-block:: console
 
     noodle:~$ echo $FLUX_URI 
     local:///var/tmp/flux-MLmxy2/local-0    
@@ -86,20 +86,20 @@ You'll first need to tell Flux to use ssh for the proxy command:
 Next, from this same location, try using ``flux proxy`` to connect to your Flux Instance! Target the URI
 that you found before, ``local:///var/tmp/flux-MLmxy2/local-0``, and add the hostname ``noodle220`` to the address:
 
-.. code-block:: sh
+.. code-block:: console
 
      quartz:~$ flux proxy ssh://noodle220/var/tmp/flux-MLmxy2/local-0
 
 If you have trouble - use the force!
 
-.. code-block:: sh
+.. code-block:: console
 
      quartz:~$ flux proxy --force ssh://noodle220/var/tmp/flux-MLmxy2/local-0
 
 
 You should then be able to run the same resource list:
 
-.. code-block:: sh
+.. code-block:: console
 
     quartz:~$ flux resource list
          STATE NNODES   NCORES    NGPUS NODELIST
@@ -110,7 +110,7 @@ You should then be able to run the same resource list:
 Next, try submitting a job! You should be able to see that you are running on the first cluster,
 but from the second. 
 
-.. code-block:: sh
+.. code-block:: console
 
     quartz:~$ flux mini run hostname
     noodle220
@@ -118,14 +118,14 @@ but from the second.
 If you are still connected to the first, you should also be able to query the jobs.
 E.g., here we submit a sleep from the second connected cluster:
 
-.. code-block:: sh
+.. code-block:: console
 
     quartz:~$ flux mini submit sleep 60
     f22hdyb35
 
 And then see it from either cluster node!
 
-.. code-block:: sh
+.. code-block:: console
 
     $ flux jobs
        JOBID  USER     NAME       ST NTASKS NNODES     TIME INFO
