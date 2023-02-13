@@ -4,7 +4,7 @@ Command Tutorials
 =================
 
 Welcome to the Command Tutorials! These tutorials should help you to map specific Flux commands
-with your use case, and then see detailed usage. 
+with your use case, and then see detailed usage.
 
  - ``flux mini submit/flux mini run`` (:ref:`flux-mini-submit`): "Submit a job in a Flux instance"
  - ``flux proxy`` (:ref:`ssh-across-clusters`): "Send commands to a Flux instance across clusters using ssh"
