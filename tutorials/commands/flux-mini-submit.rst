@@ -28,7 +28,7 @@ for each task. In the second submission, we are asking for our job to start 1
 task on just one node with 2 cores allocated for the task.
 
 There are many different options to customize your job submission. For further
-details, please see :core:man1:`flux-mini`. 
+details, please see :core:man1:`flux-mini`.
 
 A :ref:`jobID<fluid>` (e.g., ``ƒSUEFPDH``) is returned for every job submitted. You can view
 the status of your running jobs with ``flux jobs``:
@@ -37,10 +37,10 @@ the status of your running jobs with ``flux jobs``:
 
     $ flux jobs
        JOBID  USER     NAME       ST NTASKS NNODES     TIME INFO
-    ƒSUEFPDH  fluxuser my_other_s  R      1      1   1.842s 
+    ƒSUEFPDH  fluxuser my_other_s  R      1      1   1.842s
     ƒM5k8m7m  fluxuser my_compute  R      4      2   3.255s
 
-And that's it! If you have any questions, please 
+And that's it! If you have any questions, please
 `let us know <https://github.com/flux-framework/flux-docs/issues>`_.
 
 -------------------------------------
