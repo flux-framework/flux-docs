@@ -14,7 +14,7 @@ From within a Flux instance, you can submit your job on the command line with
 optional arguments, resource options, per task options, and per resource
 options:
 
-.. code-block:: sh
+.. code-block:: console
 
     $ flux mini submit --nodes=2 --ntasks=4 --cores-per-task=2 ./my_compute_script.py 120
     ƒM5k8m7m
@@ -33,7 +33,7 @@ details, please see :core:man1:`flux-mini`.
 A :ref:`jobID<fluid>` (e.g., ``ƒSUEFPDH``) is returned for every job submitted. You can view
 the status of your running jobs with ``flux jobs``:
 
-.. code-block:: sh
+.. code-block:: console
 
     $ flux jobs
        JOBID  USER     NAME       ST NTASKS NNODES     TIME INFO
@@ -47,14 +47,14 @@ And that's it! If you have any questions, please
 More Examples of Submitting Flux Jobs
 -------------------------------------
 
-.. code-block:: sh
+.. code-block:: console
 
     $ flux mini submit --nodes=2 --queue=foo --name=my_special_job ./my_job.py
 
 This submits a job to the `foo` queue across two nodes, and sets a custom name
 to the job.
 
-.. code-block:: sh
+.. code-block:: console
 
     $ flux mini submit --dry-run ./my_cool_job.py
 
@@ -62,7 +62,7 @@ If you don't want your job to actually run, but you are interested in looking
 at the :ref:`jobspec<jobspec>` for your job, include the ``--dry-run`` option
 when you submit your job.
 
-.. code-block:: sh
+.. code-block:: console
 
     $ flux mini submit --output=job-{{id}}.out ./my_super_cool_job.py
     ƒ3D78hc3q
