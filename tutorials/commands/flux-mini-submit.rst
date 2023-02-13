@@ -30,7 +30,7 @@ task on just one node with 2 cores allocated for the task.
 There are many different options to customize your job submission. For further
 details, please see :core:man1:`flux-mini`.
 
-A :ref:`jobID<fluid>` (e.g., ``ƒSUEFPDH``) is returned for every job submitted. You can view
+A :ref:`jobid<fluid>` (e.g., ``ƒSUEFPDH``) is returned for every job submitted. You can view
 the status of your running jobs with ``flux jobs``:
 
 .. code-block:: console
