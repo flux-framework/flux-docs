@@ -12,6 +12,24 @@ jobs:
     - run: git fetch origin master
     - uses: flux-framework/pr-validator@master
 
+  check-examples:
+    name: ensure latest examples built
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 0
+
+    - name: Build Docs and Check Files
+      uses: devcontainers/ci@v0.2
+      with:
+        runCmd: |
+          cp -R ./auto_examples /tmp/auto_examples
+          flux start make html
+          echo "Testing that you built the auto-examples, if this fails run flux start make html locally."
+          python .github/scripts/check_diff.py /tmp/auto_examples ./auto_examples
+          
   spelling:
     runs-on: ubuntu-latest
     steps:

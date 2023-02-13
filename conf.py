@@ -46,6 +46,13 @@ rtd_version = os.environ.get("READTHEDOCS_VERSION", "latest")
 if rtd_version not in ["stable", "latest"]:
     rtd_version = "stable"
 
+# Boolean to generate example gallery if we can import flux
+try:
+    import flux
+    has_flux = True
+except ImportError:
+    has_flux = False
+
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -65,11 +72,21 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     "sphinx_markdown_tables",
+    "sphinx_immaterial.theme_result",
+    "sphinx_immaterial.kbd_keys",
+    "sphinx_immaterial.apidoc.format_signatures",
+    "sphinx_immaterial.apidoc.json.domain",
+    "sphinx_immaterial.apidoc.python.apigen",
+    "sphinx_immaterial.graphviz",
 ]
+
+# This would require a flux instance / python bindings to run
+# so we do it locally and then persist the auto_examples to render
+if has_flux:
+    extensions.append("sphinx_gallery.gen_gallery")
 
 # sphinxcontrib.spelling settings
 spelling_word_list_filename = ["spell.en.pws"]
-
 
 autosummary_generate = True
 autoclass_content = "class"
@@ -90,6 +107,13 @@ exclude_patterns = [
     ".github",
 ]
 
+if has_flux:
+    sphinx_gallery_conf = {
+        "examples_dirs": "examples",  # path to your example scripts
+        "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
+        "filename_pattern": "/example",
+        "default_thumb_file": "images/logo.png",
+    }
 
 master_doc = "index"
 source_suffix = ".rst"
@@ -271,7 +295,6 @@ html_theme_options = {
 }
 
 
-
 #    "touch_icon": "images/flux-operator.jpg",
 #    "theme_color": "#262626",
 #    "nav_links": [
@@ -329,6 +352,7 @@ extlinks = {
     "durole": ("http://docutils.sourceforge.net/docs/ref/rst/" "roles.html#%s", ""),
     "dudir": ("http://docutils.sourceforge.net/docs/ref/rst/" "directives.html#%s", ""),
 }
+
 
 # Enable eval_rst in markdown
 def setup(app):

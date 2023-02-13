@@ -2,7 +2,17 @@
 
 Edits should be made to the `.rst` files.
 The documentation can be built with `make html` or `make man`.
-The generated files will be found in the `_build` directory.
+The generated files will be found in the `_build` directory. Note that if you
+want to build the docs, it is recommended to use the development environment to have
+the Flux Python bindings available, e.g.,:
+
+```python
+import flux
+# no error
+```
+
+If you build the docs in an environment without the bindings, the sphinx gallery examples
+will not properly generate. This is OK if you don't edit them.
 
 ## VSCode Development Container
 
@@ -10,6 +20,26 @@ We provide a VSCode [Development Container](https://code.visualstudio.com/docs/r
 to provide an environment for you to easily work on the documentation, and ensure that Flux
 is installed to generate some of our Sphinx Gallery (TBA) tutorials. This works by way
 of the assets in [.devcontainer](https://code.visualstudio.com/docs/remote/containers#_create-a-devcontainerjson-file).
+
+## Manual Development Container
+
+If you want to generate the container manually, this is also an option! First build it:
+
+```bash
+$ docker build -f ./.devcontainer/Dockerfile -t flux-docs .
+```
+This will build the base environment. You can then bind your container to the present working directory to
+build, either interactively:
+
+```bash
+$ docker run -it --rm -v $PWD/:/workspace/flux-docs flux-docs flux start make html
+```
+
+You can also go in interactively - just be careful and don't commit from within the container.
+
+```bash
+$ docker run -it --rm -v $PWD/:/workspace/flux-docs flux-docs bash
+```
 
 ### Setup
 
@@ -27,10 +57,18 @@ When your container is built, when you open `Terminal -> New Terminal` and you'l
 You should be able to build docs:
 
 ```bash
+$ flux start make html
+```
+
+If you don't have Flux Python bindings or don't want to generate them, just fall back
+to:
+
+```bash
 $ make html
 ```
 
-And then you can do as you would do on your host to start a local webserver:
+The build will detect that the Flux Python bindings are not available and build everything
+except for the examples gallery. And then you can do as you would do on your host to start a local webserver:
 
 ```console
 ..
@@ -46,11 +84,12 @@ We will provide further instructions here for building sphinx examples as they a
 
 **Important** it's recommended that you commit (or otherwise write to the .git folder) from the outside
 of the container. This will allow you to sign commits with your (not mounted to the container) key,
-and will ensure the permissions of the commit are not done by a root user.
-If you accidentally do this and need to fix, you can run this from your terminal outside of VSCode:
+and will ensure the permissions of the commit are not done by a root user. If you update the sphinx
+examples, the permissions can also get wonky. In either case, you can run this from your terminal outside of VSCode:
 
 ```bash
-$ sudo chown -R $USER .git/
+$ sudo chown -R $USER .
+$ sudo chown -R $USER .git/ .
 # and then commit
 ```
 

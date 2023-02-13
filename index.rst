@@ -25,8 +25,8 @@ The framework consists of a suite of projects, tools, and libraries which may be
 
    quickstart
    faqs
-   jobs/index
    tutorials/index
+   jobs/index
    guides/index
    contributing
    glossary
