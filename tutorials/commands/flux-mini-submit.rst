@@ -1,4 +1,5 @@
 .. _flux-mini-submit:
+.. _flux-mini-run:
 
 ==========================
 How to Submit Jobs in Flux
@@ -39,6 +40,35 @@ the status of your running jobs with ``flux jobs``:
        JOBID  USER     NAME       ST NTASKS NNODES     TIME INFO
     ƒSUEFPDH  fluxuser my_other_s  R      1      1   1.842s
     ƒM5k8m7m  fluxuser my_compute  R      4      2   3.255s
+
+-----------------------
+Interactively Run a Job
+-----------------------
+
+If you wish to run a job interactively, e.g. see standard output as it runs, you can
+use the ``flux mini run`` command.  It is identical to ``flux mini submit`` except it
+will handle stdio and it will block until the job has finished.  For example:
+
+.. code-block:: console
+
+    $ flux mini run bash -c "echo start; sleep 5; echo done"
+    start
+    done
+
+In the above example, we run a small bash script that will output "start", sleep for 5 seconds,
+and then echo "done".  Unlike ``flux mini submit``, you'll notice it does not output a jobid.
+If we check for the status of this job with ``flux jobs`` after it has run, you will not find the
+job listed because it is no longer running.  Instead run ``flux jobs -a`` which will list all jobs,
+including completed jobs.
+
+.. code-block:: console
+
+    $ flux jobs -a
+       JOBID USER     NAME       ST NTASKS NNODES     TIME INFO
+    f2HnvmZy achu     bash       CD      1      1   5.119s catalyst159
+
+
+You will see that job is in the "CD" state or "Completed" state.
 
 And that's it! If you have any questions, please
 `let us know <https://github.com/flux-framework/flux-docs/issues>`_.
