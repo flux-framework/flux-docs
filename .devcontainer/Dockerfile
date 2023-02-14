@@ -13,6 +13,9 @@ ENV PYTHONPATH=/usr/lib/flux/python3.8
 # For easier Python development.
 RUN python3 -m pip install IPython && \
     python3 -m pip install -r /requirements.txt && \
-    python3 -m pip install -r /dev-requirements.txt
+    python3 -m pip install -r /dev-requirements.txt && \
+    # For developer convenience
+    ln -s /usr/bin/python3 /usr/bin/python
 
 ENV PATH=/env/bin:${PATH}
+WORKDIR /workspace/flux-docs
