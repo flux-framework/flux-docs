@@ -41,6 +41,9 @@ the status of your running jobs with ``flux jobs``:
     ƒSUEFPDH  fluxuser my_other_s  R      1      1   1.842s
     ƒM5k8m7m  fluxuser my_compute  R      4      2   3.255s
 
+If you wish to see the stdout/stderr of a submitted job, see :core:man1:`flux-job` for
+information on ``flux job attach``.
+
 -----------------------
 Interactively Run a Job
 -----------------------
