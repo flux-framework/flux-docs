@@ -71,8 +71,6 @@ F58 to another using the :core:man1:`flux-job` ``id`` subcommand, e.g.
    airline-alibi-index--tuna-maximum-adam
    $ flux job cancel airline-alibi-index--tuna-maximum-adam
 
-.. _flux_run_mac:
-
 With copy-and-paste, auto-completion, globbing, etc., it shouldn't be necessary
 to *type* a job ID with the ``ƒ`` prefix that often, but should you need to,
 use your terminal's method for inputting a
@@ -88,6 +86,8 @@ mac
 If your `Konsole <https://konsole.kde.org/>`_ terminal displays ``ƒ`` as ``Æ``,
 check that Settings →  Edit →  Profile →  Advanced →  Encoding: Default
 Character Encoding is set to ``UTF-8``, not ``ISO8859-1``.
+
+.. _flux_run_mac:
 
 Does flux run on a Mac?
 =======================
