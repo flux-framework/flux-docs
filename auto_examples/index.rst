@@ -42,6 +42,23 @@ of using the Flux Python API.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="To programatically create and check the status for a group of jobs using the flux.job.FluxExecu...">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_example_job_submit_wait_thumb.png
+    :alt: Introductory example - Job Submit and Wait
+
+  :ref:`sphx_glr_auto_examples_example_job_submit_wait.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Introductory example - Job Submit and Wait</div>
+    </div>
+
+
+.. raw:: html
+
     </div>
 
 
@@ -49,6 +66,7 @@ of using the Flux Python API.
    :hidden:
 
    /auto_examples/example_job_submit_api
+   /auto_examples/example_job_submit_wait
 
 
 .. only:: html
