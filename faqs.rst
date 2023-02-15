@@ -96,6 +96,42 @@ Not yet. We have an open `issue <https://github.com/flux-framework/flux-core/iss
 on GitHub tracking the progress towards the goal of natively compiling on a
 mac. In the meantime, you can use Docker, see: :ref:`quickstart`.
 
+.. _flux_shell_prompt:
+
+Can you recommend a shell prompt?
+=================================
+
+It can sometimes be tricky dealing with Flux hierarchies of instances.  A common
+shell prompt adjustment used by Flux users adds Flux resource size and
+instance depth into the prompt.  For example, the following prompt shows that
+we have 64 nodes of resources and are at depth 1.
+
+.. code-block:: console
+
+    [s=64,d=1] $
+
+To add this prompt into your shell, you can cut and paste the below or use it to
+adjust your current shell prompt.  Note that the initial call to ``flux getattr size``
+is simply used to test if you are currently running on a system with Flux or not.
+
+Cut and paste for ``.bashrc``
+
+.. code-block:: sh
+
+    flux getattr size > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        export PS1="[s=$(flux getattr size),d=$(flux getattr instance-level)] $"
+    fi
+
+Cut and paste for ``.cshrc``
+
+.. code-block:: sh
+
+    flux getattr size >& /dev/null
+    if ( $? == 0 ) then
+        set prompt="[s=`flux getattr size`,d=`flux getattr instance-level`] $"
+    endif
+
 .. _bug_report_how:
 
 How do I report a bug?
