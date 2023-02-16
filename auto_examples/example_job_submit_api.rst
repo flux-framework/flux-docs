@@ -135,7 +135,7 @@ Let's submit the job! We will get the job id.
 
  .. code-block:: none
 
-    ƒtGzAJj
+    ƒ2a3ptoH
 
 
 
@@ -145,7 +145,7 @@ Let's submit the job! We will get the job id.
 This could have easily been a script, e.g., ./compute.py 120
 You can continue submitting jobs to your same handle, even the same job.
 
-.. GENERATED FROM PYTHON SOURCE LINES 46-48
+.. GENERATED FROM PYTHON SOURCE LINES 46-47
 
 .. code-block:: default
 
@@ -154,39 +154,11 @@ You can continue submitting jobs to your same handle, even the same job.
 
 
 
-
 .. rst-class:: sphx-glr-script-out
 
  .. code-block:: none
 
-    ƒtv3rMM
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 49-50
-
-This is expected to be rendered from docs root
-
-.. GENERATED FROM PYTHON SOURCE LINES 50-57
-
-.. code-block:: default
-
-    import matplotlib.pyplot as plt
-    here = os.path.dirname(os.path.abspath(os.getcwd()))
-
-    # This is here for the nice thumbnail :)
-    image = plt.imread(os.path.join(here, "images", "logo.png"))
-    fig = plt.imshow(image)
-    plt.axis("off")
-    plt.show()
-
-
-.. image-sg:: /auto_examples/images/sphx_glr_example_job_submit_api_001.png
-   :alt: example job submit api
-   :srcset: /auto_examples/images/sphx_glr_example_job_submit_api_001.png
-   :class: sphx-glr-single-img
-
+    ƒ2afQbZZ
 
 
 
@@ -194,7 +166,7 @@ This is expected to be rendered from docs root
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.770 seconds)
+   **Total running time of the script:** ( 0 minutes  0.137 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_job_submit_api.py:
