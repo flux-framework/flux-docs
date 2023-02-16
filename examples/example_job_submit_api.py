@@ -44,14 +44,3 @@ print(flux.job.submit(handle, jobspec))
 # This could have easily been a script, e.g., ./compute.py 120
 # You can continue submitting jobs to your same handle, even the same job.
 print(flux.job.submit(handle, jobspec))
-
-#%%
-# This is expected to be rendered from docs root
-import matplotlib.pyplot as plt
-here = os.path.dirname(os.path.abspath(os.getcwd()))
-
-# This is here for the nice thumbnail :)
-image = plt.imread(os.path.join(here, "images", "logo.png"))
-fig = plt.imshow(image)
-plt.axis("off")
-plt.show()
