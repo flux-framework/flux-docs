@@ -67,7 +67,7 @@ F58 to another using the :core:man1:`flux-job` ``id`` subcommand, e.g.
 
 .. code-block:: sh
 
-   $ flux mini submit sleep 3600 | flux job id --to=words
+   $ flux submit sleep 3600 | flux job id --to=words
    airline-alibi-index--tuna-maximum-adam
    $ flux job cancel airline-alibi-index--tuna-maximum-adam
 
@@ -196,20 +196,20 @@ There are several ways to decouple a job's task count from the quantity
 of allocated resources, depending on what you want to do.
 
 If you simply want to oversubscribe tasks to resources, you can use the
-:core:man1:`flux-mini` per-resource options instead of the more common
+per-resource options of the job submission commands instead of the more common
 per-task options.  For example, to launch 100 tasks per node across 2 nodes:
 
 .. code-block:: console
 
-  $ flux mini run --tasks-per-node=100 -N2 COMMAND
+  $ flux run --tasks-per-node=100 -N2 COMMAND
 
-The per-resource options were added to ``flux-mini`` in flux-core 0.43.0.
+The per-resource options were added in flux-core 0.43.0.
 In earlier versions, the same effect can be achieved by setting the
 ``per-resource.`` job shell options directly:
 
 .. code-block:: console
 
- $ flux mini run -o per-resource.type=node -o per-resource.count=100 -N2 COMMAND
+ $ flux run -o per-resource.type=node -o per-resource.count=100 -N2 COMMAND
 
 Another method to more generally oversubscribe resources is to launch
 multiple Flux brokers per node. This can be done locally for testing, e.g.
@@ -223,7 +223,7 @@ per node, e.g. to run 8 brokers across 2 nodes
 
 .. code-block:: console
 
- $ flux mini submit -o cpu-affinity=off -N2 -n8 flux start SCRIPT
+ $ flux submit -o cpu-affinity=off -N2 -n8 flux start SCRIPT
 
 One final method is to use the ``alloc-bypass``
 `jobtap plugin <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/flux-jobtap-plugins.html>`_, which allows a job to bypass the
@@ -237,9 +237,9 @@ a job with another job, e.g. to run debugger or other services.
 .. code-block:: console
 
  $ flux jobtap load alloc-bypass.so
- $ flux mini submit -N4 sleep 60
+ $ flux submit -N4 sleep 60
  ƒ2WU24J4NT
- $ flux mini run --setattr=system.alloc-bypass.R="$(flux job info ƒ2WU24J4NT R)" -n 4 flux getattr rank
+ $ flux run --setattr=system.alloc-bypass.R="$(flux job info ƒ2WU24J4NT R)" -n 4 flux getattr rank
  3
  2
  1
@@ -263,7 +263,7 @@ by setting the *statedir* broker attribute.  For example:
 
     $ mkdir -p /home/myuser/jobstate
     $ rm -f /home/myuser/jobstate/content.sqlite
-    $ flux mini batch --broker-opts=-Sstatedir=/home/myuser/jobdir -N16 ...
+    $ flux batch --broker-opts=-Sstatedir=/home/myuser/jobdir -N16 ...
 
 Or if launching via :core:man1:`flux-start` use:
 
@@ -299,24 +299,24 @@ may help improve efficiency and throughput:
   This improves performance over submitting them directly to the Flux system
   instance and reduces the impact of your jobs on system resources and other
   users.  See also: :ref:`batch`.
-- If scripting ``flux mini submit`` commands, avoid the pattern of one command
+- If scripting ``flux submit`` commands, avoid the pattern of one command
   per job as each command invocation has a startup cost.  Instead try to
-  combine similar job submissions with ``flux mini submit --cc=IDSET``
-  or `flux-mini builksubmit <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_.
-- By default ``flux mini submit --cc=IDSET`` and ``flux mini bulksubmit``
+  combine similar job submissions with ``flux submit --cc=IDSET``
+  or :core:man1:`flux-builksubmit`.
+- By default ``flux submit --cc=IDSET`` and ``flux bulksubmit``
   will exit once all jobs have been submitted.  To wait for all jobs to
   complete before proceeding, use the ``--wait`` or ``--watch`` options to
   these tools.
 - If multiple commands must be used to submit jobs before waiting for them,
   consider using ``--flags=waitable`` and ``flux job wait --all`` to wait for
   jobs to complete and capture any errors.
-- If the jobs to be submitted cannot be combined with the ``flux mini`` tools,
+- If the jobs to be submitted cannot be combined with the command line tools,
   develop a workflow management script using the
   `Flux python interface <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>`_.  The
-  `flux-mini <https://github.com/flux-framework/flux-core/blob/master/src/cmd/flux-mini.py>`_
+  `flux-run <https://github.com/flux-framework/flux-core/blob/master/src/cmd/flux-run.py>`_
   command itself is a python program that can be a useful reference.
 - If jobs produce a significant amount of standard I/O, use the
-  :core:man1:`flux-mini` ``--output`` option to redirect it to files.  By
+  :core:man1:`flux-submit` ``--output`` option to redirect it to files.  By
   default, standard I/O is captured in the Flux key value store, which holds
   other job metadata and may become a bottleneck if jobs generate a large
   amount of output.
@@ -335,12 +335,12 @@ systems.
 How do I run job steps?
 =======================
 
-A Flux batch job or allocation started with ``flux mini batch`` or
-``flux mini alloc`` is actually a full featured Flux instance run as a job
+A Flux batch job or allocation started with ``flux batch`` or
+``flux alloc`` is actually a full featured Flux instance run as a job
 within the enclosing Flux instance.  Unlike SLURM, Flux does not have a
 separate concept like *steps* for work run in a Flux subinstance--we just have
 *jobs*.  That said, a batch script in Flux may contain multiple
-``flux mini run`` commands just as a SLURM batch script may contain multiple
+``flux run`` commands just as a SLURM batch script may contain multiple
 ``srun`` commands.
 
 Despite there being only one type of *job* in Flux, running a series of jobs
@@ -426,11 +426,11 @@ stuck job.  A job eventlog can be printed using the following command:
 
 This job is blocked in the SCHED state, having not yet received an allocation
 from the scheduler.  Job events may also be viewed in real time when a job is
-submitted with ``flux mini run``, for example:
+submitted with ``flux run``, for example:
 
 .. code-block:: console
 
-  $ flux mini run -vv -N2 sleep 60
+  $ flux run -vv -N2 sleep 60
   jobid: ƒABKQfqHf3u
   0.000s: job.submit {"userid":5588,"urgency":16,"flags":0,"version":1}
   0.015s: job.validate
@@ -462,11 +462,11 @@ eventlog described in :ref:`pending_hang`
   2.417061 done
 
 These events may also be viewed in real time, combined with the primary
-eventlog when a job is submitted by ``flux mini run``:
+eventlog when a job is submitted by ``flux run``:
 
 .. code-block:: console
 
-  $ flux mini run -vvv -N2 sleep 2
+  $ flux run -vvv -N2 sleep 2
   jobid: ƒABaWMZ7UmD
   0.000s: job.submit {"userid":5588,"urgency":16,"flags":0,"version":1}
   0.015s: job.validate
@@ -487,17 +487,17 @@ eventlog when a job is submitted by ``flux mini run``:
 
 .. _bulksubmit_hang:
 
-Why does the ``flux mini bulksubmit`` command hang?
+Why does the ``flux bulksubmit`` command hang?
 ===================================================
 
-The ``flux mini bulksubmit`` command works similar to GNU parallel or
+The ``flux bulksubmit`` command works similar to GNU parallel or
 ``xargs`` and is likely blocked waiting for input from ``stdin``.
 Typical usage is to send output of some command to ``bulksubmit`` and,
 like ``xargs -I``, substitute the input with ``{}``. For example:
 
 .. code-block:: console
 
- $ seq 1 4 | flux mini bulksubmit --watch echo {}
+ $ seq 1 4 | flux bulksubmit --watch echo {}
  ƒ2jBnW4zK
  ƒ2jBoz4Gf
  ƒ2jBoz4Gg
@@ -510,18 +510,17 @@ like ``xargs -I``, substitute the input with ``{}``. For example:
 As an alternative to reading from ``stdin``, the ``bulksubmit`` utility can
 also take inputs on the command line separated by ``:::``.
 
-The ``--dry-run`` option to ``flux mini bulksubmit`` may be useful to
+The ``--dry-run`` option to ``flux bulksubmit`` may be useful to
 see what would be submitted to Flux without actually running any jobs
 
 .. code-block:: console
 
- $ flux mini bulksubmit --dry-run echo {} ::: 1 2 3
- flux-mini: submit echo 1
- flux-mini: submit echo 2
- flux-mini: submit echo 3
+ $ flux bulksubmit --dry-run echo {} ::: 1 2 3
+ bulksubmit: submit echo 1
+ bulksubmit: submit echo 2
+ bulksubmit: submit echo 3
 
-For more help and examples, see the `BULKSUBMIT <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-mini.html#bulksubmit>`_
-section of the ``flux-mini(1)`` manual page.
+For more help and examples, see :core:man1:`flux-bulksubmit`.
 
 *************
 MPI Questions
@@ -579,7 +578,7 @@ Example: launch a Spectrum MPI job with PMI tracing enabled:
 
 .. code-block:: console
 
- $ flux mini run -ompi=spectrum -overbose=2 -n4 ./hello
+ $ flux run -ompi=spectrum -overbose=2 -n4 ./hello
 
 .. _openmpi_versions:
 
@@ -644,7 +643,7 @@ integer verbosity level, e.g.
 
 .. code-block:: console
 
- $ flux mini run --env=OMPI_MCA_btl_base_verbose=99 -N2 -n4 ./hello
+ $ flux run --env=OMPI_MCA_btl_base_verbose=99 -N2 -n4 ./hello
 
 To list available MCA parameters containing the string ``_verbose`` use:
 
@@ -686,7 +685,7 @@ something like this:
 
 .. code-block:: console
 
-   $ flux mini run -o verbose=2 -N2 ./hello
+   $ flux run -o verbose=2 -N2 ./hello
    0.731s: flux-shell[1]: DEBUG: 1: tasks [1] on cores 0-3
    0.739s: flux-shell[1]: DEBUG: Loading /usr/local/etc/flux/shell/initrc.lua
    0.744s: flux-shell[1]: TRACE: Successfully loaded flux.shell module
