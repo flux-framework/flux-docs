@@ -27,7 +27,7 @@ Let's run a simple job on our allocation. This first example will ask to see the
 
 .. code-block:: console
 
-    noodle:~$ flux mini run -N 4 hostname
+    noodle:~$ flux run -N 4 hostname
     noodle220
     noodle221
     noodle222
@@ -112,7 +112,7 @@ but from the second.
 
 .. code-block:: console
 
-    quartz:~$ flux mini run hostname
+    quartz:~$ flux run hostname
     noodle220
 
 If you are still connected to the first, you should also be able to query the jobs.
@@ -120,7 +120,7 @@ E.g., here we submit a sleep from the second connected cluster:
 
 .. code-block:: console
 
-    quartz:~$ flux mini submit sleep 60
+    quartz:~$ flux submit sleep 60
     f22hdyb35
 
 And then see it from either cluster node!
