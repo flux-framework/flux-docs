@@ -16,7 +16,7 @@ parallel program execution:
 
 .. code-block:: console
 
-  $ totalview --args flux mini run -N 2 -n 2 ./mpi-program
+  $ totalview --args flux run -N 2 -n 2 ./mpi-program
 
 Attaching to an already running job:
 
@@ -33,11 +33,11 @@ GUI option to select the process of this ``flux-job`` command:
 
 .. note::
   You use TotalView with the newly invoked ``flux job attach``
-  when your job has been launched via ``flux mini run`` (or ``flux mini submit``).
+  when your job has been launched via ``flux run`` (or ``flux submit``).
   This is because Flux currently does not allow TotalView
   to attach to your running code if you just attach it
-  to the ``flux mini run`` process that controls your code. For
-  performance reasons, ``flux mini run`` does not generate
+  to the ``flux run`` process that controls your code. For
+  performance reasons, ``flux run`` does not generate
   sufficient debug information when it is invoked with no tool control.
 
 Flux provides ``MPIR_partial_attach_ok`` `[1] <https://www.mpi-forum.org/docs/mpir-specification-10-11-2010.pdf>`_
@@ -56,7 +56,7 @@ your parallel program.
 Thus, a side effect of the above commands is that TotalView
 will stop Flux's own program execution each time
 a new subcommand is ``exec(3)``'ed (e.g., when ``flux`` ``exec``'s
-``flux-mini``) before your parallel program processes are spawned.
+``flux-run``) before your parallel program processes are spawned.
 This means you must manually click "Yes" whenever a stop-at-exec
 dialogue window is popped up. You do not need to stop
 it unless you are a Flux developer!
@@ -75,7 +75,7 @@ to ``totalview``. For example,
 
 .. code-block:: console
 
-  $ totalview -s tvdrc --args flux mini run -N 2 -n 2 ./mpi-program
+  $ totalview -s tvdrc --args flux run -N 2 -n 2 ./mpi-program
 
 Notice that it is designed to support not only Flux but also SLURM's
 srun and IBM JSM's jsrun commands. The ``regex`` syntax of

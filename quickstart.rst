@@ -39,7 +39,7 @@ and start a container from it:
   $ docker run -ti fluxrm/flux-sched:latest
   $ flux getattr size
   1
-  $ flux mini run printenv FLUX_JOB_ID
+  $ flux run printenv FLUX_JOB_ID
   2597498912768
 
 .. note::
@@ -215,16 +215,16 @@ a Slurm job. You will likely want to start a single broker process per node:
   srun: job 1136410 has been allocated resources
   $
 
-An interactive Flux instance can also be started under Flux with the
-:core:man1:`flux-mini` ``alloc`` subcommand:
+An interactive Flux instance can also be started under Flux with
+:core:man1:`flux-alloc`:
 
 .. code-block:: console
 
-  $ flux mini alloc -n144 -N4
+  $ flux alloc -n144 -N4
   $
 
 .. note::
-  ``flux mini alloc`` requires the ``-n, --nslots=N`` parameter, which by
+  ``flux alloc`` requires the ``-n, --nslots=N`` parameter, which by
   default will allocate 1 core per slot. The command above will request
   to allocate 144 core across 4 nodes (for example, for a system with
   36 cores)
@@ -399,24 +399,20 @@ Though individual ranks may be targeted:
   $ flux exec -r 3 flux getattr rank
   3
 
-The second method for launching and submitting jobs is a Minimal Job
-Submission Tool ``flux mini``. The "mini" tool consists of several
-subcommands useful for different job submission scenarios:
+The second method for launching work is using one of the Flux job submission
+tools:
 
- * ``flux mini run`` - interactively run jobs
- * ``flux mini submit`` - enqueue one or more jobs
- * ``flux mini batch`` - enqueue a batch script
- * ``flux mini alloc`` - allocate a new instance for interactive use
- * ``flux mini bulksubmit`` - enqueue jobs in bulk
-
-For a full description of the ``flux mini`` command, see ``flux help mini``
-or the :core:man1:`flux-mini` man page.
+ * :core:man1:`flux-run` - interactively run jobs
+ * :core:man1:`flux-submit` - enqueue one or more jobs
+ * :core:man1:`flux-batch` - enqueue a batch script
+ * :core:man1:`flux-alloc` - allocate a new instance for interactive use
+ * :core:man1:`flux-bulksubmit` - enqueue jobs in bulk
 
 * Run 4 copies of hostname.
 
 .. code-block:: console
 
-  $ flux mini run -n4 --label-io hostname
+  $ flux run -n4 --label-io hostname
   3: quartz15
   2: quartz15
   1: quartz15
@@ -426,7 +422,7 @@ or the :core:man1:`flux-mini` man page.
 
 .. code-block:: console
 
-  $ flux mini run -n128 ./hello
+  $ flux run -n128 ./hello
   completed MPI_Init in 0.944s.  There are 128 tasks
   completed first barrier
   completed MPI_Finalize
@@ -435,7 +431,7 @@ or the :core:man1:`flux-mini` man page.
 
 .. code-block:: console
 
-  $ flux mini submit -n128 ./hello
+  $ flux submit -n128 ./hello
   ƒA6oPHNjh
 
 Here, the allocated ID for the job is immediately echoed to stdout.

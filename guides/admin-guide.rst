@@ -103,8 +103,8 @@ shell plugins
   When a job is started, the :core:man1:`flux-shell` is the process parent
   of job tasks on each node.  Shell plugins extend the job environment and
   can be configured on a per-job basis using the ``--setopt`` option of
-  the :core:man1:`flux-mini` commands.  ``affinity``, ``pmi``, and ``pty``
-  are examples of Flux shell plugins.
+  :core:man1:`flux-run` and related job submission commands.  ``affinity``,
+  ``pmi``, and ``pty`` are examples of Flux shell plugins.
 
 connectors
   Flux commands open a connection to a particular Flux instance by specifying
@@ -702,14 +702,14 @@ considered for scheduling.
 
 The ``require-instance`` plugin rejects jobs that do not start another
 instance of Flux. That is, jobs are required to be submitted via tools
-like ``flux mini batch`` and ``flux mini alloc``, or the equivalent.
-For example, with this plugin enabled, a user running ``flux mini run``
+like :core:man1:`flux-batch` and :core:man1:`flux-alloc`, or the equivalent.
+For example, with this plugin enabled, a user running :core:man1:`flux-run`
 will have their job rejected with the message:
 
 .. code-block:: console
 
-  $ flux mini run -n 1000 myapp
-  flux-mini: ERROR: [Errno 22] Direct job submission is disabled for this instance. Please use the batch or alloc subcommands of flux-mini(1)
+  $ flux run -n 1000 myapp
+  flux-run: ERROR: [Errno 22] Direct job submission is disabled for this instance. Please use the flux-batch(1) or flux-alloc(1) commands.
 
 See also: :core:man5:`flux-config-ingest`.
 

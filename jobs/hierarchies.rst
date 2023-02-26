@@ -10,8 +10,8 @@ start --test-size=1``, to a batch job running across thousands of nodes
 on a cluster, Flux provides a consistent interface to resources.
 
 These resources and the work assigned to them may then be further
-divided by running new instances of Flux as jobs via ``flux mini batch``,
-``flux mini alloc``, or ``flux mini submit ... flux start``, each of which
+divided by running new instances of Flux as jobs via ``flux batch``,
+``flux alloc``, or ``flux submit ... flux start``, each of which
 can further divide resources through more instances, and so on. Since an
 instance of Flux has its own scheduler and configuration, this can aid in
 job throughput or scheduler specialization when complex systems of jobs
@@ -67,22 +67,22 @@ available in your Flux session may differ and jobids will not match
 those in examples.
 
 Now we can initiate some test batch jobs. In Flux, batch jobs are submitted
-with the :core:man1:`flux-mini` ``flux mini batch`` command, which starts a
+with the :core:man1:`flux-batch` command, which starts a
 new Flux instance and runs the provided batch script as the *initial
 program* of the instance. When the batch script exits, the Flux instance
 shuts down and exits as well.
 
 .. code-block:: console
 
-  [s=4,d=0] $ flux mini batch -n2 --wrap flux mini submit --wait --cc=1-1000 sleep 10
+  [s=4,d=0] $ flux batch -n2 --wrap flux submit --wait --cc=1-1000 sleep 10
   ƒ9anfxdew
   [s=4,d=0] $
 
-The command above uses the ``flux mini batch`` ``--wrap`` option to wrap
+The command above uses the ``flux batch`` ``--wrap`` option to wrap
 the remainder of arguments in a ``#!/bin/sh`` script, which allows us to
 submit a one-liner batch script without creating a separate file. The batch
 script then submits 1000 copies of ``sleep`` and waits for them all to
-complete. The ``--wait`` is important here, since ``flux mini submit``
+complete. The ``--wait`` is important here, since ``flux submit``
 exits by default after all work has been submitted, and this would cause
 the batch script to exit and terminate the batch job before any work is
 complete.
@@ -106,8 +106,8 @@ that itself submits more batch work:
    :caption: batch.sh
 
    #!/bin/sh
-   flux mini batch -n2 --wrap flux mini submit --wait --cc=1-1000 sleep 10
-   flux mini submit --cc=1-1000 sleep 10
+   flux batch -n2 --wrap flux submit --wait --cc=1-1000 sleep 10
+   flux submit --cc=1-1000 sleep 10
    flux queue idle
 
 Here, the batch script ``batch.sh`` submits another batch job requesting 2
@@ -119,7 +119,7 @@ to block until the job queue is empty, meaning all work has completed.
 
 .. code-block:: console
 
-  [s=4,d=0] $ flux mini batch -n6 batch.sh
+  [s=4,d=0] $ flux batch -n6 batch.sh
   ƒByFye1Xm
   [s=4,d=0] $ flux jobs
          JOBID USER     NAME       ST NTASKS NNODES  RUNTIME NODELIST

@@ -18,8 +18,8 @@ Things to Know
     Attempting to run further multi-node jobs will cause the excess jobs
     to fail. There is no limit on *submitted* multi-node jobs, and
     single-node jobs do not count towards the limit.
-#.  All nested Flux instances (e.g. instances created with ``flux mini batch``,
-    ``flux mini alloc``, or ``flux mini submit ... flux start``
+#.  All nested Flux instances (e.g. instances created with ``flux batch``,
+    ``flux alloc``, or ``flux submit ... flux start``
     should meet one of the following criteria:
 
     - Occupy a single node
