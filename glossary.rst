@@ -192,7 +192,8 @@ throughout the various guides and docs on our sites.
 
 **Shell Plugins**
   Extensions of a job's environment that can be configured on a per-job basis
-  using the ``--setopt`` option of the :core:man1:`flux-mini` commands.
+  using the ``--setopt`` option of :core:man1:`flux-run` and related
+  job submission commands.
 
 .. _single-user-mode:
 
