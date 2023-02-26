@@ -42,7 +42,7 @@ Mini Batch Command
 ------------------
 
 The high-level Flux command that users can use to submit a
-batch script is ``flux mini batch``.
+batch script is ``flux batch``.
 
 ``sleep_batch.sh``:
 
@@ -57,22 +57,22 @@ batch script is ``flux mini batch``.
   echo "Use sleep to emulate a parallel program"
   echo "Run the program at a total of 4 processes each requiring"
   echo "1 core. These processes are equally spread across 2 nodes."
-  flux mini run -N 2 -n 4 sleep 120
-  flux mini run -N 2 -n 4 sleep 120
+  flux run -N 2 -n 4 sleep 120
+  flux run -N 2 -n 4 sleep 120
 
 The name of your batch script is ``sleep_batch.sh``.
-As shown from the ``flux mini run`` lines in this script, you can see the the
+As shown from the ``flux run`` lines in this script, you can see the the
 overall resource requirement is 4 cores equally spread
 across two nodes as the default numbers of cores assigned to each task
 (specified by the ``-n`` option) is just one.
 
-We now submit this script interactively three times using ``flux mini batch``.
+We now submit this script interactively three times using ``flux batch``.
 
 .. code-block:: console
 
-  $ flux mini batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
-  $ flux mini batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
-  $ flux mini batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
+  $ flux batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
+  $ flux batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
+  $ flux batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
 
 Users must specify the overall resource requirement of each
 job using ``--nslots``, which is the only required option, along with
@@ -91,10 +91,10 @@ and ``--nodes=<NUM OF NODES>``
    Internally, Flux will create a nested Flux instance allocated
    to the requested resources per batch job and run the batch
    script inside that nested instance. While a batch script is
-   expected to launch parallel jobs using ``flux mini run`` or
-   ``flux mini submit`` at this level, nothing prevents the
+   expected to launch parallel jobs using ``flux run`` or
+   ``flux submit`` at this level, nothing prevents the
    script from further batching other `sub-batch-jobs` using
-   the ``flux mini batch`` interface, if desired.
+   the ``flux batch`` interface, if desired.
 
 You can check the status of these batch jobs:
 
@@ -153,9 +153,9 @@ An example sbatch script:
 .. code-block:: sh
 
   #!/bin/sh
-  flux mini batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
-  flux mini batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
-  flux mini batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
+  flux batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
+  flux batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
+  flux batch --nslots=2 --cores-per-slot=2 --nodes=2 ./sleep_batch.sh
   flux queue drain
 
 
@@ -166,7 +166,7 @@ Blocking and Non-blocking Commands
 It is important to note that some of the Flux commands used above are
 blocking and some of them are non-blocking.
 
-Both ``flux mini submit`` and ``flux mini batch`` have `submit` semantics
+Both ``flux submit`` and ``flux batch`` have `submit` semantics
 and as such they submit a parallel program or batch script and return
 shortly after.
 To avoid the exiting of the containing script, you can use
@@ -174,7 +174,7 @@ To avoid the exiting of the containing script, you can use
 be submitted and then waits until all submitted jobs complete.
 Thus, it is recommended not to run those commands in background.
 
-By contrast, ``flux mini run`` blocks until the target program
+By contrast, ``flux run`` blocks until the target program
 completes.
 
 
