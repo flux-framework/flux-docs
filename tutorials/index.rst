@@ -13,5 +13,6 @@ find a tutorial of interest.
 
    ../auto_examples/index
    commands/index
+   containers/index
    lab/index
    integrations/index
