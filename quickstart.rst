@@ -57,6 +57,7 @@ default CMD by supplying args to ``docker run``:
    $ flux getattr size
    4
 
+Note that a more complete Docker tutorial is available at :ref:`flux-sched-container`.
 If you are developing Flux and want to compile the modified code and run
 our testsuite within a docker container, you can use our helper script:
 
