@@ -93,7 +93,7 @@
      - n/a
    * - Scheduling specialization
      - yes
-     - ???
+     - yes
      - no
      - no
      - no 
@@ -148,7 +148,7 @@
      - n/a
    * - Bulk job submission
      - yes
-     - ???
+     - yes
      - only uniform jobs
      - only uniform jobs
      - only uniform jobs
@@ -159,7 +159,7 @@
      - n/a
    * - High-speed streaming job submission
      - yes
-     - ???
+     - yes
      - no
      - no
      - no
@@ -221,7 +221,7 @@
      - no (two level)
    * - Scheduler specialization for user level
      - yes
-     - ???
+     - yes
      - n/a
      - n/a
      - n/a
@@ -243,7 +243,7 @@
      - no    
    * - Built-in facilities for inter-job communication and coordination
      - yes
-     - ???
+     - yes
      - n/a
      - n/a
      - n/a
@@ -287,7 +287,7 @@
      - no
    * - Bulk job submission
      - yes
-     - ???
+     - yes
      - n/a
      - n/a
      - n/a
@@ -298,7 +298,7 @@
      - only single core jobs
    * - High-speed streaming job submission
      - yes
-     - ???
+     - yes
      - n/a
      - n/a
      - n/a
