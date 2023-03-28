@@ -2,13 +2,14 @@
    :file: ./comparison-table.html
 
 .. list-table:: Flux Compared to Other Resource Managers
-   :widths: 46 6 6 6 6 6 6 6 6 6 
+   :widths: 46 6 6 6 6 6 6 6 6 6 6
    :header-rows: 1
    :stub-columns: 1
    :class: comparison-table
 
    * - Features
      - Flux
+     - HTCondor
      - SLURM
      - PBSPro (OpenPBS)
      - LSF
@@ -17,7 +18,8 @@
      - Balsam 
      - Parsl 
      - Nitro
-   * - 
+   * -
+     -
      - 
      - 
      - 
@@ -28,6 +30,7 @@
      -  
      - 
    * - Open Source
+     - yes
      - yes
      - yes
      - yes
