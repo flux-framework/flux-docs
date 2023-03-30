@@ -37,9 +37,9 @@ For this demonstration, we first launch Flux under SLURM and get an interactive 
    If launching under SLURM is not possible or convenient, a single-node
    single user instance of Flux can be started with ``flux start -s 4``.
 
-------------------
-Mini Batch Command
-------------------
+-------------
+Batch Command
+-------------
 
 The high-level Flux command that users can use to submit a
 batch script is ``flux batch``.
