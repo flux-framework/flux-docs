@@ -30,7 +30,7 @@ of using the Flux Python API.
 .. only:: html
 
   .. image:: /auto_examples/images/thumb/sphx_glr_example_job_submit_api_thumb.png
-    :alt: Introductory example - Job Submit API
+    :alt:
 
   :ref:`sphx_glr_auto_examples_example_job_submit_api.py`
 
