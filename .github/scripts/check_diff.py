@@ -8,6 +8,7 @@
 import argparse
 import os
 import fnmatch
+import sys
 
 
 def recursive_find(base, pattern="*.*"):
