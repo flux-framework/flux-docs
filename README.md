@@ -103,3 +103,9 @@ pip install -r requirements.txt
 ```
 
 Users may want to install these packages into a [Python Virtual Environment](https://docs.python.org/3/tutorial/venv.html)
+
+## Release
+
+SPDX-License-Identifier: LGPL-3.0
+
+LLNL-CODE-764420
