@@ -4,8 +4,8 @@
 Quick Start
 ============
 
-A quick introduction to Flux and flux-core. For reference, the :ref:`Glossary`
-contains definitions for a number of terms, Flux-specific concepts, and
+A quick introduction to Flux and flux-core. If you are looking to see how Flux compares to your favorite resource manager, see :ref:`comparison-table`.
+For reference, the :ref:`Glossary` contains definitions for a number of terms, Flux-specific concepts, and
 acronyms mentioned in this guide and throughout our documentation site.
 
 .. note::

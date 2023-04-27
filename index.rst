@@ -37,6 +37,13 @@ The framework consists of a suite of projects, tools, and libraries which may be
 
    projects
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Comparison Table
+
+   tables/comparison-table
+
+
 Contributor Relevant RFCs
 -------------------------
 
