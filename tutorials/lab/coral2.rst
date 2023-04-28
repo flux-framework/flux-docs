@@ -9,9 +9,14 @@ El Capitan, and Frontier are similar in that they all use the
 HPE Cray Shasta platform, which requires
 an additional component to integrate completely with Flux.
 
+.. note::
+  Flux on CORAL2 is under active development.  This document assumes
+  flux-core >= 0.49.0, flux-sched >= 0.27.0, and flux-coral2 >= 0.4.1.
+
 --------------
 Things to Know
 --------------
+
 #.  Every multi-node running job on Shasta systems consumes two port numbers
     out of a global pool that Flux reserves. So if Flux has 1,000
     reserved ports, only 500 multi-node jobs may be active at any time.
