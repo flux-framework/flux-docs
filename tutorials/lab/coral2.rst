@@ -13,9 +13,23 @@ an additional component to integrate completely with Flux.
   Flux on CORAL2 is under active development.  This document assumes
   flux-core >= 0.49.0, flux-sched >= 0.27.0, and flux-coral2 >= 0.4.1.
 
---------------
+------------
+Getting Flux
+------------
+
+At LLNL, Flux is part of the operating system and runs as the native resource
+manager on Cray Shasta systems.  At other sites, Flux can be launched as
+a parallel job by the native resource manager, if desired.
+
+If the minimum versions of the flux components are not already available at
+your site, you may consider
+:ref:`building flux-core and flux-sched manually <manual_installation>`
+then building `flux-coral2 <https://github.com/flux-framework/flux-coral2>`_
+with the same prefix.
+
+---------------
 Things to Know
---------------
+---------------
 
 #.  Every multi-node running job on Shasta systems consumes two port numbers
     out of a global pool that Flux reserves. So if Flux has 1,000
@@ -42,17 +56,6 @@ range of ports, like so:
     plugins = [
       { load = "cray_pals_port_distributor.so", conf = { port-min = 11000, port-max = 13000 } }
     ]
-
-------------------------
-Building Flux for CORAL2
-------------------------
-
-The basic steps to building Flux for Cray Shasta systems are as follows:
-
-#.  :ref:`Build flux-core (version >= 0.49.0) and flux-sched manually
-    <manual_installation>` with some prefix *P*.
-#.  Build `flux-coral2 <https://github.com/flux-framework/flux-coral2>`_
-    with the same prefix *P*.
 
 ------------------
 Flux with Cray PMI
