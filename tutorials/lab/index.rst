@@ -13,4 +13,5 @@ provided there are for collaborating systems.
    LLNL Introduction to Flux <https://hpc-tutorials.llnl.gov/flux/>
    coral
    coral2
+   rabbit
 
