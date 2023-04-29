@@ -27,65 +27,111 @@ your site, you may consider
 then building `flux-coral2 <https://github.com/flux-framework/flux-coral2>`_
 with the same prefix.
 
----------------
-Things to Know
----------------
+----------
+Cray MPICH
+----------
 
-#.  Every multi-node running job on Shasta systems consumes two port numbers
-    out of a global pool that Flux reserves. So if Flux has 1,000
-    reserved ports, only 500 multi-node jobs may be active at any time.
-    Attempting to run further multi-node jobs will cause the excess jobs
-    to fail. There is no limit on *submitted* multi-node jobs, and
-    single-node jobs do not count towards the limit.
-#.  All Flux instances should meet one of the following criteria:
+Cray ships a variant of MPICH as the supported MPI library for the slingshot
+interconnect.  There are two options for running parallel programs compiled
+with Cray MPICH under Flux.
 
-    - Occupy a single node
-    - Have exclusive access to the nodes they are running on (e.g. they
-      do not share their resources with sibling instances).
-
-    Instances that do not meet one of the above criteria will not work properly.
-
-By default Flux reserves ports 11000-11999 for itself. At any given
-level of the Flux hierarchy, this can be changed by configuring Flux
-to load the `cray_pals_port_distributor` jobtap plugin with a different
-range of ports, like so:
-
-.. code-block:: toml
-
-    [job-manager]
-    plugins = [
-      { load = "cray_pals_port_distributor.so", conf = { port-min = 11000, port-max = 13000 } }
-    ]
-
-------------------
-Flux with Cray PMI
-------------------
-
-Applications linked to Cray MPICH will work natively with Flux
-provided the Cray MPICH library uses the PMI2 protocol instead of
-the homespun Cray PMI and libPALS. For Flux to support libPALS,
-flux-coral2 must be built (see above) and Flux must be configured
-to offer libPALS support. This is done by setting the "pmi" shell
-option to include "cray-pals" on a per-job basis like so:
+One is to set LD_LIBRARY_PATH so that the MPI executable finds Flux's
+``libpmi2.so`` before any other, e.g.
 
 .. code-block:: console
 
-    $ flux submit -n2 -opmi=cray-pals ./mpi_hello
+  $ flux run --env=LD_LIBRARY_PATH=/usr/lib64/flux:$LD_LIBRARY_PATH -n2 -opmi=simple ./hello
+  foWQCPHAu6f: completed MPI_Init in 1.050s.  There are 2 tasks
+  foWQCPHAu6f: completed first barrier in 0.005s
+  foWQCPHAu6f: completed MPI_Finalize in 0.001s
 
-or by configuring Flux to offer such support by default, by adding
-the following lines to the shell's ``initrc.lua`` file:
+The other is to use Cray PMI, which requires a the ``cray-pals`` plugin from
+the flux-coral2 package, e.g.
+
+.. code-block:: console
+
+  $ flux run -n2 -opmi=cray-pals ./hello
+  foP9Jyw5kjq: completed MPI_Init in 0.051s.  There are 2 tasks
+  foP9Jyw5kjq: completed first barrier in 0.006s
+  foP9Jyw5kjq: completed MPI_Finalize in 0.002s
+
+Cray PMI comes with additional complications - see below.
+
+Sites that want to make ``cray-pals`` available by default, so users don't
+have to specify ``-opmi=cray-pals`` may add the following lines near the top
+of the flux-shell's ``initrc.lua``, before any call to load plugins:
 
 .. code-block:: lua
 
-    if shell.options['pmi'] == nil then
-        shell.options['pmi'] = 'cray-pals,simple'
-    end
+  if shell.options['pmi'] == nil then
+      shell.options['pmi'] = 'cray-pals,simple'
+  end
 
+This alters the system default of ``pmi=simple``, applies to all Flux
+instances, and has no effect if the user specifies ``-opmi=`` on the command
+line.  Note that ``simple`` is still the preferred way to bootstrap Flux
+itself, so it is advised for it to be retained in the default.
 
-The lines should come before any call to load plugins.
+--------------------------------
+Cray PMI Complications with Flux
+--------------------------------
+
+Cray PMI requires Flux to allocate two unique network port numbers to each
+multi-node job and communicate them via ``PMI_CONTROL_PORT`` in the job
+environment.  The Cray PMI library uses these ports to establish temporary
+network connections to exchange interconnect endpoints.  Two jobs sharing
+a node must not be allocated overlapping port numbers, or the jobs may fail.
+
+flux-coral2 supplies the ``cray_pals_port_distributor`` plugin to allocate
+a unique pair of ports per job.  However, each Flux instance has an
+independent allocator for the same port range, so a complication arises
+when multiple Flux instances are sharing a node's port space.  Therefore,
+when Cray PMI is in use, Flux instances *must not share nodes*.
+
+To minimize the possibility of batch jobs, which are fully independent Flux
+instances, handing out duplicate ports, it is recommended to configure
+node-exclusive scheduling for the top level resource manager on these
+systems.  This leaves no opportunity for conflicting port numbers to be
+assigned among the top-level batch jobs.  It doesn't protect against batch
+jobs scheduling Flux sub-instances that conflict, however.
+
+The port allocator defaults to using a pool of 1000 ports.  This places an
+upper limit of 500 on the number of concurrently executing multi-node jobs
+per Flux instance.  The system limit is much higher since each batch job
+is an independent Flux instance that can run many jobs.  Also, single node
+jobs do not consume a port pair and are not subject to this limit.
+
+--------------------------
+Troubleshooting Cray MPICH
+--------------------------
 
 If Flux jobs that use Cray MPICH end up as a collection of singletons,
-that is usually a sign that Cray MPICH is trying to use libPALS.
+or fail in ``MPI_Init()``, that is usually a sign that something is wrong
+in the PMI bootstrapping environment.  When this happens it may be useful to:
+
+- Add ``-o pmi=NAME[,NAME,...]`` to control which PMI implementations
+  are offered by the flux shell to jobs, e.g. ``simple``, ``cray-pals``,
+  ``pmix``).
+
+- Add ``-o verbose=2`` to request the shell to print tracing info
+  from the PMI implementations.
+
+- Launch ``flux-pmi`` as a parallel program to test PMI in isolation.
+
+.. code-block:: console
+
+  $ flux run -n2 --label-io flux pmi -v --method=libpmi2 barrier
+  1: libpmi2: using /opt/cray/pe/lib64/libpmi2.so (cray quirks enabled)
+  0: libpmi2: using /opt/cray/pe/lib64/libpmi2.so (cray quirks enabled)
+  1: libpmi2: initialize: rank=1 size=2 name=kvs_348520130306638848: success
+  0: libpmi2: initialize: rank=0 size=2 name=kvs_348520130306638848: success
+  0: fovUPqZ5dwM: completed pmi barrier on 2 tasks in 0.000s.
+  1: libpmi2: barrier: success
+  0: libpmi2: barrier: success
+  1: libpmi2: barrier: success
+  0: libpmi2: barrier: success
+  1: libpmi2: finalize: success
+  0: libpmi2: finalize: success
 
 -----------------------------
 Configuring Flux with Rabbits
