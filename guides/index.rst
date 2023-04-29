@@ -12,4 +12,5 @@ Do you have a question? `let us know <https://github.com/flux-framework/flux-doc
 
    admin-guide
    accounting-guide
+   learning_guide
    Flux Python API <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>
