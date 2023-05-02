@@ -1095,23 +1095,20 @@ EXPEDITE or HOLD.
 Canceling jobs
 --------------
 
-An active job may be canceled via the ``flux job cancel`` command. An
+An active job may be canceled via the ``flux cancel`` command. An
 instance owner may cancel any job, while a guest may only cancel their
 own jobs.
 
-All active jobs may be canceled with ``flux job cancelall``. By default
-this command will only print the number of jobs that would be canceled.
-To force cancellation of all matched jobs, the ``-f, --force`` option must
-be used:
+All active jobs may be canceled with ``flux cancel --user=all``.
 
 .. code-block:: console
 
- $ flux job cancelall
- flux-job: Command matched 5 jobs (-f to confirm)
- $ flux job cancelall -f
- flux-job: Canceled 5 jobs (0 errors)
+ $ flux cancel --user=all --dry-run
+ flux-cancel: Would cancel 3 jobs
+ $ flux cancel --user=all
+ flux-cancel: Canceled 3 jobs (0 errors)
 
-The set of jobs matched by the ``cancelall`` command may also be restricted
+The set of jobs matched by the ``cancel`` command may also be restricted
 via the ``-s, --states=STATES`` and ``-u, --user=USER`` options.
 
 Software update
