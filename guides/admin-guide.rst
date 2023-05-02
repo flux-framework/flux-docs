@@ -915,19 +915,23 @@ are not displayed, e.g.
 .. code-block:: console
 
  $ flux resource status
-    STATUS NNODES RANKS           NODELIST
-     avail     15 1-15            fluke[26-40]
-     drain      1 0               fluke25
+      STATE UP NNODES NODELIST
+      avail  ✔     78 fluke[6-16,19-23,25-60,62-63,68,71-73,77-78,80,82-86,88,90-91,93,95-101,103]
+     avail*  ✗      6 fluke[17,24,61,79,92,102]
+    exclude  ✔      3 fluke[1,3,108]
+    drained  ✔     13 fluke[18,64-65,67,69-70,74-76,81,87,89,94]
+   drained*  ✗      1 fluke66
 
 To list a set of states explicitly, use the ``--states`` option:
 (Run ``--states=help`` to get a list of valid states)
 
 .. code-block:: console
 
- $ flux resource status --states=offline,exclude
-    STATUS NNODES RANKS           NODELIST
-   offline      0
-   exclude      0
+ $ flux resource status --states=drained,exclude
+     STATE UP NNODES NODELIST
+   exclude  ✔      3 fluke[1,3,108]
+   drained  ✔     13 fluke[18,64-65,67,69-70,74-76,81,87,89,94]
+  drained*  ✗      1 fluke66
 
 This option is useful to get a list of ranks or hostnames in a given
 state. For example, the following command fetches the hostlist
@@ -936,7 +940,7 @@ for all resources configured in a Flux instance:
 .. code-block:: console
 
  $ flux resource status -s all -no {nodelist}
- fluke[25-40]
+ fluke[1,3,6-103,108]
 
 In contrast to ``flux resource status``, the ``flux resource list``
 command lists the *scheduler*'s view of available resources. This
@@ -946,21 +950,28 @@ and includes nodes, cores, and gpus at this time:
 .. code-block:: console
 
  $ flux resource list
-     STATE NNODES   NCORES    NGPUS NODELIST
-      free     15       60        0 fluke[26-40]
- allocated      0        0        0
-      down      1        4        0 fluke25
+     STATE QUEUE      PROPERTIES NNODES   NCORES NODELIST
+      free batch                     71      284 fluke[6-16,19-23,25-60,62-63,68,71-73,77-78,80,82-86,88,90-91,93,95]
+      free debug                      6       24 fluke[96-101]
+      free debug      testprop        1        4 fluke103
+ allocated                            0        0 
+      down batch                     19       76 fluke[17-18,24,61,64-67,69-70,74-76,79,81,87,89,92,94]
+      down debug      testprop        1        4 fluke102
 
-With ``-v``, ``flux resource list`` will show a finer grained list
+With ``--o rlist``, ``flux resource list`` will show a finer grained list
 of resources in each state, instead of a nodelist:
 
 .. code-block:: console
 
- $ flux resource list -v
-      STATE NNODES   NCORES    NGPUS LIST
-       free     15       60        0 rank[1-15]/core[0-3]
-  allocated      0        0        0
-       down      1        4        0 rank0/core[0-3]
+ $ flux resource list -o rlist
+     STATE QUEUE    PROPERTIES NNODES   NCORES    NGPUS LIST
+      free batch                   71      284        0 rank[3-13,16-20,22-57,59-60,65,68-70,74-75,77,79-83,85,87-88,90,92]/core[0-3]
+      free debug                    6       24        0 rank[93-98]/core[0-3]
+      free debug    testprop        1        4        0 rank100/core[0-3]
+ allocated                          0        0        0
+      down batch                   19       76        0 rank[14-15,21,58,61-64,66-67,71-73,76,78,84,86,89,91]/core[0-3]
+      down debug    testprop        1        4        0 rank99/core[0-3]
+
 
 Draining resources
 ==================
