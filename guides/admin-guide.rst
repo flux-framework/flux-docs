@@ -1125,6 +1125,10 @@ combinations.
     Mismatched broker versions are detected as brokers attempt to join
     the instance.  The version is currently required to match exactly.
 
+.. warning::
+    Ensure that flux is completely stopped before beginning a software
+    update.  If this is not observed, Flux may fail to shut down cleanly.
+
 ***************
 Troubleshooting
 ***************
