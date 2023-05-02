@@ -1241,10 +1241,23 @@ circular buffer.  For some problems, it may be useful to view this log:
 
 .. code-block:: console
 
- $ sudo flux dmesg |tail
- 2020-09-14T19:38:38.047025Z sched-simple.debug[0]: free: rank1/core0
- 2020-09-14T19:38:41.600670Z sched-simple.debug[0]: req: 6115337007267840: spec={0,1,1} duration=0.0
- 2020-09-14T19:38:41.600791Z sched-simple.debug[0]: alloc: 6115337007267840: rank1/core0
- 2020-09-14T19:38:41.703252Z sched-simple.debug[0]: free: rank1/core0
- 2020-09-14T19:38:46.588157Z job-ingest.debug[0]: validate-jobspec.py: inactivity timeout
+ $ sudo flux dmesg -H |tail
 
+ [May02 14:51] sched-fluxion-qmanager[0]: feasibility_request_cb: feasibility succeeded
+ [  +0.039371] sched-fluxion-qmanager[0]: alloc success (queue=debug id=184120855100391424)
+ [  +0.816587] sched-fluxion-qmanager[0]: feasibility_request_cb: feasibility succeeded
+ [  +0.857458] sched-fluxion-qmanager[0]: alloc success (queue=debug id=184120868807376896)
+ [  +1.364430] sched-fluxion-qmanager[0]: feasibility_request_cb: feasibility succeeded
+ [  +6.361275] job-ingest[0]: job-frobnicator[0]: inactivity timeout
+ [  +6.367837] job-ingest[0]: job-validator[0]: inactivity timeout
+ [ +24.778929] job-exec[0]: exec aborted: id=184120855100391424
+ [ +24.779019] job-exec[0]: exec_kill: 184120855100391424: signal 15
+ [ +24.779557] job-exec[0]: exec aborted: id=184120868807376896
+ [ +24.779632] job-exec[0]: exec_kill: 184120868807376896: signal 15
+ [ +24.779910] sched-fluxion-qmanager[0]: alloc canceled (id=184120878001291264 queue=debug)
+ [ +25.155578] job-list[0]: purged 1 inactive jobs
+ [ +25.162650] job-manager[0]: purged 1 inactive jobs
+ [ +25.512050] sched-fluxion-qmanager[0]: free succeeded (queue=debug id=184120855100391424)
+ [ +25.647542] sched-fluxion-qmanager[0]: free succeeded (queue=debug id=184120868807376896)
+ [ +27.155103] job-list[0]: purged 2 inactive jobs
+ [ +27.159820] job-manager[0]: purged 2 inactive jobs
