@@ -1066,12 +1066,14 @@ command:
 .. code-block:: console
 
  $ flux queue status -v
- flux-queue: Job submission is enabled
- flux-queue: Scheduling is enabled
- flux-queue: 2 alloc requests queued
- flux-queue: 1 alloc requests pending to scheduler
- flux-queue: 0 free requests pending to scheduler
- flux-queue: 4 running jobs
+ batch: Job submission is enabled
+ batch: Scheduling is started
+ debug: Job submission is enabled
+ debug: Scheduling is started
+ 0 alloc requests queued
+ 0 alloc requests pending to scheduler
+ 0 free requests pending to scheduler
+ 0 running jobs
 
 Managing Flux jobs
 ==================
