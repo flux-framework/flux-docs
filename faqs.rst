@@ -536,36 +536,32 @@ which is the parent process of all MPI processes.  There is typically one
 flux shell per node launched for each job.  A Flux shell plugin offers a
 `PMI <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_13.html>`_
 server that MPI uses to bootstrap itself within the application's call to
-``MPI_Init()``.  Several shell options affect the shell's PMI server:
+``MPI_Init()``.  Several shell options affect the PMI implementations.
 
 verbose=2
    If the shell verbosity level is set to 2 or greater, a trace of the
    PMI server operations is emitted to stderr, which can help debug an
    MPI application that is failing within ``MPI_Init()``.
 
-pmi.kvs=NAME
-   Change the implementation of the PMI key-value store.  The default value
-   is ``exchange``, which gathers data to the first shell in the job, and
-   then broadcasts it to the other shells after a barrier.  The other option
-   is ``native`` which uses the Flux KVS.
+pmi=off
+   Disable all PMI implementations.
 
-pmi.exchange.k=N
-   Alter the fanout of the virtual tree based overlay network used in the
-   ``exchange`` kvs method.  The default fanout is 2.  Other values may
-   affect performance for different job sizes.
+pmi=LIST
+   By default, only ``simple`` PMI is offered.  If shell plugins for additonal
+   implementations are installed, like for ``pmix`` or ``cray-pals``, set
+   *LIST* to a comma-separated list of implementations to enable.
 
-pmi.clique=TYPE
-   Affect how the ``PMI_process_mapping`` key is generated, which tells MPI
-   which ranks are expected to be co-located on nodes.  The default value is
-   ``pershell`` (one "clique" per shell).  Other possible values are ``single``
-   (all ranks on the same node), or ``none`` (skip generating
-   ``PMI_process_mapping``).
+pmi-simple.nomap
+   Populate neither the ``flux.taskmap`` nor ``PMI_process_mapping`` keys
+   in the PMI kvs.
 
 In addition to the PMI server, the shell implements "MPI personalities" as
 lua scripts that are sourced by the shell.  Scripts for generic installs of
-openmpi, mvapich, and Intel MPI are loaded by default from
-``/etc/flux/shell/lua.d``.  Other personalities are optionally loaded from
-``/etc/flux/shell/lua.d/mpi``:
+openmpi, Intel MPI are loaded by default from ``/etc/flux/shell/lua.d``.
+Other personalities are optionally loaded from ``/etc/flux/shell/lua.d/mpi``:
+
+mpi=none
+   Disable the personality scripts that are normally loaded by default.
 
 mpi=spectrum
    IBM Spectrum MPI is an OpenMPI derivative.  See also
