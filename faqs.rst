@@ -17,7 +17,7 @@ What is Flux Framework?
 =======================
 
 Flux is a flexible framework for resource management, built for your site.
-The core framework here consists of a suite of projects, tools, and libraries which may be used to build site-custom resource managers for
+The core framework here consists of a suite of projects, tools, and libraries that may be used to build site-custom resource managers for
 High Performance Computing centers. The set of core projects are described in this documentation, and our
 larger family of projects can be seen on `our portal page <https://flux-framework.org>`_.
 
