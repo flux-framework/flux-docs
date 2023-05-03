@@ -301,8 +301,8 @@ and should be installed from your Linux distribution package manager.
 flux-security
   APIs for job signing, and the IMP, a privileged program for starting
   processes as multiple users. Install on all nodes (required).  If building
-  flux-security from source, be sure to configure ``--with-pam`` to include
-  Pluggable Authentication Modules (PAM) support.
+  flux-security from source, be sure to configure with ``--enable-pam`` to
+  include Pluggable Authentication Modules (PAM) support.
 
 flux-core
   All of the core components of Flux, including the Flux broker.
