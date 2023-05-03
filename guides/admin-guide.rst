@@ -416,6 +416,17 @@ The ``pam_limits.so`` module is useful for setting default job resource
 limits.  If it is not used, jobs run in the system instance may inherit
 inappropriate limits from ``flux-broker``.
 
+.. note::
+  The linux kernel employs a heuristic when assigning initial limits to
+  pid 1.  For example, the max user processes and max pending signals
+  are scaled by the amount of system RAM.  The Flux system broker inherits
+  these limits and passes them on to jobs if PAM limits are not configured.
+  This may result in rlimit warning messages similar to
+
+  .. code-block:: console
+
+    flux-shell[0]:  WARN: rlimit: nproc exceeds current max, raising value to hard limit
+
 Configuring the Network Certificate
 ===================================
 
