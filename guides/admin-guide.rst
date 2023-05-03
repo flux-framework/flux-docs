@@ -13,10 +13,10 @@ resource manager on a cluster.
     in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-core
-    version 0.45.0.
+    version 0.50.0.
 
 .. warning::
-    0.45.0 limitation: the flux system instance is primarily tested on
+    0.50.0 limitation: the flux system instance is primarily tested on
     a 128 node cluster.
 
 
@@ -576,7 +576,7 @@ enabled.
 Adding Job Prolog/Epilog Scripts
 ================================
 
-As of 0.45.0, Flux does not support a traditional job prolog/epilog
+As of 0.50.0, Flux does not support a traditional job prolog/epilog
 which runs as root on the nodes assigned to a job before/after job
 execution. Flux does, however, support a job-manager prolog/epilog,
 which is run at the same point on rank 0 as the instance
@@ -915,19 +915,23 @@ are not displayed, e.g.
 .. code-block:: console
 
  $ flux resource status
-    STATUS NNODES RANKS           NODELIST
-     avail     15 1-15            fluke[26-40]
-     drain      1 0               fluke25
+      STATE UP NNODES NODELIST
+      avail  ✔     78 fluke[6-16,19-23,25-60,62-63,68,71-73,77-78,80,82-86,88,90-91,93,95-101,103]
+     avail*  ✗      6 fluke[17,24,61,79,92,102]
+    exclude  ✔      3 fluke[1,3,108]
+    drained  ✔     13 fluke[18,64-65,67,69-70,74-76,81,87,89,94]
+   drained*  ✗      1 fluke66
 
 To list a set of states explicitly, use the ``--states`` option:
 (Run ``--states=help`` to get a list of valid states)
 
 .. code-block:: console
 
- $ flux resource status --states=offline,exclude
-    STATUS NNODES RANKS           NODELIST
-   offline      0
-   exclude      0
+ $ flux resource status --states=drained,exclude
+     STATE UP NNODES NODELIST
+   exclude  ✔      3 fluke[1,3,108]
+   drained  ✔     13 fluke[18,64-65,67,69-70,74-76,81,87,89,94]
+  drained*  ✗      1 fluke66
 
 This option is useful to get a list of ranks or hostnames in a given
 state. For example, the following command fetches the hostlist
@@ -936,7 +940,7 @@ for all resources configured in a Flux instance:
 .. code-block:: console
 
  $ flux resource status -s all -no {nodelist}
- fluke[25-40]
+ fluke[1,3,6-103,108]
 
 In contrast to ``flux resource status``, the ``flux resource list``
 command lists the *scheduler*'s view of available resources. This
@@ -946,21 +950,28 @@ and includes nodes, cores, and gpus at this time:
 .. code-block:: console
 
  $ flux resource list
-     STATE NNODES   NCORES    NGPUS NODELIST
-      free     15       60        0 fluke[26-40]
- allocated      0        0        0
-      down      1        4        0 fluke25
+     STATE QUEUE      PROPERTIES NNODES   NCORES NODELIST
+      free batch                     71      284 fluke[6-16,19-23,25-60,62-63,68,71-73,77-78,80,82-86,88,90-91,93,95]
+      free debug                      6       24 fluke[96-101]
+      free debug      testprop        1        4 fluke103
+ allocated                            0        0 
+      down batch                     19       76 fluke[17-18,24,61,64-67,69-70,74-76,79,81,87,89,92,94]
+      down debug      testprop        1        4 fluke102
 
-With ``-v``, ``flux resource list`` will show a finer grained list
+With ``--o rlist``, ``flux resource list`` will show a finer grained list
 of resources in each state, instead of a nodelist:
 
 .. code-block:: console
 
- $ flux resource list -v
-      STATE NNODES   NCORES    NGPUS LIST
-       free     15       60        0 rank[1-15]/core[0-3]
-  allocated      0        0        0
-       down      1        4        0 rank0/core[0-3]
+ $ flux resource list -o rlist
+     STATE QUEUE    PROPERTIES NNODES   NCORES    NGPUS LIST
+      free batch                   71      284        0 rank[3-13,16-20,22-57,59-60,65,68-70,74-75,77,79-83,85,87-88,90,92]/core[0-3]
+      free debug                    6       24        0 rank[93-98]/core[0-3]
+      free debug    testprop        1        4        0 rank100/core[0-3]
+ allocated                          0        0        0
+      down batch                   19       76        0 rank[14-15,21,58,61-64,66-67,71-73,76,78,84,86,89,91]/core[0-3]
+      down debug    testprop        1        4        0 rank99/core[0-3]
+
 
 Draining resources
 ==================
@@ -1055,12 +1066,14 @@ command:
 .. code-block:: console
 
  $ flux queue status -v
- flux-queue: Job submission is enabled
- flux-queue: Scheduling is enabled
- flux-queue: 2 alloc requests queued
- flux-queue: 1 alloc requests pending to scheduler
- flux-queue: 0 free requests pending to scheduler
- flux-queue: 4 running jobs
+ batch: Job submission is enabled
+ batch: Scheduling is started
+ debug: Job submission is enabled
+ debug: Scheduling is started
+ 0 alloc requests queued
+ 0 alloc requests pending to scheduler
+ 0 free requests pending to scheduler
+ 0 running jobs
 
 Managing Flux jobs
 ==================
@@ -1082,23 +1095,20 @@ EXPEDITE or HOLD.
 Canceling jobs
 --------------
 
-An active job may be canceled via the ``flux job cancel`` command. An
+An active job may be canceled via the ``flux cancel`` command. An
 instance owner may cancel any job, while a guest may only cancel their
 own jobs.
 
-All active jobs may be canceled with ``flux job cancelall``. By default
-this command will only print the number of jobs that would be canceled.
-To force cancellation of all matched jobs, the ``-f, --force`` option must
-be used:
+All active jobs may be canceled with ``flux cancel --user=all``.
 
 .. code-block:: console
 
- $ flux job cancelall
- flux-job: Command matched 5 jobs (-f to confirm)
- $ flux job cancelall -f
- flux-job: Canceled 5 jobs (0 errors)
+ $ flux cancel --user=all --dry-run
+ flux-cancel: Would cancel 3 jobs
+ $ flux cancel --user=all
+ flux-cancel: Canceled 3 jobs (0 errors)
 
-The set of jobs matched by the ``cancelall`` command may also be restricted
+The set of jobs matched by the ``cancel`` command may also be restricted
 via the ``-s, --states=STATES`` and ``-u, --user=USER`` options.
 
 Software update
@@ -1114,6 +1124,10 @@ combinations.
 .. note::
     Mismatched broker versions are detected as brokers attempt to join
     the instance.  The version is currently required to match exactly.
+
+.. warning::
+    Ensure that flux is completely stopped before beginning a software
+    update.  If this is not observed, Flux may fail to shut down cleanly.
 
 ***************
 Troubleshooting
@@ -1227,10 +1241,23 @@ circular buffer.  For some problems, it may be useful to view this log:
 
 .. code-block:: console
 
- $ sudo flux dmesg |tail
- 2020-09-14T19:38:38.047025Z sched-simple.debug[0]: free: rank1/core0
- 2020-09-14T19:38:41.600670Z sched-simple.debug[0]: req: 6115337007267840: spec={0,1,1} duration=0.0
- 2020-09-14T19:38:41.600791Z sched-simple.debug[0]: alloc: 6115337007267840: rank1/core0
- 2020-09-14T19:38:41.703252Z sched-simple.debug[0]: free: rank1/core0
- 2020-09-14T19:38:46.588157Z job-ingest.debug[0]: validate-jobspec.py: inactivity timeout
+ $ sudo flux dmesg -H |tail
 
+ [May02 14:51] sched-fluxion-qmanager[0]: feasibility_request_cb: feasibility succeeded
+ [  +0.039371] sched-fluxion-qmanager[0]: alloc success (queue=debug id=184120855100391424)
+ [  +0.816587] sched-fluxion-qmanager[0]: feasibility_request_cb: feasibility succeeded
+ [  +0.857458] sched-fluxion-qmanager[0]: alloc success (queue=debug id=184120868807376896)
+ [  +1.364430] sched-fluxion-qmanager[0]: feasibility_request_cb: feasibility succeeded
+ [  +6.361275] job-ingest[0]: job-frobnicator[0]: inactivity timeout
+ [  +6.367837] job-ingest[0]: job-validator[0]: inactivity timeout
+ [ +24.778929] job-exec[0]: exec aborted: id=184120855100391424
+ [ +24.779019] job-exec[0]: exec_kill: 184120855100391424: signal 15
+ [ +24.779557] job-exec[0]: exec aborted: id=184120868807376896
+ [ +24.779632] job-exec[0]: exec_kill: 184120868807376896: signal 15
+ [ +24.779910] sched-fluxion-qmanager[0]: alloc canceled (id=184120878001291264 queue=debug)
+ [ +25.155578] job-list[0]: purged 1 inactive jobs
+ [ +25.162650] job-manager[0]: purged 1 inactive jobs
+ [ +25.512050] sched-fluxion-qmanager[0]: free succeeded (queue=debug id=184120855100391424)
+ [ +25.647542] sched-fluxion-qmanager[0]: free succeeded (queue=debug id=184120868807376896)
+ [ +27.155103] job-list[0]: purged 2 inactive jobs
+ [ +27.159820] job-manager[0]: purged 2 inactive jobs
