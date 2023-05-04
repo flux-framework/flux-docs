@@ -301,8 +301,8 @@ and should be installed from your Linux distribution package manager.
 flux-security
   APIs for job signing, and the IMP, a privileged program for starting
   processes as multiple users. Install on all nodes (required).  If building
-  flux-security from source, be sure to configure ``--with-pam`` to include
-  Pluggable Authentication Modules (PAM) support.
+  flux-security from source, be sure to configure with ``--enable-pam`` to
+  include Pluggable Authentication Modules (PAM) support.
 
 flux-core
   All of the core components of Flux, including the Flux broker.
@@ -415,6 +415,17 @@ Example file installed path: ``/etc/pam.d/flux``
 The ``pam_limits.so`` module is useful for setting default job resource
 limits.  If it is not used, jobs run in the system instance may inherit
 inappropriate limits from ``flux-broker``.
+
+.. note::
+  The linux kernel employs a heuristic when assigning initial limits to
+  pid 1.  For example, the max user processes and max pending signals
+  are scaled by the amount of system RAM.  The Flux system broker inherits
+  these limits and passes them on to jobs if PAM limits are not configured.
+  This may result in rlimit warning messages similar to
+
+  .. code-block:: console
+
+    flux-shell[0]:  WARN: rlimit: nproc exceeds current max, raising value to hard limit
 
 Configuring the Network Certificate
 ===================================
