@@ -68,6 +68,11 @@ for the meaning of the suffixes.
 The **name** field determines the suffix to the ``DW_JOB_`` environment variable.
 See below for more detail.
 
+.. note::
+
+	The **name** field can only contain lowercase alphanumeric characters.
+	Underscores, spaces, and dashes are not allowed.
+
 
 Using Rabbit Storage
 --------------------
