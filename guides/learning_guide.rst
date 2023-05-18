@@ -753,7 +753,7 @@ Once instantiated, Flux effectively carries out many complicated operations
 ranging from monitoring the health of resources, to enqueuing submitted tasks,
 to scheduling and executing these tasks. Flux uses a graph-based approach to
 scheduling as described earlier. Flux's scheduler component, called Fluxion, is
-represented in Figure 11. Furing Flux instance initialization, Fluxion first populates
+represented in Figure 11. During Flux instance initialization, Fluxion first populates
 an in-memory resource graph store (A) comprising vertices that represent the HPC
 system's various compute resources and edges that represent the relationships
 among those resources. The initialization process also includes the selection of the
