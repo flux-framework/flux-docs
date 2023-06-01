@@ -34,8 +34,8 @@ bank allocations.
 The database is populated and queried with command line tools prefixed with
 ``flux account``.  Accounting scripts are run regularly by
 :core:man1:`flux-cron` to pull historical job information from the Flux
-``job-archive`` database to the accounting database, and to push bank and limit
-data to the jobtap plugin.
+``job-list`` and ``job-info`` interfaces into the accounting database,
+and to push bank and limit data to the jobtap plugin.
 
 At this time, the database is expected to be installed on a cluster management
 node, co-located with the rank 0 Flux broker, managing accounts for that
@@ -125,22 +125,12 @@ following command:
 A series of actions should run periodically to keep the accounting
 system in sync with Flux:
 
-- The job-archive module scans inactive jobs and dumps them to a sqlite
-  database.
-- A script reads the archive database and updates the job usage data in the
+- A script fetches inactive jobs and inserts them into a ``jobs`` table in the
+flux-accounting DB.
+- A script reads the ``jobs`` table and updates the job usage data in the
   accounting database.
 - A script updates the per-user fair share factors in the accounting database.
 - A script pushes updated factors to the multi-factor priority plugin.
-
-The Flux system instance must configure the ``job-archive`` module to run
-periodically:
-
-.. code-block:: toml
-
- [archive]
- period = "1m"
-
-See also: :core:man5:`flux-config-archive`.
 
 The scripts should be run by :core:man1:`flux-cron`:
 
@@ -148,7 +138,7 @@ The scripts should be run by :core:man1:`flux-cron`:
 
  # /etc/flux/system/cron.d/accounting
 
- 30 * * * * bash -c "flux account update-usage --job-archive_db_path=/var/lib/flux/job-archive.sqlite; flux account-update-fshare; flux account-priority-update"
+ 30 * * * * bash -c "flux account-fetch-job-records; flux account update-usage; flux account-update-fshare; flux account-priority-update"
 
 ***********************
 Database Administration
@@ -190,6 +180,12 @@ consists of the following tables:
 +--------------------------+--------------------------------------------------+
 | t_half_life_period_table | keeps track of the current half-life period for  |
 |                          | calculating job usage factors                    |
++--------------------------+--------------------------------------------------+
+| jobs                     | stores inactive jobs for job usage and fair      |
+|                          | share calculation                                |
++--------------------------+--------------------------------------------------+
+| last_seen_job_table      | housekeeping table that stores the timestamp of  |
+|                          | the last inactive job that flux-accounting saw   |
 +--------------------------+--------------------------------------------------+
 
 To view all associations in a flux-accounting database, the ``flux
