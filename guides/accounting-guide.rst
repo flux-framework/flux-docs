@@ -11,7 +11,7 @@ Flux Accounting Guide
     documented in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-accounting
-    version 0.18.1.
+    version 0.26.0.
 
 ********
 Overview
