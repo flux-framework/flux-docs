@@ -255,7 +255,7 @@ For most users, instead of formatting your own output, you may wish to use one o
       long         Extended flux-jobs format string
       deps         Show job urgency, priority, and dependencies
 
-For example, lets take a look at the ``long`` output.
+For example, let's take a look at the ``long`` output.
 
 .. code-block:: console
 
@@ -298,8 +298,8 @@ Recursive Job Listing
    This section is independent on the previous one.  To continue on with this example from the previous one,
    you may wish to cancel your jobs from before via ``flux cancel --all``.
 
-By default, ``flux jobs`` will not list jobs that are running under subinstances within Flux.  Lets illustrate
-this with an example.  Lets submit the following script to ``flux batch``.
+By default, ``flux jobs`` will not list jobs that are running under subinstances within Flux.  Let's illustrate
+this with an example.  Submit the following script to ``flux batch``.
 
 .. code-block:: sh
     #!/bin/sh
@@ -312,7 +312,7 @@ this with an example.  Lets submit the following script to ``flux batch``.
 All we're doing is running two ``sleep`` jobs for infinity, and then calling ``flux queue drain`` to wait for those
 jobs to complete.  (See :ref:`Waiting for jobs<waiting-for-jobs>` tutorial for info on using ``flux queue drain`` to wait for jobs to complete.)
 
-Lets run this via ``flux batch``
+Let's run this via ``flux batch``
 
 .. code-block:: console
 
