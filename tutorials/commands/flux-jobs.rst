@@ -302,6 +302,7 @@ By default, ``flux jobs`` will not list jobs that are running under subinstances
 this with an example.  Submit the following script to ``flux batch``.
 
 .. code-block:: sh
+
     #!/bin/sh
     # filename: batchjob.sh
 
