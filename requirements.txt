@@ -9,6 +9,7 @@ markupsafe==2.0.1
 # waiting on dark mode
 # sphinx_material
 sphinx-immaterial
+pydantic==1.10.8
 recommonmark
 sphinx_markdown_tables
 myst-parser

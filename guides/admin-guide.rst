@@ -263,6 +263,9 @@ System Prerequisites
 submitted to Flux, so the MUNGE daemon should be installed on all
 nodes running Flux with the same MUNGE key used across the cluster.
 
+System clocks must be synchronized across the cluster, e.g. with
+`Network Time Protocol <https://en.wikipedia.org/wiki/Network_Time_Protocol>`_.
+
 Flux assumes a shared UID namespace across the cluster.
 
 A system user named ``flux`` is required.  This user need not have a valid
