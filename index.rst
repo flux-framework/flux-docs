@@ -32,6 +32,7 @@ If you are interested in a high level comparison of Flux to other resource manag
    guides/index
    contributing
    glossary
+   comics/index
 
 .. toctree::
    :maxdepth: 1
