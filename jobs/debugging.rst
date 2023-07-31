@@ -26,10 +26,11 @@ Attaching to an already running job:
   $ PID=$!
   $ totalview -pid ${PID} /proc/${PID}/exe
 
-You can also just type ``totalview`` without ``-pid`` option and
-then use its ``Start a Debugging Session``
+You can also just type ``totalview`` without ``-pid`` option 
+For Classic UI: use its ``Start a Debugging Session``
 GUI option to select the process of this ``flux-job`` command:
 ``A running program (attach)``.
+For new UI: use ''Attach To Process''
 
 .. note::
   You use TotalView with the newly invoked ``flux job attach``
@@ -46,6 +47,16 @@ can be handy when you debug a large-scale job. Please refer to
 `TotalView user guide`_ on its subset-attach capability.
 
 .. _TotalView user guide: https://docs.roguewave.com/en/totalview/current/html/
+
+Exiting TotalView without completing a full run of your code, may not clean up the Flux job. 
+In that case you will need to cancel the flux job manually. 
+
+.. code-block:: console
+
+  $ flux cancel <JOBID>
+
+.. note::
+  Use ``flux jobs`` to find <JOBID>
 
 ----------------------------------------------
 Better Handling of Flux's Internal Exec Events
@@ -66,7 +77,7 @@ exec-handling Tcl code into TotalView::
 
     catch {dset TV::exec_handling { {^(flux|lrun|srun|jsrun)(<python[^>]*>(<flux-job>)?|<bash>|<jsrun>|<jswrap>)*$ go}} }
 
-This code should either be added to the site-wide ``.tvdrc`` file
+This code has been added to the site-wide ``.tvdrc`` file
 to enable this for all TotalView sessions
 or per-user file (e.g., ``tvdrc`` in the current working directory)
 to enable this only for the user's own sessions.
