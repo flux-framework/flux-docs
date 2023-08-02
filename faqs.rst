@@ -16,15 +16,15 @@ Background
 What is Flux Framework?
 =======================
 
-Flux is a flexible framework for resource management, built for your site. 
-The core framework here consists of a suite of projects, tools, and libraries which may be used to build site-custom resource managers for 
+Flux is a flexible framework for resource management, built for your site.
+The core framework here consists of a suite of projects, tools, and libraries that may be used to build site-custom resource managers for
 High Performance Computing centers. The set of core projects are described in this documentation, and our
 larger family of projects can be seen on `our portal page <https://flux-framework.org>`_.
 
 What does it mean for a cluster to deploy Flux?
 ===============================================
 
-Most of the time when someone talks about Flux, they will be describing the combined install 
+Most of the time when someone talks about Flux, they will be describing the combined install
 of several projects here that manifest in a full cluster to submit workflows.
 This cluster is comparable to other job managers like SLURM or SGE in that it can be installed
 as the main workload manager for a site.
@@ -32,17 +32,17 @@ as the main workload manager for a site.
 Where does Flux work?
 =====================
 
-You likely are associating Flux with high performance computing in that it is comparable 
-to other job managers. However, Flux has a unique ability to nest, meaning you (as a user) could 
-launch a Flux Instance under a slurm allocation, for example. Along with scheduler nesting,  
-you can easily demo Flux in a container, or even used in Kubernetes with the  
+You likely are associating Flux with high performance computing in that it is comparable
+to other job managers. However, Flux has a unique ability to nest, meaning you (as a user) could
+launch a Flux Instance under a slurm allocation, for example. Along with scheduler nesting,
+you can easily demo Flux in a container, or even used in Kubernetes with the
 `Flux Operator <https://flux-framework.org/flux-operator>`_. We have a vision for Flux to
 allow for converged computing, or making it easy to move between traditional HPC and cloud.
 
 How does Flux compare to other managers?
 ========================================
 
-Flux has similarities to many other resource managers, but we do a variety of things quite differently. 
+Flux has similarities to many other resource managers, but we do a variety of things quite differently.
 Check out this comparison table here (:ref:`comparison-table`) for a detailed list!"
 Do you want to add or correct a feature? Please `let us know <https://github.com/flux-framework/flux-docs/issues>`_
 
@@ -536,36 +536,32 @@ which is the parent process of all MPI processes.  There is typically one
 flux shell per node launched for each job.  A Flux shell plugin offers a
 `PMI <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_13.html>`_
 server that MPI uses to bootstrap itself within the application's call to
-``MPI_Init()``.  Several shell options affect the shell's PMI server:
+``MPI_Init()``.  Several shell options affect the PMI implementations.
 
 verbose=2
    If the shell verbosity level is set to 2 or greater, a trace of the
    PMI server operations is emitted to stderr, which can help debug an
    MPI application that is failing within ``MPI_Init()``.
 
-pmi.kvs=NAME
-   Change the implementation of the PMI key-value store.  The default value
-   is ``exchange``, which gathers data to the first shell in the job, and
-   then broadcasts it to the other shells after a barrier.  The other option
-   is ``native`` which uses the Flux KVS.
+pmi=off
+   Disable all PMI implementations.
 
-pmi.exchange.k=N
-   Alter the fanout of the virtual tree based overlay network used in the
-   ``exchange`` kvs method.  The default fanout is 2.  Other values may
-   affect performance for different job sizes.
+pmi=LIST
+   By default, only ``simple`` PMI is offered.  If shell plugins for additonal
+   implementations are installed, like for ``pmix`` or ``cray-pals``, set
+   *LIST* to a comma-separated list of implementations to enable.
 
-pmi.clique=TYPE
-   Affect how the ``PMI_process_mapping`` key is generated, which tells MPI
-   which ranks are expected to be co-located on nodes.  The default value is
-   ``pershell`` (one "clique" per shell).  Other possible values are ``single``
-   (all ranks on the same node), or ``none`` (skip generating
-   ``PMI_process_mapping``).
+pmi-simple.nomap
+   Populate neither the ``flux.taskmap`` nor ``PMI_process_mapping`` keys
+   in the PMI kvs.
 
 In addition to the PMI server, the shell implements "MPI personalities" as
 lua scripts that are sourced by the shell.  Scripts for generic installs of
-openmpi, mvapich, and Intel MPI are loaded by default from
-``/etc/flux/shell/lua.d``.  Other personalities are optionally loaded from
-``/etc/flux/shell/lua.d/mpi``:
+openmpi, Intel MPI are loaded by default from ``/etc/flux/shell/lua.d``.
+Other personalities are optionally loaded from ``/etc/flux/shell/lua.d/mpi``:
+
+mpi=none
+   Disable the personality scripts that are normally loaded by default.
 
 mpi=spectrum
    IBM Spectrum MPI is an OpenMPI derivative.  See also
