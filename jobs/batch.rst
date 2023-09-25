@@ -21,22 +21,6 @@ more batch jobs to run further subinstances of Flux.
    but it is important to note that the same commands and techniques
    will also work at the system level.
 
-----------------------------------
-Launching Flux in Interactive Mode
-----------------------------------
-
-For this demonstration, we first launch Flux under SLURM and get an interactive shell.
-
-.. code-block:: console
-
-  $ salloc -N4 -ppdebug
-  salloc: Granted job allocation 5620626
-  $ srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --pty --mpi=none --mpibind=off flux start
-
-.. note::
-   If launching under SLURM is not possible or convenient, a single-node
-   single user instance of Flux can be started with ``flux start -s 4``.
-
 -------------
 Batch Command
 -------------
