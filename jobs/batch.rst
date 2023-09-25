@@ -36,7 +36,7 @@ batch script is ``flux batch``.
   
   echo "Starting my batch job"
   echo "Print the resources allocated to this batch job"
-  flux hwloc info
+  flux resource info
   
   echo "Use sleep to emulate a parallel program"
   echo "Run the program at a total of 4 processes each requiring"
@@ -105,7 +105,7 @@ Checking the output file of one of the batch job:
 
   $ cat flux-ƒWZEQa8X.out
   Print the resources allocated to this batch job
-  2 Machines, 4 Cores, 8 PUs
+  2 Nodes, 4 Cores, 0 GPUs
   Use sleep to emulate a parallel program
   Run the program at a total of 4 processes each requiring
   1 core. These processes are equally spread across 2 nodes.
