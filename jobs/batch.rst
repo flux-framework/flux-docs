@@ -66,11 +66,6 @@ In this example, each job requests two slots each with
 2 cores (``--cores-per-slot=2``) and these slots must be equally spread
 across two nodes (``--nodes=4``).
 
-Currently, if you want a script to be exclusively allocated to a set of
-nodes, the recommended option set is:
-``--nslots=<NUM OF NODES>`` ``--cores-per-slot=<MAX NUM OF CORES PER NODE>``
-and ``--nodes=<NUM OF NODES>``
-
 .. note::
    Internally, Flux will create a nested Flux instance allocated
    to the requested resources per batch job and run the batch
