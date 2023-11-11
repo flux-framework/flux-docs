@@ -26,7 +26,7 @@ What does it mean for a cluster to deploy Flux?
 
 Most of the time when someone talks about Flux, they will be describing the combined install
 of several projects here that manifest in a full cluster to submit workflows.
-This cluster is comparable to other job managers like SLURM or SGE in that it can be installed
+This cluster is comparable to other job managers like Slurm or SGE in that it can be installed
 as the main workload manager for a site.
 
 Where does Flux work?
@@ -34,7 +34,7 @@ Where does Flux work?
 
 You likely are associating Flux with high performance computing in that it is comparable
 to other job managers. However, Flux has a unique ability to nest, meaning you (as a user) could
-launch a Flux Instance under a slurm allocation, for example. Along with scheduler nesting,
+launch a Flux Instance under a Slurm allocation, for example. Along with scheduler nesting,
 you can easily demo Flux in a container, or even used in Kubernetes with the
 `Flux Operator <https://flux-framework.org/flux-operator>`_. We have a vision for Flux to
 allow for converged computing, or making it easy to move between traditional HPC and cloud.
@@ -150,7 +150,7 @@ Resources Questions
 Why is Flux ignoring my Nvidia GPUs?
 ====================================
 
-When Flux is launched via a foreign resource manager like SLURM or LSF,
+When Flux is launched via a foreign resource manager like Slurm or LSF,
 it must discover available resources from scratch using
 `hwloc <https://www.open-mpi.org/projects/hwloc/>`_.  To print a resource
 summary, run:
@@ -325,7 +325,7 @@ may help improve efficiency and throughput:
   with ``flux resource drain 0``.
 
 Since Flux can be launched as a parallel job within foreign resource managers
-like SLURM and LSF, your efforts to develop an efficient batch or workflow
+like Slurm and LSF, your efforts to develop an efficient batch or workflow
 management script that runs within a Flux instance can be portable to those
 systems.
 
@@ -337,10 +337,10 @@ How do I run job steps?
 
 A Flux batch job or allocation started with ``flux batch`` or
 ``flux alloc`` is actually a full featured Flux instance run as a job
-within the enclosing Flux instance.  Unlike SLURM, Flux does not have a
+within the enclosing Flux instance.  Unlike Slurm, Flux does not have a
 separate concept like *steps* for work run in a Flux subinstance--we just have
 *jobs*.  That said, a batch script in Flux may contain multiple
-``flux run`` commands just as a SLURM batch script may contain multiple
+``flux run`` commands just as a Slurm batch script may contain multiple
 ``srun`` commands.
 
 Despite there being only one type of *job* in Flux, running a series of jobs
@@ -665,8 +665,8 @@ with-pm=slurm
 
 .. note::
    It appears that ``--with-pm=slurm`` is not required to run MPI programs
-   under SLURM, although it is unclear whether there is a performance impact
-   under SLURM when this option is omitted.
+   under Slurm, although it is unclear whether there is a performance impact
+   under Slurm when this option is omitted.
 
 .. _mpi_init_problems:
 

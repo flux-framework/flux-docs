@@ -107,11 +107,11 @@ Checking the output file of one of the batch job:
 
 
 ------------------------------------
-Launching Flux in SLURM's Batch Mode
+Launching Flux in Slurm's Batch Mode
 ------------------------------------
 
 Users may want to script the above procedures within a script
-to submit to another resource manager such SLURM.
+to submit to another resource manager such Slurm.
 
 An example sbatch script:
 

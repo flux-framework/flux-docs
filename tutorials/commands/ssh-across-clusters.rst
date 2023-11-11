@@ -17,11 +17,11 @@ and run ``flux start`` via our job manager. Here we might be on a login node:
 
 .. code-block:: console
 
-    # slurm specific
+    # Slurm specific
     $ salloc -N4 --exclusive
     $ srun -N4 -n4 --pty --mpibind=off flux start
 
-And then we get our allocation! You might adapt this command to be more specific to your resource manager. E.g., slurm uses srun.
+And then we get our allocation! You might adapt this command to be more specific to your resource manager. E.g., Slurm uses srun.
 After you run ``flux start``, you are inside of a Flux instance on your allocation!
 Let's run a simple job on our allocation. This first example will ask to see the hostnames of your nodes:
 

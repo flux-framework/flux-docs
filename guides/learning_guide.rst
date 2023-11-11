@@ -459,7 +459,7 @@ management allows this class of workflows to run many modeling application tasks
 each with a different scenario, efficiently at once on a large resource allocation.
 With strict deadline requirements, these workflows must also portably leverage
 computing resources from multiple institutions include the world's most powerful
-supercomputers at ORNL, LLNL, and NERSC. Existing software tools (e.g., SLURM
+supercomputers at ORNL, LLNL, and NERSC. Existing software tools (e.g., Slurm
 and IBM LSF fall short of meeting all of the project's requirements - high job
 throughput, co-scheduling ability, and portability between different HPC systems. Luc
 Peterson, software architect of a main tool used for the NVBL team reported, "With
@@ -613,7 +613,7 @@ and launching the simulations in a general manner becomes difficult.
 The first version of the Merlin MPI parallel job launcher used a simple Python-
 based subprocess call to map a set of MPI parameters (e.g., number of nodes and
 CPU cores) onto the commands needed for launching under the system workload
-manager such as SLURM or IBM LSF. A maintenance issue arose when each new
+manager such as Slurm or IBM LSF. A maintenance issue arose when each new
 workload manager required a set of runtime parameters that do not map 1:1
 between the various launch systems. Moreover, IBM LSF does not handle nested
 launches where there is one subprocess call for the allocation and a subsequent
@@ -647,7 +647,7 @@ Figures 3a and 3b provide simple examples. We first note that the first lines
 these scripts are nearly identical to that of traditional solutions. Exploiting this
 property, Flux can easily be adapted and used with a computing center's existing
 system workload managers with just a few keystrokes. For example, Figure 7 shows
-how Flux can enable the complex workflow in Figure 3b under SLURM, a traditional
+how Flux can enable the complex workflow in Figure 3b under Slurm, a traditional
 HPC workload manager, with just a two-line change in commands. This feature
 has proven to be critical in helping combat time-critical workflow problems such as
 as in COVID-19 research. Thanks to this easy-to-adapt feature, Flux has enabled
@@ -661,7 +661,7 @@ system-instance technology of Flux.
         srun -N256 -n256 flux start <SCRIPT in figure 3b>
 
 The above is Figure 7, and shows that enabling Flux under another workload manager like
-SLURM is as simple as executing this two-line command.
+Slurm is as simple as executing this two-line command.
 
 
 Flux's adaptability to different use cases, along with being open source, has
@@ -947,7 +947,7 @@ to make scheduling descisions. This model is simple and effective for moderate-s
 clusters, making it the state of the practice in most cloud-based and HPC centers
 today. Cloud workload managers (or often called container orchestration solutions)
 such as Swarm and Kubernetes and HPC workload managers such as
-SLURM, MOAB, IBM LSF, and PBSPro (OpenPBS) are centralized.
+Slurm, MOAB, IBM LSF, and PBSPro (OpenPBS) are centralized.
 The cloud products—Kubernetes in particular—can achieve high job throughput,
 but they are incapable of efficient batch job scheduling and rely on overly simplistic
 resource models, resulting in poor performance for HPC workloads. On the other
@@ -969,7 +969,7 @@ like Mesos and YARN as well as the grid solutions like Globus and
 HTCondor. Efforts to achieve better scalability in HPC have resulted in this
 model's implementation at some HPC centers. For example, in the past LLNL
 managed multiple clusters with a limited hierarchical workload manager that used
-the MOAB grid meta-scheduler on top of several SLURM workload managers, each
+the MOAB grid meta-scheduler on top of several Slurm workload managers, each
 of which managed a single cluster in the facility. While this type of solution
 increases scalability over centralized scheduling, it is ultimately limited by its shallow
 (and therefore inflexible) hierarchy and the capabilities of the scheduling frameworks
@@ -1052,7 +1052,7 @@ will enable it to be the primary system workload manager on exascale-computing-
 class supercomputers by 2023, is actively being pursued as additional features and
 performance/scalability tuning, commensurate with the capabilities of then the
 world's fastest supercomputers, are required. It is important to note that existing
-workload managers in HPC (such as SLURM or LSF) have been developed and
+workload managers in HPC (such as Slurm or LSF) have been developed and
 stabilized over a span of decades, until many HPC sites across the world adopted
 and deployed them, and they continue to add features. Similar expectations apply to
 the Flux framework as development effort and feature enhancements continue.
