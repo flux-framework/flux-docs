@@ -237,7 +237,7 @@ PROCID
 rc
 SIGKILL
 sizesp
-SLURM
+Slurm
 stepid
 str
 Unpublish

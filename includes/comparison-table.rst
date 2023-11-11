@@ -9,7 +9,7 @@
 
    * - Features
      - Flux
-     - SLURM
+     - Slurm
      - PBSPro (OpenPBS)
      - LSF
      - MOAB 
@@ -46,7 +46,7 @@
 
    * - Features
      - Flux
-     - SLURM
+     - Slurm
      - PBSPro (OpenPBS)
      - LSF
      - MOAB 
@@ -163,7 +163,7 @@
 
    * - Features
      - Flux
-     - SLURM
+     - Slurm
      - PBSPro (OpenPBS)
      - LSF
      - MOAB 
@@ -182,7 +182,7 @@
      - yes
      - yes
    * - Support for nesting within foreign resource manager
-     - yes (slurm, lsf, ...)
+     - yes (Slurm, lsf, ...)
      - n/a
      - n/a
      - n/a

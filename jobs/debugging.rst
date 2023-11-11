@@ -77,7 +77,7 @@ to ``totalview``. For example,
 
   $ totalview -s tvdrc --args flux run -N 2 -n 2 ./mpi-program
 
-Notice that it is designed to support not only Flux but also SLURM's
+Notice that it is designed to support not only Flux but also Slurm's
 srun and IBM JSM's jsrun commands. The ``regex`` syntax of
 ``exec_handling`` within TotalView can be found in `TotalView user guide`_.
 
