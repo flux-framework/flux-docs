@@ -2,13 +2,14 @@
    :file: ./comparison-table.html
 
 .. list-table:: Flux Compared to Other Resource Managers
-   :widths: 46 6 6 6 6 6 6 6 6 6 
+   :widths: 46 6 6 6 6 6 6 6 6 6 6
    :header-rows: 1
    :stub-columns: 1
    :class: comparison-table
 
    * - Features
      - Flux
+     - HTCondor
      - SLURM
      - PBSPro (OpenPBS)
      - LSF
@@ -17,7 +18,8 @@
      - Balsam 
      - Parsl 
      - Nitro
-   * - 
+   * -
+     -
      - 
      - 
      - 
@@ -31,6 +33,7 @@
      - yes
      - yes
      - yes
+     - yes
      - no
      - no
      - yes
@@ -39,13 +42,14 @@
      - no
 
 .. list-table:: Multi-User Mode
-   :widths: 46 6 6 6 6 6 6 6 6 6 
+   :widths: 46 6 6 6 6 6 6 6 6 6 6
    :header-rows: 1
    :stub-columns: 1
    :class: comparison-table
 
    * - Features
      - Flux
+     - HTCondor
      - SLURM
      - PBSPro (OpenPBS)
      - LSF
@@ -60,12 +64,14 @@
      - yes
      - yes
      - yes
+     - yes
      - no
      - yes
      - no
      - no
    * - Full hierarchical resource management
      - yes
+     - ???
      - no
      - no
      - no 
@@ -75,6 +81,7 @@
      - n/a
      - n/a
    * - Graph-based advanced resource management
+     - yes
      - yes
      - no
      - no
@@ -86,6 +93,7 @@
      - n/a
    * - Scheduling specialization
      - yes
+     - yes
      - no
      - no
      - no 
@@ -95,6 +103,7 @@
      - n/a
      - n/a
    * - Security: only a small isolated layer running in privileged mode for tighter security
+     - yes
      - yes
      - no
      - no
@@ -106,6 +115,7 @@
      - n/a
    * - Modern command-line interface (cli) design
      - yes
+     - yes (& legacy)
      - outdated
      - outdated
      - outdated
@@ -115,6 +125,7 @@
      - n/a
      - n/a
    * - Application programming interface (APIs) for job management, job monitoring, resource monitoring, low-level messaging 
+     - yes (4/4)
      - yes (4/4)
      - some (3/4)
      - some (2/4)
@@ -126,6 +137,7 @@
      - n/a
    * - Language bindings
      - yes (C, C++, Python, Lua, Rust, Julia, REST)
+     - yes (C++, Python, Chirp)
      - some (C, REST)
      - some (C, Python)
      - some (C, Python)
@@ -136,6 +148,7 @@
      - n/a
    * - Bulk job submission
      - yes
+     - yes
      - only uniform jobs
      - only uniform jobs
      - only uniform jobs
@@ -145,6 +158,7 @@
      - n/a
      - n/a
    * - High-speed streaming job submission
+     - yes
      - yes
      - no
      - no
@@ -156,13 +170,14 @@
      - n/a
 
 .. list-table:: Single-User Mode
-   :widths: 46 6 6 6 6 6 6 6 6 6 
+   :widths: 46 6 6 6 6 6 6 6 6 6 6 
    :header-rows: 1
    :stub-columns: 1
    :class: comparison-table
 
    * - Features
      - Flux
+     - HTCondor
      - SLURM
      - PBSPro (OpenPBS)
      - LSF
@@ -172,6 +187,7 @@
      - Parsl 
      - Nitro
    * - User-level workload management intstance
+     - yes
      - yes
      - no
      - no
@@ -183,6 +199,7 @@
      - yes
    * - Support for nesting within foreign resource manager
      - yes (slurm, lsf, ...)
+     - yes (slurm, lsf, ...)
      - n/a
      - n/a
      - n/a
@@ -193,6 +210,7 @@
      - yes
    * - Fully hierarchical management of instances
      - yes
+     - ???
      - n/a
      - n/a
      - n/a
@@ -202,6 +220,7 @@
      - no (two level)
      - no (two level)
    * - Scheduler specialization for user level
+     - yes
      - yes
      - n/a
      - n/a
@@ -213,6 +232,7 @@
      - no    
    * - Graph-based advanced scheduling for user level
      - yes
+     - yes
      - n/a
      - n/a
      - n/a
@@ -222,6 +242,7 @@
      - no
      - no    
    * - Built-in facilities for inter-job communication and coordination
+     - yes
      - yes
      - n/a
      - n/a
@@ -233,6 +254,7 @@
      - no    
    * - Modern command-line interface (cli) design
      - yes
+     - yes (& legacy)
      - n/a
      - n/a
      - n/a
@@ -242,6 +264,7 @@
      - no cli
      - outdated
    * - Application programming interfaces (APIs) for job management, job monitoring, resource monitoring, low-level messaging
+     - yes (4/4)
      - yes (4/4)
      - n/a
      - n/a
@@ -253,6 +276,7 @@
      - no
    * - Language bindings
      - yes (C, C++, Python, Lua, Rust, Julia, REST)
+     - yes (C++, Python, Chirp)
      - n/a
      - n/a
      - n/a
@@ -262,6 +286,7 @@
      - some (Python) 
      - no
    * - Bulk job submission
+     - yes
      - yes
      - n/a
      - n/a
@@ -273,6 +298,7 @@
      - only single core jobs
    * - High-speed streaming job submission
      - yes
+     - yes
      - n/a
      - n/a
      - n/a
@@ -282,6 +308,7 @@
      - yes
      - no
    * - Support to launch message passing interface (MPI) jobs
+     - yes
      - yes
      - n/a
      - n/a
