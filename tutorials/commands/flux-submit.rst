@@ -82,7 +82,7 @@ More Examples of Submitting Flux Jobs
 
 .. code-block:: console
 
-    $ flux submit --nodes=2 --queue=foo --name=my_special_job ./my_job.py
+    $ flux submit --nodes=2 --queue=foo --job-name=my_special_job ./my_job.py
 
 This submits a job to the `foo` queue across two nodes, and sets a custom name
 to the job.
