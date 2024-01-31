@@ -289,7 +289,8 @@ importance in the overall priority calculation. The current factors present in
 the multi-factor priority plugin are:
 
 * **fair-share**: the ratio between the amount of resources allocated vs. resources
-  consumed.
+  consumed. See the :ref:`Glossary definition <glossary-section>` for a more
+  detailed explanation of how fair-share is utilized within flux-accounting.
 
 * **urgency**: a user-controlled factor to prioritize their own jobs.
 
@@ -311,6 +312,7 @@ Both "types" of jobs, *running* and *active*, are based on Flux's definitions
 of job states_. *Active* jobs can be in any state but INACTIVE. *Running* jobs
 are jobs in both RUN and CLEANUP states.
 
+.. _glossary-section:
 
 ********
 Glossary
@@ -322,6 +324,16 @@ association
 bank
   An account that contains associations.
 
+fair-share
+  A metric used to ensure equitable resource allocation among associations
+  within a shared system. It represents the ratio between the amount of
+  resources an association is allocated versus the amount actually consumed.
+  The fair-share value influences an association's priority when submitting
+  jobs to the system, adjusting dynamically to reflect current usage compared
+  to allocated quotas. High consumption relative to allocation can decrease an
+  association's fair-share value, reducing their priority for future resource
+  allocation, thereby promoting balanced usage across all associations to
+  maintain system fairness and efficiency.
 
 .. note::
 
