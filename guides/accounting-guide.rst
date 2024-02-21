@@ -191,6 +191,12 @@ consists of the following tables:
 | t_half_life_period_table | keeps track of the current half-life period for  |
 |                          | calculating job usage factors                    |
 +--------------------------+--------------------------------------------------+
+| queue_table              | stores queues, their limits properties, as well  |
+|                          | as their associated priorities                   |
++--------------------------+--------------------------------------------------+
+| project_table            | stores projects for associations to charge their |
+|                          | jobs against                                     |
++--------------------------+--------------------------------------------------+
 
 To view all associations in a flux-accounting database, the ``flux
 account-shares`` command will print this DB information in a hierarchical
