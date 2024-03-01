@@ -1,7 +1,7 @@
 .. _debugging:
 
 ==============
-Debugging Jobs 
+Debugging Jobs
 ==============
 
 Flux supports parallel debuggers such as Rogue Wave Software (RWS)'s
@@ -26,7 +26,7 @@ Attaching to an already running job:
   $ PID=$!
   $ totalview -pid ${PID} /proc/${PID}/exe
 
-You can also just type ``totalview`` without ``-pid`` option 
+You can also just type ``totalview`` without ``-pid`` option
 For Classic UI: use its ``Start a Debugging Session``
 GUI option to select the process of this ``flux-job`` command:
 ``A running program (attach)``.
@@ -48,8 +48,8 @@ can be handy when you debug a large-scale job. Please refer to
 
 .. _TotalView user guide: https://docs.roguewave.com/en/totalview/current/html/
 
-Exiting TotalView without completing a full run of your code, may not clean up the Flux job. 
-In that case you will need to cancel the flux job manually. 
+Exiting TotalView without completing a full run of your code, may not clean
+up the Flux job.  In that case you will need to cancel the flux job manually.
 
 .. code-block:: console
 
