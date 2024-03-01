@@ -50,7 +50,7 @@ Installation and Configuration
 System Prerequisites
 ====================
 
-The :ref:`admin-guide` documents relevant information for
+The `Flux Administrator's Guide <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/guide/admin.html>`_ documents relevant information for
 the administration and management of a Flux system instance.
 
 The following instructions assume that Flux is configured and working, that
