@@ -50,7 +50,7 @@ can be handy when you debug a large-scale job. Please refer to
 
 .. _TotalView user guide: https://docs.roguewave.com/en/totalview/current/html/
 
-Exiting TotalView without completing a full run of your code, may not clean
+Exiting TotalView without completing a full run of your code may not clean
 up the Flux job.  In that case you will need to cancel the flux job manually.
 
 .. code-block:: console
@@ -79,7 +79,7 @@ exec-handling Tcl code into TotalView::
 
     catch {dset TV::exec_handling { {^(flux|lrun|srun|jsrun)(<python[^>]*>(<flux-job>)?|<bash>|<jsrun>|<jswrap>)*$ go}} }
 
-This code has been added to the site-wide ``.tvdrc`` file
+This code should either be added to the site-wide ``.tvdrc`` file
 to enable this for all TotalView sessions
 or per-user file (e.g., ``tvdrc`` in the current working directory)
 to enable this only for the user's own sessions.
