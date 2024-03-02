@@ -11,8 +11,8 @@ Flux supports parallel debuggers such as Rogue Wave Software (RWS)'s
 Parallel Debugging using TotalView
 ----------------------------------
 
-Debugging your MPI job from the beginning of
-parallel program execution:
+Debugging your MPI job from the beginning
+of parallel program execution:
 
 .. code-block:: console
 
@@ -26,11 +26,13 @@ Attaching to an already running job:
   $ PID=$!
   $ totalview -pid ${PID} /proc/${PID}/exe
 
-You can also just type ``totalview`` without ``-pid`` option
-For Classic UI: use its ``Start a Debugging Session``
-GUI option to select the process of this ``flux-job`` command:
-``A running program (attach)``.
-For new UI: use ''Attach To Process''
+You can also just type ``totalview`` without ``-pid`` option.
+
+For the TotalView Classic user interface, select the process of this
+``flux-job`` command with
+:menuselection:`Start a Debugging Session --> A running program (attach)`.
+
+For new UI: use :menuselection:`Attach To Process`.
 
 .. note::
   You use TotalView with the newly invoked ``flux job attach``
