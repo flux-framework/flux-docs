@@ -4,8 +4,10 @@
 Debugging Jobs
 ==============
 
-Flux supports parallel debuggers such as Rogue Wave Software (RWS)'s
-`TotalView parallel debugger <https://totalview.io>`_.
+Debugging Flux jobs has been tested with Rogue Wave Software (RWS)'s
+`TotalView parallel debugger <https://totalview.io>`_ and
+Linaro `DDT <https://www.linaroforge.com/linaroDdt/>`_. More detailed
+instructions for specific debuggers are included in the sections below.
 
 ----------------------------------
 Parallel Debugging using TotalView
@@ -94,6 +96,37 @@ Notice that it is designed to support not only Flux but also Slurm's
 srun and IBM JSM's jsrun commands. The ``regex`` syntax of
 ``exec_handling`` within TotalView can be found in `TotalView user guide`_.
 
+---------------------------
+Parallel Debugging with DDT
+---------------------------
+
+While at this time DDT does not have native support for Flux, small to
+medium size jobs can be debugged with DDT using a combination of the
+:core:man1:`flux job` :command:`hostpids` command and the :command:`ddt
+--attach` option. For example, to attach :command:`ddt` to the previous
+job
+
+.. code-block:: console
+
+  $ ddt --attach=$(flux job hostpids $(flux job last))
+
+Flux can launch jobs with every task stopped in :linux:man2:`exec` by
+providing the ``stop-tasks-in-exec`` job shell option. Thus, launching a
+job under control of DDT can be simulated by something like:
+
+.. code-block:: console
+
+  $ ddt --attach=$(flux job hostpids $(flux submit -n 265 myapp))
+
+The :command:`flux job hostpids` command will block until the job has started
+running and the process IDs for all tasks are available, and therfore
+:command:`ddt` will not launch until the job has started and is ready
+for debugger attach. Since tasks have been stopped in :linux:man2:`exec`,
+the debugger will have control of job tasks before execution begins.
+
+.. note::
+
+  :command:`flux job hostpids` was added in flux-core v0.60.0.
 
 ------------
 Known Issues
