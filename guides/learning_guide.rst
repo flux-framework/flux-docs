@@ -676,7 +676,7 @@ distribution of these institutions.
    :alt: Users are collaborators of Flux are quickly expanding around the world.
    :align: center
 
-    Figure 8: Users are collaborators of Flux are quickly expanding around the world.
+   Figure 8: Users are collaborators of Flux are quickly expanding around the world.
  
  
 *******************
