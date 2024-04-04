@@ -19,7 +19,7 @@ Welcome to Flux's documentation!
 Flux is a flexible framework for resource management, built for your site.
 The framework consists of a suite of projects, tools, and libraries which may be used to build site-custom resource managers for High Performance Computing centers.
 Unlike traditional resource managers, Flux can run as a parallel job under most launchers that support MPI, including under Flux itself. This not only makes batch scripts and workflows for Flux portable to other resource managers (just launch Flux as a job), but it also means that batch jobs have all the features of a full resource manager at their disposal, as if they have an entire cluster to themselves.
-If you are interested in a high level comparison of Flux to other resource managers, see :ref:`comparison-table`. If you want to get a high level overview of Flux projects or components, take a look at our :ref:`flux-architecture` page.
+If you are interested in a high level comparison of Flux to other resource managers, see :ref:`comparison-table`. If you want to get a high level overview of Flux projects or components, take a look at our :ref:`flux-components` page.
 
 .. toctree::
    :maxdepth: 2

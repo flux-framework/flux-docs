@@ -1,8 +1,8 @@
-.. _flux-architecture:
+.. _flux-components:
 
-#################
-Flux Architecture
-#################
+###############
+Flux Components
+###############
 
 .. note::
     Flux is a Framework because we assemble several components together
