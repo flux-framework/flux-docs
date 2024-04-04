@@ -302,6 +302,7 @@ By default, ``flux jobs`` will not list jobs that are running under subinstances
 this with an example.  Submit the following script to ``flux batch``.
 
 .. code-block:: sh
+
     #!/bin/sh
     # filename: batchjob.sh
 
@@ -310,7 +311,7 @@ this with an example.  Submit the following script to ``flux batch``.
     flux queue drain
 
 All we're doing is running two ``sleep`` jobs for infinity, and then calling ``flux queue drain`` to wait for those
-jobs to complete.  (See :ref:`Waiting for jobs<waiting-for-jobs>` tutorial for info on using ``flux queue drain`` to wait for jobs to complete.)
+jobs to complete.  Note that you can use ``flux queue drain`` to wait for jobs to complete.
 
 Let's run this via ``flux batch``
 

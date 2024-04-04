@@ -6,10 +6,8 @@ sphinx-copybutton
 docutils
 Jinja2<3.1
 markupsafe==2.0.1
-# waiting on dark mode
-# sphinx_material
-sphinx-immaterial
-pydantic==1.10.8
+sphinx_immaterial
+pydantic
 recommonmark
 sphinx_markdown_tables
 myst-parser

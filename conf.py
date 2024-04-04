@@ -221,7 +221,6 @@ html_theme_options = {
     "site_url": "http://flux-framework.github.io/flux-docs/",
     "repo_url": "https://github.com/flux-framework/flux-docs/",
     "repo_name": "Flux Framework",
-    "repo_type": "github",
     "edit_uri": "blob/main",
     "globaltoc_collapse": True,
     "features": [

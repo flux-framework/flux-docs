@@ -10,6 +10,7 @@ Do you have a question? `let us know <https://github.com/flux-framework/flux-doc
    :maxdepth: 1
    :caption: Guides
 
+   components
    Flux Administrator's Guide <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/guide/admin.html>
    accounting-guide
    learning_guide
