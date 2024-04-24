@@ -11,7 +11,7 @@ Flux Accounting Guide
     documented in this guide may change with regularity.
 
     This document is in DRAFT form and currently applies to flux-accounting
-    version 0.18.1.
+    version 0.31.0.
 
 ********
 Overview
@@ -61,7 +61,27 @@ Installing Software Packages
 ============================
 
 The ``flux-accounting`` package should be installed on the management node
-from your Linux distribution package manager.
+from your Linux distribution package manager. Once installed, the service
+that accepts ``flux account`` commands and interacts with the flux-accounting
+database can be started.
+
+You can enable the service with ``systemctl``; if not configured with a custom
+path, the flux-accounting systemd unit file will be installed to the same
+location as flux-core's systemd unit file:
+
+.. code-block:: console
+
+  $ sudo systemctl enable flux-accounting
+
+The service can then be controlled with ``systemd``. To utilize the service,
+the following prerequisites must be met:
+
+1. A flux-accounting database has been created with ``flux account create-db``.
+The service establishes a connection with the database in order to read from
+and write to it.
+
+2. An active Flux system instance is running. The flux-accounting service will
+only run after the system instance is started.
 
 Accounting Database Creation
 ============================
