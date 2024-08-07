@@ -152,4 +152,28 @@ Also, the ``flux-coral2-dws`` systemd service must be started
 on the same node as the rank 0 broker of the system instance
 (i.e. the management node). The ``flux`` user must have
 a kubeconfig file in its home directory granting it read
-and write access.
+and write access to, at a minimum, ``Storages``, ``Workflows``,
+``Servers``, and ``Computes`` resources (all of which are defined by
+dataworkflowservices).
+
+Lastly, the Fluxion scheduler must be configured to recognize rabbit
+resources. This can be done by taking ``R`` for the cluster (see the
+"Configuring Resources" section of the Flux Administrator's guide)
+and piping it to ``flux dws2jgf`` like so:
+
+.. code-block:: bash
+
+    cat /etc/flux/system/R | flux dws2jgf [--no-validate] [--cluster-name=CLUSTER_NAME] > new_R
+
+The output (which may be large) must replace the old ``R`` for the cluster.
+
+In order to facilitate Fluxion restart when using this new JGF
+(as it is called), Fluxion must be configured to use a ``match-format``
+of ``rv1`` instead of the otherwise recommended default of ``rv1_nosched``.
+
+For example, in a config file:
+
+.. code-block:: toml
+
+    [sched-fluxion-resource]
+    match-format = "rv1"
