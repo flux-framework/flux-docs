@@ -165,7 +165,7 @@ When this is submitted, the system will print out a job ID. You can check the st
   ...
   [elvis@lassen709:~]$ bjobs
   JOBID      USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
-  3750480    hobbs17 RUN   pdebug     lassen709   1*launch_ho fluxsesh   Jul 25 12:44
+  3750480    elvis   RUN   pdebug     lassen709   1*launch_ho fluxsesh   Jul 25 12:44
                                                   80*debug_hosts
 
 Once the job starts to run, you can resolve the URI, and connect to the session remotely.
