@@ -22,6 +22,7 @@ of using the Flux Python API.
 
     <div class="sphx-glr-thumbnails">
 
+.. thumbnail-parent-div-open
 
 .. raw:: html
 
@@ -39,6 +40,8 @@ of using the Flux Python API.
       <div class="sphx-glr-thumbnail-title">Introductory example - Job Submit API</div>
     </div>
 
+
+.. thumbnail-parent-div-close
 
 .. raw:: html
 
