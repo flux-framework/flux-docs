@@ -604,9 +604,11 @@ caused segfaults of MPI in ``MPI_Finalize`` when UCX PML was used.
 4.0.6+ or 4.1.1+.
 
 A special `job shell plugin <https://github.com/flux-framework/flux-pmix>`_,
-offered as a separate package, is required to bootstrap the upcoming openmpi
+offered as a separate package, is required to bootstrap the openmpi
 5.0.x releases.  Once installed, the plugin is activated by submitting a job
-with the ``-ompi=openmpi@5`` option.
+with the ``-opmi=pmix`` option. In fact, ``-o pmi=pmix`` also works for earlier 
+versions of OpenMPI, and appears to avoid a UCX related deadlock in OpenMPI 
+4.1.2 (see `flux-framework/flux-core#5460. <https://github.com/flux-framework/flux-core/issues/5460>`_)
 
 .. _openmpi_config:
 
