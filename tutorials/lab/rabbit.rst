@@ -21,7 +21,7 @@ begin with ``#DW copy_in`` and ``#DW copy_out`` are for
 describing data movement to and from the rabbits, respectively.
 
 Full documentation of the DW directives and their arguments is available
-`here <https://nearnodeflash.github.io/dev/guides/user-interactions/readme/>`_.
+`here <https://nearnodeflash.github.io/latest/guides/user-interactions/readme/>`_.
 
 The usage with Flux is most easily understood by example.
 
