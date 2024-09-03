@@ -11,8 +11,12 @@ How to Allocate Rabbit Storage
 Request rabbit storage allocations for a job
 by setting the ``.attributes.system.dw`` field in a jobspec to
 a string containing one or more DW directives. A JSON list of DW directives
-is also accepted, but cannot be provided on the command line (it is more
-useful when constructing jobspecs by another means, for instance in Python).
+is also accepted, but cannot be provided on the command line. (It is however
+possible when constructing jobspecs with Flux's Python bindings, or when
+creating jobspecs directly.)
+
+On the command line, set the ``.attributes.system.dw`` field by passing flags
+like ``-S dw="my_string"`` or ``--setattr=dw="my_string"``.
 
 DW directives are strings that start with ``#DW``. Directives
 that begin with ``#DW jobdw`` are for requesting storage that
@@ -34,7 +38,7 @@ command line:
 
 .. code-block:: console
 
-	$ flux alloc -N2 --setattr=dw="#DW jobdw type=xfs capacity=10GiB name=project1"
+	$ flux alloc -N2 -S dw="#DW jobdw type=xfs capacity=10GiB name=project1"
 
 Requesting both XFS and lustre file systems in a batch script:
 
@@ -44,7 +48,7 @@ Requesting both XFS and lustre file systems in a batch script:
 
 	#FLUX: -N 2
 	#FLUX: -q pdebug
-	#FLUX: --setattr=dw="""
+	#FLUX: -S dw="""
 	#FLUX: #DW jobdw type=xfs capacity=1TiB name=xfsproject
 	#FLUX: #DW jobdw type=lustre capacity=10GiB name=lustreproject
 	#FLUX: """
@@ -70,7 +74,7 @@ is assumed to exist):
 
 .. code-block:: console
 
-	$ flux alloc -N2 --setattr=dw="#DW jobdw type=xfs capacity=10GiB name=project1
+	$ flux alloc -N2 -S dw="#DW jobdw type=xfs capacity=10GiB name=project1
 	#DW copy_in source=/p/lustre1/$USER/dir_in destination=\$DW_JOB_project1/
 	#DW copy_out source=\$DW_JOB_project1/ destination=/p/lustre1/$USER/dir_out/"
 
@@ -83,7 +87,7 @@ in a batch script:
 
 	#FLUX: -N 2
 	#FLUX: -q pdebug
-	#FLUX: --setattr=dw="""
+	#FLUX: -S dw="""
 	#FLUX: #DW jobdw type=lustre capacity=100GiB name=lustreproject
 	#FLUX: #DW copy_out source=$DW_JOB_lustreproject destination=/p/lustre1/$USER/lustreproject_results
 	#FLUX: """
