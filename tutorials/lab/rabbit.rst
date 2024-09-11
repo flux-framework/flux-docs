@@ -94,3 +94,49 @@ in a batch script:
 
 	echo "Hello World!" > $DW_JOB_lustreproject/world.txt
 
+
+Additional Attributes of Rabbit Jobs
+------------------------------------
+
+In order to help users understand how much time various parts of a rabbit job take,
+Flux adds a handful of attributes to each rabbit job. The attributes a rabbit job
+may have are, in order:
+
+#. ``rabbit_proposal_timing``: time it takes for DWS to process the job's #DW strings
+   and provide a breakdown of the resources required to Flux.
+#. ``rabbit_setup_timing``: time it takes to create the job's file systems on
+   the rabbits chosen by Flux.
+#. ``rabbit_datain_timing``: time it takes to move data from Lustre to the rabbits. If
+   no ``copy_in`` directives were provided, this state should be very fast.
+#. ``rabbit_prerun_timing``: time it takes to mount rabbit file sytems on compute
+   nodes.
+#. ``rabbit_postrun_timing``: time it takes to unmount rabbit file systems from
+   compute nodes.
+#. ``rabbit_dataout_timing``: time it takes to move data from the rabbits to Lustre,
+   should be very fast if no ``copy_out`` directives were provided.
+#. ``rabbit_teardown_timing``: time it takes to destroy the rabbit file system and clean
+   up.
+
+A job may skip to ``teardown`` if an exception occurs, e.g. a job may only have
+``proposal``, ``setup``, ``datain``, and ``teardown`` timings if the rabbit file systems fail
+to mount on the compute nodes. Fetch the timing for a state by running, e.g. for
+``prerun``,
+
+.. code-block:: bash
+
+	flux job info ${jobid} rabbit_prerun_timing
+
+If the job does not have the timing for a state, for instance because it has not
+completed the state yet, expect to see an error like ``flux-job: No such file or directory``.
+
+All rabbit jobs also have a ``rabbit_workflow`` attribute that stores high-level but
+technical information about the status of the rabbit job. Fetch the data (which is
+in JSON format) with ``flux job info ${jobid} rabbit_workflow``, potentially
+piping it to `jq` in order to pretty-print it.
+
+It may be useful to check whether there is an error message set on the workflow, which
+can be singled out with
+
+.. code-block:: bash
+
+	flux job info ${jobid} rabbit_workflow | jq .status.message
