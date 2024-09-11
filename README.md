@@ -28,8 +28,8 @@ If you want to generate the container manually, this is also an option! First bu
 ```bash
 $ docker build -f ./.devcontainer/Dockerfile -t flux-docs .
 ```
-This will build the base environment. You can then bind your container to the present working directory to
-build, either interactively:
+This will build the base environment. You can then bind your container to the present
+working directory to build:
 
 ```bash
 $ docker run -it --rm -v $PWD/:/workspace/flux-docs flux-docs flux start make html
