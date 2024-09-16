@@ -45,6 +45,23 @@ of using the Flux Python API.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example will show how to get information about a job after the fact.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_example_job_info_api_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_auto_examples_example_job_info_api.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Introductory example - Job Info API</div>
+    </div>
+
+
+.. raw:: html
+
     </div>
 
 
@@ -52,6 +69,7 @@ of using the Flux Python API.
    :hidden:
 
    /auto_examples/example_job_submit_api
+   /auto_examples/example_job_info_api
 
 
 .. only:: html

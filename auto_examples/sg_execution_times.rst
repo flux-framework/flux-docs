@@ -3,10 +3,13 @@
 
 .. _sphx_glr_auto_examples_sg_execution_times:
 
+
 Computation times
 =================
-**00:00.232** total execution time for **auto_examples** files:
+**00:04.381** total execution time for **auto_examples** files:
 
 +-----------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_examples_example_job_submit_api.py` (``example_job_submit_api.py``) | 00:00.232 | 0.0 MB |
+| :ref:`sphx_glr_auto_examples_example_job_info_api.py` (``example_job_info_api.py``)     | 00:04.381 | 0.0 MB |
++-----------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_examples_example_job_submit_api.py` (``example_job_submit_api.py``) | 00:00.000 | 0.0 MB |
 +-----------------------------------------------------------------------------------------+-----------+--------+
