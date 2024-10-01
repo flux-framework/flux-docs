@@ -98,9 +98,13 @@ in a batch script:
 Additional Attributes of Rabbit Jobs
 ------------------------------------
 
-In order to help users understand how much time various parts of a rabbit job take,
-Flux adds a handful of attributes to each rabbit job. The attributes a rabbit job
-may have are, in order:
+All rabbit jobs have some extra data stored on them to help with debugging and to
+help account for time spent on various stages.
+
+Timing Attributes
+~~~~~~~~~~~~~~~~~
+
+The timing attributes a rabbit job may have are, in order:
 
 #. ``rabbit_proposal_timing``: time it takes for DWS to process the job's #DW strings
    and provide a breakdown of the resources required to Flux.
@@ -129,6 +133,9 @@ to mount on the compute nodes. Fetch the timing for a state by running, e.g. for
 If the job does not have the timing for a state, for instance because it has not
 completed the state yet, expect to see an error like ``flux-job: No such file or directory``.
 
+Debugging Attributes
+~~~~~~~~~~~~~~~~~~~~
+
 All rabbit jobs also have a ``rabbit_workflow`` attribute that stores high-level but
 technical information about the status of the rabbit job. Fetch the data (which is
 in JSON format) with ``flux job info ${jobid} rabbit_workflow``, potentially
@@ -140,3 +147,16 @@ can be singled out with
 .. code-block:: bash
 
 	flux job info ${jobid} rabbit_workflow | jq .status.message
+
+If that is still unhelpful, try displaying more information:
+
+.. code-block:: bash
+
+	flux job info ${jobid} rabbit_workflow | jq .status
+
+In addition, rabbit jobs *may* have an attribute storing a small collection of
+information about data movement. Fetch it with
+
+.. code-block:: bash
+
+	flux job info ${jobid} rabbit_datamovements | jq .
