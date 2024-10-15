@@ -25,6 +25,12 @@ Flux Security
 
  -  Read the `flux-security documentation <https://flux-framework.readthedocs.io/projects/flux-security/en/latest/index.html>`_
 
+---------------
+Flux Accounting
+---------------
+
+ -  Read the `flux-accounting documentation <https://flux-framework.readthedocs.io/projects/flux-accounting/en/latest/index.html>`_
+
 ----
 Dyad
 ----
