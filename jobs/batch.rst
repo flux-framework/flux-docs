@@ -7,8 +7,11 @@ Batch Jobs
 In Flux, a batch job is a script submitted along
 with a request for resources. When resources become
 available, the script is run as the
-`initial program <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_8.html#initial-program-program-1>`_ of a new single-user instance of Flux,
-with the batch user as `instance owner <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_8.html#terminology>`_.
+`initial program
+<https://flux-framework.readthedocs.io/projects/flux-core/en/latest/guide/glossary.html#term-initial-program>`_
+of a new single-user instance of Flux,
+with the batch user as `instance owner
+<https://flux-framework.readthedocs.io/projects/flux-core/en/latest/guide/glossary.html#term-instance-owner>`_.
 Thus, in contrast to a traditional batch scheduler, a Flux batch job
 has access to fully featured resource manager instance, and may not only
 serially execute work on allocated resources, but load custom modules

@@ -367,3 +367,7 @@ def setup(app):
         objname="configuration value",
         indextemplate="pair: %s; configuration value",
     )
+
+linkcheck_ignore = [
+    r'https://github.com/flux-framework/flux-core\?tab\=readme-ov-file\#build-requirements'
+]

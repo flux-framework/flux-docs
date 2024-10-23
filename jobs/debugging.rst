@@ -6,7 +6,7 @@ Debugging Jobs
 
 Debugging Flux jobs has been tested with Rogue Wave Software (RWS)'s
 `TotalView parallel debugger <https://totalview.io>`_ and
-Linaro `DDT <https://www.linaroforge.com/linaroDdt/>`_. More detailed
+Linaro `DDT <https://www.linaroforge.com/linaro-ddt/>`_. More detailed
 instructions for specific debuggers are included in the sections below.
 
 ----------------------------------
@@ -102,7 +102,7 @@ Parallel Debugging with DDT
 
 While at this time DDT does not have native support for Flux, small to
 medium size jobs can be debugged with DDT using a combination of the
-:core:man1:`flux job` :command:`hostpids` command and the :command:`ddt
+:core:man1:`flux-job` :command:`hostpids` command and the :command:`ddt
 --attach` option. For example, to attach :command:`ddt` to the previous
 job
 
@@ -110,7 +110,7 @@ job
 
   $ ddt --attach=$(flux job hostpids $(flux job last))
 
-Flux can launch jobs with every task stopped in :linux:man2:`exec` by
+Flux can launch jobs with every task stopped in :linux:man3:`exec` by
 providing the ``stop-tasks-in-exec`` job shell option. Thus, launching a
 job under control of DDT can be simulated by something like:
 
@@ -121,7 +121,7 @@ job under control of DDT can be simulated by something like:
 The :command:`flux job hostpids` command will block until the job has started
 running and the process IDs for all tasks are available, and therfore
 :command:`ddt` will not launch until the job has started and is ready
-for debugger attach. Since tasks have been stopped in :linux:man2:`exec`,
+for debugger attach. Since tasks have been stopped in :linux:man3:`exec`,
 the debugger will have control of job tasks before execution begins.
 
 .. note::

@@ -302,7 +302,7 @@ may help improve efficiency and throughput:
 - If scripting ``flux submit`` commands, avoid the pattern of one command
   per job as each command invocation has a startup cost.  Instead try to
   combine similar job submissions with ``flux submit --cc=IDSET``
-  or :core:man1:`flux-builksubmit`.
+  or :core:man1:`flux-bulksubmit`.
 - By default ``flux submit --cc=IDSET`` and ``flux bulksubmit``
   will exit once all jobs have been submitted.  To wait for all jobs to
   complete before proceeding, use the ``--wait`` or ``--watch`` options to
