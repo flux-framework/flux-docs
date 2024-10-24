@@ -30,7 +30,7 @@ jobs:
           echo "Testing that you built the auto-examples, if this fails run flux start make html locally."
           python .github/scripts/check_diff.py /tmp/auto_examples ./auto_examples
           
-  spelling:
+  spell-and-linkcheck:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -44,3 +44,6 @@ jobs:
       uses: crate-ci/typos@7ad296c72fa8265059cc03d1eda562fbdfcd6df2 # v1.9.0
       with:
         files: "*.rst */*.rst */*/*.rst"
+   
+    - name: make linkcheck
+      run: make linkcheck
