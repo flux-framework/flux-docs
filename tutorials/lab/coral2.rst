@@ -154,18 +154,22 @@ on the same node as the rank 0 broker of the system instance
 a kubeconfig file in its home directory granting it read
 and write access to, at a minimum, ``Storages``, ``Workflows``,
 ``Servers``, and ``Computes`` resources (all of which are defined by
-dataworkflowservices).
+dataworkflowservices). There are instructions for how to grant Flux
+the minimum permissions necessary by setting up role-based access control
+`here <https://nearnodeflash.github.io/latest/guides/rbac-for-users/readme/#rbac-for-workload-manager-wlm>`_.
 
 Lastly, the Fluxion scheduler must be configured to recognize rabbit
-resources. This can be done by taking ``R`` for the cluster (see the
-"Configuring Resources" section of the Flux Administrator's guide)
-and piping it to ``flux dws2jgf`` like so:
+resources. This can be done by generating a file describing the rabbit layout
+for the cluster and then running ``flux dws2jgf`` like so:
 
 .. code-block:: bash
 
-    cat /etc/flux/system/R | flux dws2jgf [--no-validate] [--cluster-name=CLUSTER_NAME] > new_R
+    flux rabbitmapping > /tmp/rabbitmapping.json
+    flux dws2jgf [--no-validate] --from-config /etc/flux/system/conf.d/resource.toml --only-sched /tmp/rabbitmapping.json
 
-The output (which may be large) must replace the old ``R`` for the cluster.
+The output (which may be large) must be saved to a file and pointed to with the
+``resource.scheduling`` config key (see
+`here <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man5/flux-config-resource.html#keys>`_).
 
 In order to facilitate Fluxion restart when using this new JGF
 (as it is called), Fluxion must be configured to use a ``match-format``
