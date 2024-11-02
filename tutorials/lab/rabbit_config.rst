@@ -6,7 +6,7 @@ Configuring Flux with Rabbits
 
 In order for a Flux system instance to be able to allocate
 rabbit storage, the ``dws_jobtap.so`` plugin must be loaded.
-The plugin can be loaded in a  config file like so:
+The plugin can be loaded in a config file like so:
 
 .. code-block::
 
@@ -48,3 +48,67 @@ For example, in a config file:
 
     [sched-fluxion-resource]
     match-format = "rv1"
+
+Rabbit Config Options
+---------------------
+
+The ``rabbit`` config table captures site-general policies and options for
+Flux's interactions with the rabbits.
+
+
+**kubeconfig** (string)
+  (optional) Path to kubeconfig file for Flux to use, ideally with restricted permissions.
+  This can be left undefined if the file is placed at the path `~flux/.kube/config`
+  (assuming the `flux` user is the instance owner).
+
+**tc_timeout** (integer)
+  (optonal) Time in seconds to tolerate a workflow stuck in TransientCondition state
+  before killing the associated job. Defaults to 10 seconds.
+
+**drain_compute_nodes** (boolean)
+  (optional) Whether to automatically drain compute nodes that lose PCIe connection
+  with their rabbit. Defaults to true.
+
+**save_datamovements** (integer)
+  (optional) Number of `nnfdatamovement` resources to save to jobs' KVS, may be useful for
+  debugging but too many may degrade performance. Defaults to 0.
+
+**restrict_persistent_creation** (boolean)
+  (optional) Restrict the creation of persistent file systems to the instance owner
+  (in most cases the `flux` user).
+
+**policy.maximums** (table)
+  (optional) The maximum filesystem capacity per node, in GiB, that users may
+  request. Leave undefined for no limit. See below for an example.
+
+**presets** (table)
+  (optional) Defines preset #DW strings. May potentially save users time and energy,
+  allowing them to run, for instance, `flux alloc -N1 -S dw=NAME` rather than
+  `flux alloc -N1 -S "dw=#DW jobdw ..."` See below for an example.
+
+
+Example
+~~~~~~~
+
+.. code-block:: TOML
+
+    [rabbit]
+
+    kubeconfig = "/var/flux/.kube/config"
+    tc_timeout = 600
+    drain_compute_nodes = true
+    save_datamovements = 5
+    restrict_persistent_creation = true
+
+    # maximum filesystem capacity per node, in GiB
+    [rabbit.policy.maximums]
+    xfs = 1024
+    gfs2 = 2048
+    raw = 4096
+    lustre = 1024
+
+    # defines preset #DW strings
+    [rabbit.presets]
+
+    small_xfs = "#DW jobdw type=xfs capacity=100GiB name=smallxfs"
+    large_lustre = "#DW jobdw type=lustre capacity=50TiB name=largelustre"
