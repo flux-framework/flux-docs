@@ -1,0 +1,114 @@
+.. _rabbitconfig:
+
+=============================
+Configuring Flux with Rabbits
+=============================
+
+In order for a Flux system instance to be able to allocate
+rabbit storage, the ``dws_jobtap.so`` plugin must be loaded.
+The plugin can be loaded in a config file like so:
+
+.. code-block::
+
+    [job-manager]
+    plugins = [
+      { load = "dws-jobtap.so" }
+    ]
+
+Also, the ``flux-coral2-dws`` systemd service must be started
+on the same node as the rank 0 broker of the system instance
+(i.e. the management node). The ``flux`` user must have
+a kubeconfig file in its home directory granting it read
+and write access to, at a minimum, ``Storages``, ``Workflows``,
+``Servers``, and ``Computes`` resources (all of which are defined by
+dataworkflowservices). There are instructions for how to grant Flux
+the minimum permissions necessary by setting up role-based access control
+`here <https://nearnodeflash.github.io/latest/guides/rbac-for-users/readme/#rbac-for-workload-manager-wlm>`__.
+
+Lastly, the Fluxion scheduler must be configured to recognize rabbit
+resources. This can be done by generating a file describing the rabbit layout
+for the cluster and then running ``flux dws2jgf`` like so:
+
+.. code-block:: bash
+
+    flux rabbitmapping > /tmp/rabbitmapping.json
+    flux dws2jgf [--no-validate] --from-config /etc/flux/system/conf.d/resource.toml --only-sched /tmp/rabbitmapping.json
+
+The output (which may be large) must be saved to a file and pointed to with the
+``resource.scheduling`` config key (see
+`here <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man5/flux-config-resource.html#keys>`__).
+
+In order to facilitate Fluxion restart when using this new JGF
+(as it is called), Fluxion must be configured to use a ``match-format``
+of ``rv1`` instead of the otherwise recommended default of ``rv1_nosched``.
+
+For example, in a config file:
+
+.. code-block:: toml
+
+    [sched-fluxion-resource]
+    match-format = "rv1"
+
+Rabbit Config Options
+---------------------
+
+The ``rabbit`` config table captures site-general policies and options for
+Flux's interactions with the rabbits.
+
+
+**kubeconfig** (string)
+  (optional) Path to kubeconfig file for Flux to use, ideally with restricted permissions.
+  This can be left undefined if the file is placed at the path `~flux/.kube/config`
+  (assuming the `flux` user is the instance owner).
+
+**tc_timeout** (integer)
+  (optonal) Time in seconds to tolerate a workflow stuck in TransientCondition state
+  before killing the associated job. Defaults to 10 seconds.
+
+**drain_compute_nodes** (boolean)
+  (optional) Whether to automatically drain compute nodes that lose PCIe connection
+  with their rabbit. Defaults to true.
+
+**save_datamovements** (integer)
+  (optional) Number of `nnfdatamovement` resources to save to jobs' KVS, may be useful for
+  debugging but too many may degrade performance. Defaults to 0.
+
+**restrict_persistent_creation** (boolean)
+  (optional) Restrict the creation of persistent file systems to the instance owner
+  (in most cases the `flux` user).
+
+**policy.maximums** (table)
+  (optional) The maximum filesystem capacity per node, in GiB, that users may
+  request. Leave undefined for no limit. See below for an example.
+
+**presets** (table)
+  (optional) Defines preset #DW strings. May potentially save users time and energy,
+  allowing them to run, for instance, `flux alloc -N1 -S dw=NAME` rather than
+  `flux alloc -N1 -S "dw=#DW jobdw ..."` See below for an example.
+
+
+Example
+~~~~~~~
+
+.. code-block:: TOML
+
+    [rabbit]
+
+    kubeconfig = "/var/flux/.kube/config"
+    tc_timeout = 600
+    drain_compute_nodes = true
+    save_datamovements = 5
+    restrict_persistent_creation = true
+
+    # maximum filesystem capacity per node, in GiB
+    [rabbit.policy.maximums]
+    xfs = 1024
+    gfs2 = 2048
+    raw = 4096
+    lustre = 1024
+
+    # defines preset #DW strings
+    [rabbit.presets]
+
+    small_xfs = "#DW jobdw type=xfs capacity=100GiB name=smallxfs"
+    large_lustre = "#DW jobdw type=lustre capacity=50TiB name=largelustre"

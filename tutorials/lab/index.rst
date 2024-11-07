@@ -14,4 +14,5 @@ provided there are for collaborating systems.
    coral
    coral2
    rabbit
+   rabbit_config
 
