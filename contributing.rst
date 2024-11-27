@@ -77,3 +77,72 @@ Developer Guidelines
     in C4.1 (e.g., imperative phrasing, wrap lines at 72 characters).
 
 For more details about C4.1, including commit requirements, see `RFC 1 <https://github.com/flux-framework/rfc/blob/master/spec_1.rst>`_.
+
+-------
+Testing
+-------
+
+Testing is an important part of development throughout all of the Flux
+components, and any changes or additions contributed should come with adequate
+testing.
+
+Unit tests are generally co-located with sources and use ``libtap``. System
+tests are generally located under the ``t/`` directory and use ``sharness``.
+
+The below examples show how to run tests in a Flux project within
+their respective ``t/`` directories.
+
+To run a single test within the test harness, specify the test file on the
+command line:
+
+.. code-block:: console
+
+  $ ./t0000-testname.t -d -v
+
+Python tests can also be run directly, but to get the correct ``PYTHONPATH``
+for your build directory, run under ``flux(1)``:
+
+.. code-block:: console
+
+  $ ../src/cmd/flux ./python/t0000-test.py
+
+or:
+
+.. code-block:: console
+
+  $ src/cmd/flux start
+  $ ./python/t000-testname.py
+
+Other Helpful Testsuite Tips
+----------------------------
+
+* Use the ``make check-prep`` target at the top-level build directory of
+  flux-core to make everything necessary for running tests, but without running
+  any of the tests under ``./t``. This is useful if you then want to run only a
+  specific test, or run all tests as Flux jobs, e.g.
+  ``flux mini bulksubmit --watch --progress ./{} ::: t[0-9]*.t python/t*.py lua/*.t``
+
+* Running all tests in Flux takes some time. If you are developing a feature
+  and only a few tests are failing, ``make recheck`` can be useful; it will
+  only re-run failing tests. This makes for a more efficient develop-test-debug 
+  cycle.
+
+* Many sharness tests re-run themselves under a Flux instance using the
+  ``test_under_flux`` function.
+   
+* For these tests you can set ``FLUX_TEST_VALGRIND=t`` and all flux-brokers in
+  the test instance will be run under valgrind for memory debugging. (This is
+  also useful to tease out race conditions in your test code), e.g.:
+
+.. code-block:: console
+
+  $ FLUX_TEST_VALGRIND=t ./t0000-testname.t -d -v
+  sharness: loading extensions from /home/grondo/git/f.git/t/sharness.d/01-setup.sh
+  sharness: loading extensions from /home/grondo/git/f.git/t/sharness.d/flux-sharness.sh
+  ==5906== Memcheck, a memory error detector
+  ==5906== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+  ==5906== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+  ==5906== Command: /home/grondo/git/f.git/src/broker/.libs/flux-broker --setattr=rundir=/tmp/flux-5803-
+
+For more details about building and running tests, see our
+`README <https://github.com/flux-framework/flux-core/blob/master/t/README.md>`_.
