@@ -18,6 +18,53 @@ creating jobspecs directly.)
 On the command line, set the ``.attributes.system.dw`` field by passing flags
 like ``-S dw="my_string"`` or ``--setattr=dw="my_string"``.
 
+The simplest way to use rabbits is to use preset DW strings that
+administrators may have configured on a system. For more flexibility,
+it may be desirable to write custom DW strings.
+
+
+Preset DW Directives
+--------------------
+
+Running
+
+.. code-block:: bash
+
+	flux config get rabbit.presets | jq .
+
+will display a mapping of the presets that have been configured on the
+current system. The keys of the mapping are the strings that you can
+pass to ``-S dw=...``, the values of the mapping are the actual DW directives
+the strings correspond to.
+
+
+Preset Example
+~~~~~~~~~~~~~~
+
+Suppose ``flux config get rabbit.presets | jq .`` returns the following:
+
+.. code-block:: json
+
+	{
+		"xfs_small": "#DW jobdw type=xfs capacity=256GiB name=xfssmall",
+		"xfs_large": "#DW jobdw type=xfs capacity=1TiB name=xfslarge",
+		"lustre_large": "#DW jobdw type=lustre capacity=10TiB name=lustrelarge",
+	}
+
+Then you should be able to add the flag ``-S dw=lustre_large`` to
+``flux run/batch/alloc/submit`` and have 10 Terabytes of lustre storage
+accessible to your job at a path given by the ``$DW_JOB_lustrelarge``
+environment variable. Similarly, ``-S dw=xfs_small`` and ``-S dw=xfs_large``
+would give your job 256 gigabytes and 1 terabyte of XFS storage at
+``$DW_JOB_xfssmall`` and ``$DW_JOB_xfslarge``, respectively.
+
+
+Custom DW Directives
+--------------------
+
+Writing custom DW directives instead of using preset strings allows for much
+greater flexibility.
+
 DW directives are strings that start with ``#DW``. Directives
 that begin with ``#DW jobdw`` are for requesting storage that
 lasts the lifetime of the associated flux job. Directives that
@@ -30,8 +77,8 @@ Full documentation of the DW directives and their arguments is available
 The usage with Flux is most easily understood by example.
 
 
-Examples of jobdw directives
-----------------------------
+Examples of custom jobdw directives
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Requesting a 10 gigabyte XFS file system per compute node on the
 command line:
@@ -59,7 +106,7 @@ Requesting both XFS and lustre file systems in a batch script:
 
 
 Data Movement Examples
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. warning::
 
