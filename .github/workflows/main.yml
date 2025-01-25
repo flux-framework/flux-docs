@@ -38,7 +38,7 @@ jobs:
       run: >-
           sudo apt-get update -y &&
           sudo apt-get install -y python3-pip &&
-          sudo pip3 install --upgrade -r ./requirements.txt
+          sudo pip3 install --ignore-installed --upgrade -r ./requirements.txt
 
     - name: Check Spelling
       uses: crate-ci/typos@7ad296c72fa8265059cc03d1eda562fbdfcd6df2 # v1.9.0
