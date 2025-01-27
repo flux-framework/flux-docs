@@ -3,7 +3,7 @@
 Jobs
 ====
 
-Here you can learn about Flux jobs - whether that be debugging, batch jobs, or job hierarchies.
+Here you can learn about Flux jobs - whether that be debugging, batch jobs, user instances, or job hierarchies.
 Do you have a question? `let us know <https://github.com/flux-framework/flux-docs/issues>`_
 
 .. toctree::
@@ -12,4 +12,5 @@ Do you have a question? `let us know <https://github.com/flux-framework/flux-doc
 
    debugging
    batch
+   understanding-flux-user-instances
    hierarchies
