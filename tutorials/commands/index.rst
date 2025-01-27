@@ -8,6 +8,7 @@ with your use case, and then see detailed usage.
 
  - ``flux submit/flux run`` (:ref:`flux-submit`): "Submit a job in a Flux instance"
  - ``flux jobs`` (:ref:`flux-jobs`): "List Flux jobs, filter them, and output extra information"
+ - ``flux proxy`` (:ref:`flux-proxy-command`): "Send commands to other Flux instances"
  - ``flux proxy`` (:ref:`ssh-across-clusters`): "Send commands to a Flux instance across clusters using ssh"
 
 This section is currently 🚧️ under construction 🚧️, so please come back later to see more command tutorials!
@@ -19,4 +20,5 @@ This section is currently 🚧️ under construction 🚧️, so please come bac
 
    flux-submit
    flux-jobs
+   flux-proxy-command
    ssh-across-clusters
