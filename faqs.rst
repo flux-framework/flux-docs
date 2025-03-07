@@ -522,6 +522,46 @@ see what would be submitted to Flux without actually running any jobs
 
 For more help and examples, see :core:man1:`flux-bulksubmit`.
 
+.. _resilient_batch_jobs:
+
+How do I run a batch or alloc job that is resilient to node failures?
+=====================================================================
+TL;DR: Use:
+
+.. code-block:: console
+
+ $ flux batch --conf=tbon.topo=kary:0 -o exit-timeout=none ...
+
+.. note::
+
+  In future versions of Flux ``-o exit-timeout=none`` may become the
+  default for :core:man1:`flux-batch` and :core:man1:`flux-alloc`. Check
+  with your version to see if ``-o exit-timeout=none`` is necessary.
+
+When a Flux instance running as a job loses a node, what happens next is
+dependent on two factors: whether the lost node is critical, and the value
+of the ``exit-timeout`` job shell option. If the lost node is critical, the
+instance can no longer properly function, triggering a fatal ``node-failure``
+job exception. If the node is not critical, a non-fatal job exception is
+raised and the leader job shell is notified. After the ``exit-timeout``
+period (if set to a value other than ``none``), a fatal job exception
+is raised and the job is terminated.
+
+To maximize resilience in batch or allocation jobs, disable the
+``exit-timeout`` option (set it to ``none``) and minimize the number of
+critical ranks by running a flat TBON with ``--conf=tbon.topo=kary:0``. This
+configuration allows jobs to continue running even if any node is lost,
+except for rank 0, which is always critical.
+
+The same rules apply to jobs running within the instance. For parallel
+jobs that are not instances of Flux, all ranks are considered critical by
+default. As a result, jobs running on the lost nodes within the instance are
+immediately terminated under normal circumstances. Additionally, the resource
+set available for scheduling new jobs is reduced by the lost nodes. This
+means that pending and newly submitted jobs requesting more resources than
+are currently available will trigger a fatal "unsatisfiable" job exception.
+
+
 *************
 MPI Questions
 *************
