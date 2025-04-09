@@ -31,6 +31,12 @@ Flux Accounting
 
  -  Read the `flux-accounting documentation <https://flux-framework.readthedocs.io/projects/flux-accounting/en/latest/index.html>`_
 
+-----------
+Flux CORAL2
+-----------
+
+ -  Read the `flux-coral2 documentation <https://flux-framework.readthedocs.io/projects/flux-coral2/en/latest>`_
+
 ----
 Dyad
 ----
