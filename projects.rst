@@ -35,6 +35,9 @@ Flux Accounting
 Flux CORAL2
 -----------
 
+The flux-coral2 project includes Flux-specific plugins and scripts for the Department of Energy CORAL2 systems, including systems  ``tuolumne``, ``rzadams``, and ``elcap``,
+and test systems ``tioga``, ``rzvernal``, and ``tenaya``. 
+
  -  Read the `flux-coral2 documentation <https://flux-framework.readthedocs.io/projects/flux-coral2/en/latest>`_
 
 ----
