@@ -1058,7 +1058,7 @@ and deployed them, and they continue to add features. Similar expectations apply
 the Flux framework as development effort and feature enhancements continue.
 
 A key challenge for Flux includes the effort required for users to port their legacy
-applications and workflows to the flexible and modern Flux fraemwork. Although the
+applications and workflows to the flexible and modern Flux framework. Although the
 Flux framework is designed to be extremely user-friendly and easy to understand,
 the transition of legacy applications still requires some amounts of effort and
 developer bandwidth. This is because of the complex dependencies that could
