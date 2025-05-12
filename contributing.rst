@@ -93,11 +93,19 @@ The below examples show how to run tests in a Flux project within
 their respective ``t/`` directories.
 
 To run a single test within the test harness, specify the test file on the
-command line:
+command line (with ``-d``/``--debug`` and ``-v``/``--verbose`` sharness flags):
 
 .. code-block:: console
 
   $ ./t0000-testname.t -d -v
+
+Or use ``make`` from the top-level directory of the project build tree, where
+``t`` is the path to the directory containing the tests of interest, and
+``TESTS`` is a space separated list of tests to be run:
+
+.. code-block:: console
+
+  $ make -C t check TESTS="t0000-testname0.t t0001-testname1.t"
 
 Python tests can also be run directly, but to get the correct ``PYTHONPATH``
 for your build directory, run under ``flux(1)``:
@@ -116,7 +124,7 @@ or:
 Other Helpful Testsuite Tips
 ----------------------------
 
-* Use the ``make check-prep`` target at the top-level build directory of
+* Run ``make check TESTS=`` at the top-level build directory of
   flux-core to make everything necessary for running tests, but without running
   any of the tests under ``./t``. This is useful if you then want to run only a
   specific test, or run all tests as Flux jobs, e.g.
