@@ -205,7 +205,6 @@ extensions.append("sphinx_immaterial")
 # html_context = sphinx_immaterial.get_html_context()
 html_css_files = ["custom.css"]
 
-extensions.append("sphinx_immaterial")
 html_theme = "sphinx_immaterial"
 
 # material theme options (see theme.conf for more information)
