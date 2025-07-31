@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.abspath("."))
 # -- Project information -----------------------------------------------------
 
 project = "Flux"
-copyright = """2014-2023 Lawrence Livermore National Security, LLC and Flux developers.
+copyright = """2014 Lawrence Livermore National Security, LLC and Flux developers.
 
 SPDX-License-Identifier: LGPL-3.0"""
 author = "This page is maintained by the Flux Framework community."
