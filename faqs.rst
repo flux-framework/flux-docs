@@ -279,7 +279,7 @@ Or if launching via :core:man1:`flux-start` use:
 
 .. code-block:: sh
 
-    $ flux start -o,-Sstatedir=/home/myuser/jobstate
+    $ flux start -Sstatedir=/home/myuser/jobstate
 
 Note the following:
 
