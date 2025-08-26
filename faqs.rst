@@ -263,13 +263,13 @@ by setting the *statedir* broker attribute.  For example:
 
     $ mkdir -p /home/myuser/jobstate
     $ rm -f /home/myuser/jobstate/content.sqlite
-    $ flux batch --broker-opts=-Sstatedir=/home/myuser/jobdir -N16 ...
+    $ flux batch --broker-opts=-Sstatedir=/home/myuser/jobstate -N16 ...
 
 Or if launching via :core:man1:`flux-start` use:
 
 .. code-block:: sh
 
-    $ flux start -o,-Sstatedir=/home/myuser/jobdir
+    $ flux start -o,-Sstatedir=/home/myuser/jobstate
 
 Note the following:
 
