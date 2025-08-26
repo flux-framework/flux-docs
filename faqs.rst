@@ -256,6 +256,16 @@ systems, ``/tmp`` is a RAM-backed file system with limited space, and in
 some situations such as long running, high throughput workflows, Flux may
 use a lot of it.
 
+When the Flux database fills up the disk, errors like the following may
+appear and the instance of Flux will get stuck or otherwise not function
+properly
+
+.. code-block:: console
+
+    content-sqlite.err[0]: store: executing stmt: database or disk is full(13)
+    content.crit[0]: content store: No space left on device
+    content-sqlite.err[0]: store: executing stmt: database disk image is malformed(11)
+
 Flux may be launched with the database file redirected to another location
 by setting the *statedir* broker attribute.  For example:
 
