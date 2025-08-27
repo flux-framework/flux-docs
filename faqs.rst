@@ -67,9 +67,9 @@ F58 to another using the :core:man1:`flux-job` ``id`` subcommand, e.g.
 
 .. code-block:: sh
 
-   $ flux submit sleep 3600 | flux job id --to=words
-   airline-alibi-index--tuna-maximum-adam
-   $ flux job cancel airline-alibi-index--tuna-maximum-adam
+  $ flux submit sleep 3600 | flux job id --to=words
+  airline-alibi-index--tuna-maximum-adam
+  $ flux job cancel airline-alibi-index--tuna-maximum-adam
 
 With copy-and-paste, auto-completion, globbing, etc., it shouldn't be necessary
 to *type* a job ID with the ``ƒ`` prefix that often, but should you need to,
@@ -108,7 +108,7 @@ we have 64 nodes of resources and are at depth 1.
 
 .. code-block:: console
 
-    [s=64,d=1] $
+  [s=64,d=1] $
 
 To add this prompt into your shell, you can cut and paste the below or use it to
 adjust your current shell prompt.  Note that the initial call to ``flux getattr size``
@@ -118,19 +118,19 @@ Cut and paste for ``.bashrc``
 
 .. code-block:: sh
 
-    flux getattr size > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        export PS1="[s=$(flux getattr size),d=$(flux getattr instance-level)] $"
-    fi
+  flux getattr size > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+      export PS1="[s=$(flux getattr size),d=$(flux getattr instance-level)] $"
+  fi
 
 Cut and paste for ``.cshrc``
 
 .. code-block:: sh
 
-    flux getattr size >& /dev/null
-    if ( $? == 0 ) then
-        set prompt="[s=`flux getattr size`,d=`flux getattr instance-level`] $"
-    endif
+  flux getattr size >& /dev/null
+  if ( $? == 0 ) then
+      set prompt="[s=`flux getattr size`,d=`flux getattr instance-level`] $"
+  endif
 
 .. _bug_report_how:
 
@@ -209,21 +209,21 @@ In earlier versions, the same effect can be achieved by setting the
 
 .. code-block:: console
 
- $ flux run -o per-resource.type=node -o per-resource.count=100 -N2 COMMAND
+  $ flux run -o per-resource.type=node -o per-resource.count=100 -N2 COMMAND
 
 Another method to more generally oversubscribe resources is to launch
 multiple Flux brokers per node. This can be done locally for testing, e.g.
 
 .. code-block:: console
 
- $ flux start -s 4
+  $ flux start -s 4
 
 or can be done by launching a job with multiple ``flux start`` commands
 per node, e.g. to run 8 brokers across 2 nodes
 
 .. code-block:: console
 
- $ flux submit -o cpu-affinity=off -N2 -n8 flux start SCRIPT
+  $ flux submit -o cpu-affinity=off -N2 -n8 flux start SCRIPT
 
 One final method is to use the ``alloc-bypass``
 `jobtap plugin <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man7/flux-jobtap-plugins.html>`_, which allows a job to bypass the
@@ -236,14 +236,14 @@ a job with another job, e.g. to run debugger or other services.
 
 .. code-block:: console
 
- $ flux jobtap load alloc-bypass.so
- $ flux submit -N4 sleep 60
- ƒ2WU24J4NT
- $ flux run --setattr=system.alloc-bypass.R="$(flux job info ƒ2WU24J4NT R)" -n 4 flux getattr rank
- 3
- 2
- 1
- 0
+  $ flux jobtap load alloc-bypass.so
+  $ flux submit -N4 sleep 60
+  ƒ2WU24J4NT
+  $ flux run --setattr=system.alloc-bypass.R="$(flux job info ƒ2WU24J4NT R)" -n 4 flux getattr rank
+  3
+  2
+  1
+  0
 
 .. _node_memory_exhaustion:
 
@@ -256,20 +256,30 @@ systems, ``/tmp`` is a RAM-backed file system with limited space, and in
 some situations such as long running, high throughput workflows, Flux may
 use a lot of it.
 
+When the Flux database fills up the disk, errors like the following may
+appear and the instance of Flux will get stuck or otherwise not function
+properly
+
+.. code-block:: console
+
+  content-sqlite.err[0]: store: executing stmt: database or disk is full(13)
+  content.crit[0]: content store: No space left on device
+  content-sqlite.err[0]: store: executing stmt: database disk image is malformed(11)
+
 Flux may be launched with the database file redirected to another location
 by setting the *statedir* broker attribute.  For example:
 
 .. code-block:: sh
 
-    $ mkdir -p /home/myuser/jobstate
-    $ rm -f /home/myuser/jobstate/content.sqlite
-    $ flux batch --broker-opts=-Sstatedir=/home/myuser/jobdir -N16 ...
+  $ mkdir -p /home/myuser/jobstate
+  $ rm -f /home/myuser/jobstate/content.sqlite
+  $ flux batch --broker-opts=-Sstatedir=/home/myuser/jobstate -N16 ...
 
 Or if launching via :core:man1:`flux-start` use:
 
 .. code-block:: sh
 
-    $ flux start -o,-Sstatedir=/home/myuser/jobdir
+  $ flux start -Sstatedir=/home/myuser/jobstate
 
 Note the following:
 
@@ -497,15 +507,15 @@ like ``xargs -I``, substitute the input with ``{}``. For example:
 
 .. code-block:: console
 
- $ seq 1 4 | flux bulksubmit --watch echo {}
- ƒ2jBnW4zK
- ƒ2jBoz4Gf
- ƒ2jBoz4Gg
- ƒ2jBoz4Gh
- 1
- 2
- 3
- 4
+  $ seq 1 4 | flux bulksubmit --watch echo {}
+  ƒ2jBnW4zK
+  ƒ2jBoz4Gf
+  ƒ2jBoz4Gg
+  ƒ2jBoz4Gh
+  1
+  2
+  3
+  4
 
 As an alternative to reading from ``stdin``, the ``bulksubmit`` utility can
 also take inputs on the command line separated by ``:::``.
@@ -515,10 +525,10 @@ see what would be submitted to Flux without actually running any jobs
 
 .. code-block:: console
 
- $ flux bulksubmit --dry-run echo {} ::: 1 2 3
- bulksubmit: submit echo 1
- bulksubmit: submit echo 2
- bulksubmit: submit echo 3
+  $ flux bulksubmit --dry-run echo {} ::: 1 2 3
+  bulksubmit: submit echo 1
+  bulksubmit: submit echo 2
+  bulksubmit: submit echo 3
 
 For more help and examples, see :core:man1:`flux-bulksubmit`.
 
@@ -530,7 +540,7 @@ TL;DR: Use:
 
 .. code-block:: console
 
- $ flux batch --conf=tbon.topo=kary:0 -o exit-timeout=none ...
+  $ flux batch --conf=tbon.topo=kary:0 -o exit-timeout=none ...
 
 .. note::
 
@@ -614,7 +624,7 @@ Example: launch a Spectrum MPI job with PMI tracing enabled:
 
 .. code-block:: console
 
- $ flux run -ompi=spectrum -overbose=2 -n4 ./hello
+  $ flux run -ompi=spectrum -overbose=2 -n4 ./hello
 
 .. _openmpi_versions:
 
@@ -627,7 +637,7 @@ with the Flux plugins enabled.  Your installed version may be checked with:
 
 .. code-block:: console
 
- $ ompi_info|grep flux
+  $ ompi_info|grep flux
                  MCA pmix: flux (MCA v2.1.0, API v2.0.0, Component v4.0.3)
                MCA schizo: flux (MCA v2.1.0, API v1.0.0, Component v4.0.3)
 
@@ -681,13 +691,13 @@ integer verbosity level, e.g.
 
 .. code-block:: console
 
- $ flux run --env=OMPI_MCA_btl_base_verbose=99 -N2 -n4 ./hello
+  $ flux run --env=OMPI_MCA_btl_base_verbose=99 -N2 -n4 ./hello
 
 To list available MCA parameters containing the string ``_verbose`` use:
 
 .. code-block:: console
 
- $ ompi_info -a | grep _verbose
+  $ ompi_info -a | grep _verbose
 
 .. _mvapich2_config:
 
@@ -723,76 +733,76 @@ something like this:
 
 .. code-block:: console
 
-   $ flux run -o verbose=2 -N2 ./hello
-   0.731s: flux-shell[1]: DEBUG: 1: tasks [1] on cores 0-3
-   0.739s: flux-shell[1]: DEBUG: Loading /usr/local/etc/flux/shell/initrc.lua
-   0.744s: flux-shell[1]: TRACE: Successfully loaded flux.shell module
-   0.744s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/initrc.lua
-   0.757s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/intel_mpi.lua
-   0.758s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/mvapich.lua
-   0.782s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/openmpi.lua
-   0.906s: flux-shell[1]: DEBUG: libpals: jobtap plugin not loaded: disabling operation
-   0.721s: flux-shell[0]: DEBUG: 0: task_count=2 slot_count=2 cores_per_slot=1 slots_per_node=1
-   0.722s: flux-shell[0]: DEBUG: 0: tasks [0] on cores 0-3
-   0.730s: flux-shell[0]: DEBUG: Loading /usr/local/etc/flux/shell/initrc.lua
-   0.739s: flux-shell[0]: TRACE: Successfully loaded flux.shell module
-   0.739s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/initrc.lua
-   0.753s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/intel_mpi.lua
-   0.758s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/mvapich.lua
-   0.784s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/openmpi.lua
-   0.792s: flux-shell[0]: DEBUG: output: batch timeout = 0.500s
-   0.921s: flux-shell[0]: DEBUG: libpals: jobtap plugin not loaded: disabling operation
-   1.054s: flux-shell[0]: TRACE: pmi: 0: C: cmd=init pmi_version=1 pmi_subversion=1
-   1.054s: flux-shell[0]: TRACE: pmi: 0: S: cmd=response_to_init rc=0 pmi_version=1 pmi_subversion=1
-   1.054s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_maxes
-   1.054s: flux-shell[0]: TRACE: pmi: 0: S: cmd=maxes rc=0 kvsname_max=64 keylen_max=64 vallen_max=1024
-   1.055s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_appnum
-   1.055s: flux-shell[0]: TRACE: pmi: 0: S: cmd=appnum rc=0 appnum=0
-   1.055s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_my_kvsname
-   1.055s: flux-shell[0]: TRACE: pmi: 0: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
-   1.055s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get kvsname=ƒABRxM89qL3 key=PMI_process_mapping
-   1.055s: flux-shell[0]: TRACE: pmi: 0: S: cmd=get_result rc=0 value=(vector,(0,2,1))
-   1.056s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_my_kvsname
-   1.056s: flux-shell[0]: TRACE: pmi: 0: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
-   1.059s: flux-shell[0]: TRACE: pmi: 0: C: cmd=put kvsname=ƒABRxM89qL3 key=P0-businesscard value=description#picl6$port#41401$ifname#192.168.88.251$
-   1.059s: flux-shell[0]: TRACE: pmi: 0: S: cmd=put_result rc=0
-   1.060s: flux-shell[0]: TRACE: pmi: 0: C: cmd=barrier_in
-   1.059s: flux-shell[1]: TRACE: pmi: 1: C: cmd=init pmi_version=1 pmi_subversion=1
-   1.059s: flux-shell[1]: TRACE: pmi: 1: S: cmd=response_to_init rc=0 pmi_version=1 pmi_subversion=1
-   1.060s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_maxes
-   1.060s: flux-shell[1]: TRACE: pmi: 1: S: cmd=maxes rc=0 kvsname_max=64 keylen_max=64 vallen_max=1024
-   1.060s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_appnum
-   1.060s: flux-shell[1]: TRACE: pmi: 1: S: cmd=appnum rc=0 appnum=0
-   1.060s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_my_kvsname
-   1.060s: flux-shell[1]: TRACE: pmi: 1: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
-   1.061s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get kvsname=ƒABRxM89qL3 key=PMI_process_mapping
-   1.061s: flux-shell[1]: TRACE: pmi: 1: S: cmd=get_result rc=0 value=(vector,(0,2,1))
-   1.062s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_my_kvsname
-   1.062s: flux-shell[1]: TRACE: pmi: 1: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
-   1.065s: flux-shell[1]: TRACE: pmi: 1: C: cmd=put kvsname=ƒABRxM89qL3 key=P1-businesscard value=description#picl7$port#35977$ifname#192.168.88.250$
-   1.065s: flux-shell[1]: TRACE: pmi: 1: S: cmd=put_result rc=0
-   1.065s: flux-shell[1]: TRACE: pmi: 1: C: cmd=barrier_in
-   1.069s: flux-shell[1]: TRACE: pmi: 1: S: cmd=barrier_out rc=0
-   1.066s: flux-shell[0]: TRACE: pmi: 0: S: cmd=barrier_out rc=0
-   1.084s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get kvsname=ƒABRxM89qL3 key=P1-businesscard
-   1.084s: flux-shell[0]: TRACE: pmi: 0: S: cmd=get_result rc=0 value=description#picl7$port#35977$ifname#192.168.88.250$
-   1.093s: flux-shell[0]: TRACE: pmi: 0: C: cmd=finalize
-   1.093s: flux-shell[0]: TRACE: pmi: 0: S: cmd=finalize_ack rc=0
-   1.093s: flux-shell[0]: TRACE: pmi: 0: S: pmi finalized
-   1.093s: flux-shell[0]: TRACE: pmi: 0: C: pmi EOF
-   1.089s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get kvsname=ƒABRxM89qL3 key=P0-businesscard
-   1.089s: flux-shell[1]: TRACE: pmi: 1: S: cmd=get_result rc=0 value=description#picl6$port#41401$ifname#192.168.88.251$
-   1.094s: flux-shell[1]: TRACE: pmi: 1: C: cmd=finalize
-   1.094s: flux-shell[1]: TRACE: pmi: 1: S: cmd=finalize_ack rc=0
-   1.094s: flux-shell[1]: TRACE: pmi: 1: S: pmi finalized
-   1.095s: flux-shell[1]: TRACE: pmi: 1: C: pmi EOF
-   1.099s: flux-shell[1]: DEBUG: task 1 complete status=0
-   1.107s: flux-shell[1]: DEBUG: exit 0
-   1.097s: flux-shell[0]: DEBUG: task 0 complete status=0
-   ƒABRxM89qL3: completed MPI_Init in 0.084s.  There are 2 tasks
-   ƒABRxM89qL3: completed first barrier in 0.008s
-   ƒABRxM89qL3: completed MPI_Finalize in 0.003s
-   1.116s: flux-shell[0]: DEBUG: exit 0
+  $ flux run -o verbose=2 -N2 ./hello
+  0.731s: flux-shell[1]: DEBUG: 1: tasks [1] on cores 0-3
+  0.739s: flux-shell[1]: DEBUG: Loading /usr/local/etc/flux/shell/initrc.lua
+  0.744s: flux-shell[1]: TRACE: Successfully loaded flux.shell module
+  0.744s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/initrc.lua
+  0.757s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/intel_mpi.lua
+  0.758s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/mvapich.lua
+  0.782s: flux-shell[1]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/openmpi.lua
+  0.906s: flux-shell[1]: DEBUG: libpals: jobtap plugin not loaded: disabling operation
+  0.721s: flux-shell[0]: DEBUG: 0: task_count=2 slot_count=2 cores_per_slot=1 slots_per_node=1
+  0.722s: flux-shell[0]: DEBUG: 0: tasks [0] on cores 0-3
+  0.730s: flux-shell[0]: DEBUG: Loading /usr/local/etc/flux/shell/initrc.lua
+  0.739s: flux-shell[0]: TRACE: Successfully loaded flux.shell module
+  0.739s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/initrc.lua
+  0.753s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/intel_mpi.lua
+  0.758s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/mvapich.lua
+  0.784s: flux-shell[0]: TRACE: trying to load /usr/local/etc/flux/shell/lua.d/openmpi.lua
+  0.792s: flux-shell[0]: DEBUG: output: batch timeout = 0.500s
+  0.921s: flux-shell[0]: DEBUG: libpals: jobtap plugin not loaded: disabling operation
+  1.054s: flux-shell[0]: TRACE: pmi: 0: C: cmd=init pmi_version=1 pmi_subversion=1
+  1.054s: flux-shell[0]: TRACE: pmi: 0: S: cmd=response_to_init rc=0 pmi_version=1 pmi_subversion=1
+  1.054s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_maxes
+  1.054s: flux-shell[0]: TRACE: pmi: 0: S: cmd=maxes rc=0 kvsname_max=64 keylen_max=64 vallen_max=1024
+  1.055s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_appnum
+  1.055s: flux-shell[0]: TRACE: pmi: 0: S: cmd=appnum rc=0 appnum=0
+  1.055s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_my_kvsname
+  1.055s: flux-shell[0]: TRACE: pmi: 0: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
+  1.055s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get kvsname=ƒABRxM89qL3 key=PMI_process_mapping
+  1.055s: flux-shell[0]: TRACE: pmi: 0: S: cmd=get_result rc=0 value=(vector,(0,2,1))
+  1.056s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get_my_kvsname
+  1.056s: flux-shell[0]: TRACE: pmi: 0: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
+  1.059s: flux-shell[0]: TRACE: pmi: 0: C: cmd=put kvsname=ƒABRxM89qL3 key=P0-businesscard value=description#picl6$port#41401$ifname#192.168.88.251$
+  1.059s: flux-shell[0]: TRACE: pmi: 0: S: cmd=put_result rc=0
+  1.060s: flux-shell[0]: TRACE: pmi: 0: C: cmd=barrier_in
+  1.059s: flux-shell[1]: TRACE: pmi: 1: C: cmd=init pmi_version=1 pmi_subversion=1
+  1.059s: flux-shell[1]: TRACE: pmi: 1: S: cmd=response_to_init rc=0 pmi_version=1 pmi_subversion=1
+  1.060s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_maxes
+  1.060s: flux-shell[1]: TRACE: pmi: 1: S: cmd=maxes rc=0 kvsname_max=64 keylen_max=64 vallen_max=1024
+  1.060s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_appnum
+  1.060s: flux-shell[1]: TRACE: pmi: 1: S: cmd=appnum rc=0 appnum=0
+  1.060s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_my_kvsname
+  1.060s: flux-shell[1]: TRACE: pmi: 1: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
+  1.061s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get kvsname=ƒABRxM89qL3 key=PMI_process_mapping
+  1.061s: flux-shell[1]: TRACE: pmi: 1: S: cmd=get_result rc=0 value=(vector,(0,2,1))
+  1.062s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get_my_kvsname
+  1.062s: flux-shell[1]: TRACE: pmi: 1: S: cmd=my_kvsname rc=0 kvsname=ƒABRxM89qL3
+  1.065s: flux-shell[1]: TRACE: pmi: 1: C: cmd=put kvsname=ƒABRxM89qL3 key=P1-businesscard value=description#picl7$port#35977$ifname#192.168.88.250$
+  1.065s: flux-shell[1]: TRACE: pmi: 1: S: cmd=put_result rc=0
+  1.065s: flux-shell[1]: TRACE: pmi: 1: C: cmd=barrier_in
+  1.069s: flux-shell[1]: TRACE: pmi: 1: S: cmd=barrier_out rc=0
+  1.066s: flux-shell[0]: TRACE: pmi: 0: S: cmd=barrier_out rc=0
+  1.084s: flux-shell[0]: TRACE: pmi: 0: C: cmd=get kvsname=ƒABRxM89qL3 key=P1-businesscard
+  1.084s: flux-shell[0]: TRACE: pmi: 0: S: cmd=get_result rc=0 value=description#picl7$port#35977$ifname#192.168.88.250$
+  1.093s: flux-shell[0]: TRACE: pmi: 0: C: cmd=finalize
+  1.093s: flux-shell[0]: TRACE: pmi: 0: S: cmd=finalize_ack rc=0
+  1.093s: flux-shell[0]: TRACE: pmi: 0: S: pmi finalized
+  1.093s: flux-shell[0]: TRACE: pmi: 0: C: pmi EOF
+  1.089s: flux-shell[1]: TRACE: pmi: 1: C: cmd=get kvsname=ƒABRxM89qL3 key=P0-businesscard
+  1.089s: flux-shell[1]: TRACE: pmi: 1: S: cmd=get_result rc=0 value=description#picl6$port#41401$ifname#192.168.88.251$
+  1.094s: flux-shell[1]: TRACE: pmi: 1: C: cmd=finalize
+  1.094s: flux-shell[1]: TRACE: pmi: 1: S: cmd=finalize_ack rc=0
+  1.094s: flux-shell[1]: TRACE: pmi: 1: S: pmi finalized
+  1.095s: flux-shell[1]: TRACE: pmi: 1: C: pmi EOF
+  1.099s: flux-shell[1]: DEBUG: task 1 complete status=0
+  1.107s: flux-shell[1]: DEBUG: exit 0
+  1.097s: flux-shell[0]: DEBUG: task 0 complete status=0
+  ƒABRxM89qL3: completed MPI_Init in 0.084s.  There are 2 tasks
+  ƒABRxM89qL3: completed first barrier in 0.008s
+  ƒABRxM89qL3: completed MPI_Finalize in 0.003s
+  1.116s: flux-shell[0]: DEBUG: exit 0
 
 ************************
 Flux Developer Questions

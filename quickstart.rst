@@ -108,7 +108,7 @@ variant: ``spack install flux-sched+cuda``.  This builds a CUDA-aware
 version of hwloc.
 
 
-For instructions on installing spack, see `Spack's installation documentation <https://spack.readthedocs.io/en/latest/getting_started.html#installation>`_.
+For instructions on installing spack, see `Spack's installation documentation <https://spack.readthedocs.io/en/latest/getting_started.html>`_.
 
 .. _manual_installation:
 
