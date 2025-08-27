@@ -364,5 +364,6 @@ def setup(app):
     )
 
 linkcheck_ignore = [
-    r'https://github.com/flux-framework/flux-core\?tab\=readme-ov-file\#build-requirements'
+    r'https://github.com/flux-framework/flux-core\?tab\=readme-ov-file\#build-requirements',
+    r'https://www.mcs.anl.gov/papers/P1760.pdf'
 ]
