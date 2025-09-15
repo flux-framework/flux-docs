@@ -453,7 +453,7 @@ including
 
 .. code-block:: console
 
-  $ flux job cancel ƒMjstRfzF
+  $ flux cancel ƒMjstRfzF
 
 or
 

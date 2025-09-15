@@ -44,7 +44,7 @@ Let's submit some jobs to the Flux instance.
     f2TREX7Cj
     f2TRG16V5
     f2TRHV5mR
-    $ flux job cancel f2TRHV5mR
+    $ flux cancel f2TRHV5mR
 
 In the above we have submitted a number of jobs.  First we submit two jobs that
 run ``/bin/true``, then we run two jobs that run ``/bin/false``.  If you are
@@ -53,7 +53,7 @@ duplicates of the job you just submitted.  We also specify the ``--wait`` comman
 to wait for those jobs to finish before moving on.
 
 Next we submit 8 ``sleep`` commands of infinite length.  Then for fun, we cancel
-one of those jobs via ``flux job cancel``.
+one of those jobs via ``flux cancel``.
 
 -----------------
 Basic Job Listing

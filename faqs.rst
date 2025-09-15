@@ -69,7 +69,7 @@ F58 to another using the :core:man1:`flux-job` ``id`` subcommand, e.g.
 
   $ flux submit sleep 3600 | flux job id --to=words
   airline-alibi-index--tuna-maximum-adam
-  $ flux job cancel airline-alibi-index--tuna-maximum-adam
+  $ flux cancel airline-alibi-index--tuna-maximum-adam
 
 With copy-and-paste, auto-completion, globbing, etc., it shouldn't be necessary
 to *type* a job ID with the ``ƒ`` prefix that often, but should you need to,
