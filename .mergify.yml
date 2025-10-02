@@ -1,29 +1,25 @@
 queue_rules:
   - name: default
-    queue_conditions:
-      - base=master
-      - status-success="validate commits"
-      - label="merge-when-passing"
-      - label!="work-in-progress"
-      - "approved-reviews-by=@flux-framework/docs"
-      - "#approved-reviews-by>0"
-      - "#changes-requested-reviews-by=0"
-      - -title~=^\[*[Ww][Ii][Pp]
-    merge_conditions:
-      - base=master
-      - status-success="docs/readthedocs.org:flux-framework"
-      - status-success="validate commits"
-      - label="merge-when-passing"
-      - label!="work-in-progress"
-      - "approved-reviews-by=@flux-framework/docs"
-      - "#approved-reviews-by>0"
-      - "#changes-requested-reviews-by=0"
-      - -title~=^\[*[Ww][Ii][Pp]
-    merge_method: merge
+    batch_size: 1
     update_method: rebase
+    merge_method: merge
+
+# Avoid temporary branches created by mergify for parallel checks
+# These do not work with the pr-validator since the temporary PR
+# branch is updated with a merge commit.
+merge_queue:
+  max_parallel_checks: 1
 
 pull_request_rules:
-  - name: refactored queue action rule
-    conditions: []
+  - name: rebase and merge when passing all checks
+    conditions:
+      - base=master
+      - label="merge-when-passing"
+      - label!="work-in-progress"
+      - -title~="^\[*(WIP|wip)"
+      - "approved-reviews-by=@flux-framework/core"
+      - "#approved-reviews-by>0"
+      - "#changes-requested-reviews-by=0"
     actions:
       queue:
+        name: default
