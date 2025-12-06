@@ -322,7 +322,7 @@ may help improve efficiency and throughput:
   these tools.
 - If multiple commands must be used to submit jobs before waiting for them,
   consider using ``--flags=waitable`` and ``flux job wait --all`` to wait for
-  jobs to complete and capture any errors.
+  jobs to complete and capture any errors, or use :core:man1:`flux-watch`.
 - If the jobs to be submitted cannot be combined with the command line tools,
   develop a workflow management script using the
   `Flux python interface <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>`_.  The
