@@ -286,6 +286,9 @@ Note the following:
 * The database is only accessed by rank 0 so *statedir* need not be shared
   with the other ranks.
 * *statedir* must exist before starting Flux.
+* If *statedir* is set on the command line and the specified directory has
+  the sticky bit set, a temporary directory within that directory will be
+  created rather than using it as the statedir directly.
 * If *statedir* contains ``content.sqlite`` it will be reused.  Unless you are
   intentionally restarting on the same nodes, remove it before starting Flux.
 * Unlike *rundir*, *statedir* and the ``content.sqlite`` file within it
@@ -319,7 +322,7 @@ may help improve efficiency and throughput:
   these tools.
 - If multiple commands must be used to submit jobs before waiting for them,
   consider using ``--flags=waitable`` and ``flux job wait --all`` to wait for
-  jobs to complete and capture any errors.
+  jobs to complete and capture any errors, or use :core:man1:`flux-watch`.
 - If the jobs to be submitted cannot be combined with the command line tools,
   develop a workflow management script using the
   `Flux python interface <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/python/index.html>`_.  The
@@ -540,25 +543,15 @@ TL;DR: Use:
 
 .. code-block:: console
 
-  $ flux batch --conf=tbon.topo=kary:0 -o exit-timeout=none ...
-
-.. note::
-
-  In future versions of Flux ``-o exit-timeout=none`` may become the
-  default for :core:man1:`flux-batch` and :core:man1:`flux-alloc`. Check
-  with your version to see if ``-o exit-timeout=none`` is necessary.
+  $ flux batch --conf=tbon.topo=kary:0 ...
 
 When a Flux instance running as a job loses a node, what happens next is
-dependent on two factors: whether the lost node is critical, and the value
-of the ``exit-timeout`` job shell option. If the lost node is critical, the
+on whether the lost node is critical. If the lost node is critical, the
 instance can no longer properly function, triggering a fatal ``node-failure``
 job exception. If the node is not critical, a non-fatal job exception is
-raised and the leader job shell is notified. After the ``exit-timeout``
-period (if set to a value other than ``none``), a fatal job exception
-is raised and the job is terminated.
+raised and the leader job shell is notified.
 
-To maximize resilience in batch or allocation jobs, disable the
-``exit-timeout`` option (set it to ``none``) and minimize the number of
+To maximize resilience in batch or allocation jobs, minimize the number of
 critical ranks by running a flat TBON with ``--conf=tbon.topo=kary:0``. This
 configuration allows jobs to continue running even if any node is lost,
 except for rank 0, which is always critical.
