@@ -286,6 +286,9 @@ Note the following:
 * The database is only accessed by rank 0 so *statedir* need not be shared
   with the other ranks.
 * *statedir* must exist before starting Flux.
+* If *statedir* is set on the command line and the specified directory has
+  the sticky bit set, a temporary directory within that directory will be
+  created rather than using it as the statedir directly.
 * If *statedir* contains ``content.sqlite`` it will be reused.  Unless you are
   intentionally restarting on the same nodes, remove it before starting Flux.
 * Unlike *rundir*, *statedir* and the ``content.sqlite`` file within it
