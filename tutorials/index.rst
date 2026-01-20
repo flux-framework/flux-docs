@@ -16,3 +16,4 @@ find a tutorial of interest.
    containers/index
    lab/index
    integrations/index
+   bindings/index
