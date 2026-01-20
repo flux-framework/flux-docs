@@ -13,3 +13,4 @@ Do you have a question? `let us know <https://github.com/flux-framework/flux-doc
    debugging
    batch
    hierarchies
+   fast-job-submission
