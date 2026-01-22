@@ -4,7 +4,7 @@ Command Tutorials
 =================
 
 Welcome to the Command Tutorials! These tutorials should help you to map specific Flux commands
-with your use case, and then see detailed usage. 
+with your use case, and then see detailed usage.
 
  - ``flux submit/flux run`` (:ref:`flux-submit`): "Submit a job in a Flux instance"
  - ``flux jobs`` (:ref:`flux-jobs`): "List Flux jobs, filter them, and output extra information"
