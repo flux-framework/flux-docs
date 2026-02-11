@@ -607,8 +607,7 @@ mpi=none
    Disable the personality scripts that are normally loaded by default.
 
 mpi=spectrum
-   IBM Spectrum MPI is an OpenMPI derivative.  See also
-   :ref:`coral_spectrum_mpi`.
+   IBM Spectrum MPI is an OpenMPI derivative.
 
 MPI personality options may be added by site administrators, or by other
 packages.

@@ -11,4 +11,3 @@ provided there are for collaborating systems.
    :caption: Lab Tutorials
 
    LLNL Introduction to Flux <https://hpc-tutorials.llnl.gov/flux/>
-   coral
