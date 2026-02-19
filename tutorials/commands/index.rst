@@ -7,6 +7,7 @@ Welcome to the Command Tutorials! These tutorials should help you to map specifi
 with your use case, and then see detailed usage. 
 
  - ``flux submit/flux run`` (:ref:`flux-submit`): "Submit a job in a Flux instance"
+ - ``flux cancel/flux cancelall/flux pkill`` (:ref:`flux-cancel`): "Cancel a job you submitted"
  - ``flux jobs`` (:ref:`flux-jobs`): "List Flux jobs, filter them, and output extra information"
  - ``flux proxy`` (:ref:`ssh-across-clusters`): "Send commands to a Flux instance across clusters using ssh"
 
@@ -18,5 +19,6 @@ This section is currently 🚧️ under construction 🚧️, so please come bac
    :caption: Command Tutorials
 
    flux-submit
+   flux-cancel
    flux-jobs
    ssh-across-clusters
