@@ -5,7 +5,7 @@ jobs:
     name: validate commits
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
@@ -16,13 +16,13 @@ jobs:
     name: ensure latest examples built
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
 
     - name: Build Docs and Check Files
-      uses: devcontainers/ci@v0.2
+      uses: devcontainers/ci@v0.3
       with:
         runCmd: |
           cp -R ./auto_examples /tmp/auto_examples
@@ -33,7 +33,7 @@ jobs:
   spell-and-linkcheck:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install dependencies
       run: >-
           sudo apt-get update -y &&
@@ -41,7 +41,7 @@ jobs:
           sudo pip3 install --ignore-installed --upgrade -r ./requirements.txt
 
     - name: Check Spelling
-      uses: crate-ci/typos@7ad296c72fa8265059cc03d1eda562fbdfcd6df2 # v1.9.0
+      uses: crate-ci/typos@v1.28.4
       with:
         files: "*.rst */*.rst */*/*.rst"
    
