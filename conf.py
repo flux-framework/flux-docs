@@ -338,6 +338,19 @@ html_favicon = "images/favicon.ico"
 html_use_index = True
 html_domain_indices = True
 
+# -- Search configuration ----------------------------------------------------
+html_search_language = 'en'
+html_search_options = {
+    'type': 'default',
+}
+
+# Try to use Sphinx's built-in search instead of immaterial's
+# This bypasses sphinx_immaterial's RxJS search implementation
+html_theme_options["features"] = [
+    f for f in html_theme_options.get("features", [])
+    if not f.startswith("search")
+]
+
 extlinks = {
     "duref": (
         "http://docutils.sourceforge.net/docs/ref/rst/" "restructuredtext.html#%s",
