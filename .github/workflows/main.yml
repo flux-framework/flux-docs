@@ -5,7 +5,7 @@ jobs:
     name: validate commits
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
@@ -16,7 +16,7 @@ jobs:
     name: ensure latest examples built
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
@@ -33,7 +33,7 @@ jobs:
   spell-and-linkcheck:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: install dependencies
       run: >-
           sudo apt-get update -y &&
@@ -41,7 +41,7 @@ jobs:
           sudo pip3 install --ignore-installed --upgrade -r ./requirements.txt
 
     - name: Check Spelling
-      uses: crate-ci/typos@v1.28.4
+      uses: crate-ci/typos@v1.45.0
       with:
         files: "*.rst */*.rst */*/*.rst"
    
