@@ -3,12 +3,10 @@
 Tutorials
 =========
 
-Flux is developed at `Lawrence Livermore National Lab <http://llnl.gov>`_ and LLNL maintains its own
-Flux tutorials `here <<https://hpc-tutorials.llnl.gov/flux/>`_. Other sites may well do the same,
-so it may be worth checking local documentation.
+Lawrence Livermore National Lab maintains comprehensive Flux tutorials at
+`hpc-tutorials.llnl.gov/flux <https://hpc-tutorials.llnl.gov/flux/>`_.
 
-Provided here are other families of tutorials for your use; explore the sections below to
-find a tutorial of interest.
+Additional tutorials covering commands, containers, and integrations are provided below.
 
 .. toctree::
    :maxdepth: 2

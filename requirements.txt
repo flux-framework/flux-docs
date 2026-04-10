@@ -6,6 +6,7 @@ sphinx-copybutton
 docutils
 markupsafe==2.0.1
 sphinx_immaterial
+sphinx-design
 pydantic
 recommonmark
 sphinx_markdown_tables
