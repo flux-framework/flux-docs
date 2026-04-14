@@ -106,7 +106,7 @@ Complete documentation for the core Flux projects:
    .. grid-item-card:: flux-security
       :link: https://flux-framework.readthedocs.io/projects/flux-security/en/latest/
 
-      Security plugin for authentication in multi-user environments
+      Security framework for multi-user support with job signing and the IMP setuid helper
 
 **See also:** :doc:`flux-pmix, flux-coral2, dyad, and other projects <projects>`
 

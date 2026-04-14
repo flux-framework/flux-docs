@@ -3,8 +3,9 @@
 Guides
 ======
 
-Read more about how to administer Flux, or use our Python API.
-Do you have a question? `let us know <https://github.com/flux-framework/flux-docs/issues>`_
+This section covers Flux administration, system components, and API documentation.
+
+For questions or feedback, please `open an issue <https://github.com/flux-framework/flux-docs/issues>`_.
 
 .. toctree::
    :maxdepth: 1
