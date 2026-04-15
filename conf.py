@@ -202,6 +202,11 @@ intersphinx_mapping = {
 # a list of builtin themes.
 #
 extensions.append("sphinx_immaterial")
+
+# Make on_rtd available in templates
+html_context = {
+    "on_rtd": on_rtd,
+}
 # html_theme_path = sphinx_immaterial.html_theme_path()
 # html_context = sphinx_immaterial.get_html_context()
 html_css_files = ["custom.css"]
