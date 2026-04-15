@@ -72,6 +72,7 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     "sphinx_markdown_tables",
+    "sphinx_design",
     "sphinx_immaterial.theme_result",
     "sphinx_immaterial.kbd_keys",
     "sphinx_immaterial.apidoc.format_signatures",

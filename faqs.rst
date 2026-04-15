@@ -4,7 +4,7 @@
 FAQs
 ####
 
-Some frequently asked questions about flux and their answers! 🤔️
+Frequently asked questions about Flux 🤔
 
 .. _background_faq:
 
@@ -16,10 +16,9 @@ Background
 What is Flux Framework?
 =======================
 
-Flux is a flexible framework for resource management, built for your site.
-The core framework here consists of a suite of projects, tools, and libraries that may be used to build site-custom resource managers for
-High Performance Computing centers. The set of core projects are described in this documentation, and our
-larger family of projects can be seen on `our portal page <https://flux-framework.org>`_.
+Flux is a resource manager for high-performance computing. The core framework consists
+of projects, tools, and libraries for building site-custom resource managers for HPC centers.
+See our `portal page <https://flux-framework.org>`_ for the full family of projects.
 
 What does it mean for a cluster to deploy Flux?
 ===============================================
@@ -43,7 +42,7 @@ How does Flux compare to other managers?
 ========================================
 
 Flux has similarities to many other resource managers, but we do a variety of things quite differently.
-Check out this comparison table here (:ref:`comparison-table`) for a detailed list!"
+Check out the :ref:`comparison table <comparison-table>` for a detailed list.
 Do you want to add or correct a feature? Please `let us know <https://github.com/flux-framework/flux-docs/issues>`_
 
 *****************
