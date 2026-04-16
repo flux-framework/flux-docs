@@ -1,3 +1,60 @@
+/* RTD search trigger: center the bar in the header and fix vertical alignment.
+   Without data-md-component="search", sphinx_immaterial does not manage this element,
+   so positioning and sizing must be set explicitly.
+   position:absolute + left:50%/translateX(-50%) centers the bar relative to the
+   header regardless of where the flex siblings land. */
+.md-header__inner {
+  position: relative;
+}
+.md-header .md-search {
+  display: flex;
+  align-items: center;
+  width: 20rem;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+.md-header .md-search .md-search__inner,
+.md-header .md-search .md-search__form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.md-header .md-search .md-search__input {
+  width: 100%;
+}
+
+/* Sync RTD Addons search modal colors with sphinx_immaterial's slate (dark) scheme.
+   Variables must be set directly on the readthedocs-search element, not on body —
+   light-DOM styles on the host element override the shadow DOM's :host rules,
+   whereas inherited values from body lose to :host. */
+body[data-md-color-scheme="slate"] readthedocs-search {
+  --readthedocs-search-color: var(--md-default-fg-color);
+  --readthedocs-search-link-color: var(--md-default-fg-color);
+  --readthedocs-search-content-background-color: var(--md-default-bg-color);
+  --readthedocs-search-input-background-color: var(--md-default-bg-color--light);
+  --readthedocs-search-footer-background-color: var(--md-default-bg-color--light);
+  --readthedocs-search-footer-color: var(--md-default-fg-color);
+  --readthedocs-search-footer-code-background-color: var(--md-default-bg-color--lighter);
+  --readthedocs-search-content-border-color: var(--md-default-fg-color--lightest);
+  --readthedocs-search-filters-background-color: var(--md-default-bg-color--light);
+  --readthedocs-search-filters-border-color: var(--md-default-fg-color--lightest);
+  --readthedocs-search-result-border-color: var(--md-default-fg-color--lightest);
+  --readthedocs-search-footer-code-border-color: var(--md-default-fg-color--lightest);
+  --readthedocs-search-result-active-background-color: var(--md-default-bg-color--light);
+  --readthedocs-search-result-color: var(--md-default-fg-color--light);
+  --readthedocs-search-result-heading-color: var(--md-default-fg-color);
+  --readthedocs-search-result-subheading-color: var(--md-default-fg-color--light);
+  --readthedocs-search-result-icon-color: var(--md-default-fg-color--light);
+  --readthedocs-search-badge-color: var(--md-default-fg-color);
+  --readthedocs-search-badge-background-color: var(--md-default-bg-color--light);
+  --readthedocs-search-backdrop-color: rgba(0, 0, 0, 0.7);
+}
+
 .o-tooltip--left:after{
     font-size: 0.8rem;
 }
