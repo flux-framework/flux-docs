@@ -1,0 +1,185 @@
+{#- Custom search that uses ReadTheDocs server-side API for cross-project searching -#}
+{% if on_rtd %}
+  {# On ReadTheDocs, use server-side search API which supports cross-project search #}
+  <div class="md-search" data-md-component="search" role="dialog">
+    <label class="md-search__overlay" for="__search"></label>
+    <div class="md-search__inner" role="search">
+      <form class="md-search__form" name="search" id="rtd-search-form">
+        <input type="text" name="q" class="md-search__input" placeholder="Search across all Flux docs" aria-label="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+        <label class="md-search__icon md-icon" for="__search">
+          {% set icon = config.theme.icon.search or "material/magnify" %}
+          {% include ".icons/" ~ icon ~ ".svg" %}
+          {% set icon = config.theme.icon.previous or "material/arrow-left" %}
+          {% include ".icons/" ~ icon ~ ".svg" %}
+        </label>
+        <nav class="md-search__options" aria-label="Search">
+          <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+            {% set icon = config.theme.icon.close or "material/close" %}
+            {% include ".icons/" ~ icon ~ ".svg" %}
+          </button>
+        </nav>
+      </form>
+      <div class="md-search__output">
+        <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+          <div class="md-search-result" data-md-component="search-result">
+            <div class="md-search-result__meta">
+              Type to search across all Flux documentation
+            </div>
+            <ol class="md-search-result__list" role="presentation" id="rtd-search-results"></ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    const form = document.getElementById('rtd-search-form');
+    const input = form.querySelector('input[name="q"]');
+    const resultsContainer = document.getElementById('rtd-search-results');
+    const metaContainer = resultsContainer.previousElementSibling;
+    let searchTimeout;
+
+    // ReadTheDocs API endpoint - use relative path to avoid CORS issues
+    // RTD proxies the API at /_/api/v3/ on the same domain
+    const RTD_SEARCH_API = '/_/api/v3/search/';
+    const PROJECT_SLUG = 'flux-framework';
+    const SEARCH_SUBPROJECTS = true;
+
+    input.addEventListener('input', function(e) {
+      clearTimeout(searchTimeout);
+      const query = e.target.value.trim();
+
+      if (query.length < 2) {
+        metaContainer.textContent = 'Type to search across all Flux documentation';
+        resultsContainer.innerHTML = '';
+        return;
+      }
+
+      metaContainer.textContent = 'Searching...';
+
+      searchTimeout = setTimeout(() => {
+        searchRTD(query);
+      }, 300);
+    });
+
+    async function searchRTD(query) {
+      try {
+        let searchUrl = `${RTD_SEARCH_API}?q=${encodeURIComponent(query)}&project=${PROJECT_SLUG}`;
+        if (SEARCH_SUBPROJECTS) {
+          searchUrl += '&subprojects=true';
+        }
+
+        const response = await fetch(searchUrl);
+        const data = await response.json();
+
+        displayResults(data.results || [], query);
+      } catch (err) {
+        console.error('Search error:', err);
+        metaContainer.textContent = 'Search error occurred';
+        resultsContainer.innerHTML = '';
+      }
+    }
+
+    function displayResults(results, query) {
+      if (results.length === 0) {
+        metaContainer.textContent = `No results found for "${query}"`;
+        resultsContainer.innerHTML = '';
+        return;
+      }
+
+      metaContainer.textContent = `${results.length} result${results.length !== 1 ? 's' : ''} found`;
+
+      // Sort by relevance score if available
+      results.sort((a, b) => (b.score || 0) - (a.score || 0));
+
+      resultsContainer.innerHTML = results.slice(0, 20).map(result => {
+        const project = result.project || 'flux-framework';
+        const projectLabel = project.replace('flux-', '');
+
+        return `
+          <li class="md-search-result__item">
+            <a href="${result.link || result.path}" class="md-search-result__link" tabindex="-1">
+              <article class="md-search-result__article md-search-result__article--document">
+                <h1 class="md-search-result__title">${highlightText(result.title, query)}</h1>
+                <p class="md-search-result__teaser">
+                  <span class="md-search-result__project">[${projectLabel}]</span>
+                  ${result.blocks && result.blocks[0] ? highlightText(result.blocks[0].content.substring(0, 150), query) + '...' : ''}
+                </p>
+              </article>
+            </a>
+          </li>
+        `;
+      }).join('');
+    }
+
+    function highlightText(text, query) {
+      if (!text) return '';
+      const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return text.replace(regex, '<mark>$1</mark>');
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+    });
+  })();
+  </script>
+
+  <style>
+  .md-search-result__project {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 0.7rem;
+    padding: 0.1em 0.4em;
+    margin-right: 0.5em;
+    background: var(--md-primary-fg-color);
+    color: var(--md-primary-bg-color);
+    border-radius: 0.2rem;
+  }
+  .md-search-result__teaser mark {
+    background: var(--md-accent-fg-color);
+    color: var(--md-accent-bg-color);
+  }
+  </style>
+{% else %}
+  {# Fallback to theme's default search when not on RTD #}
+  <div class="md-search" data-md-component="search" role="dialog">
+    <label class="md-search__overlay" for="__search"></label>
+    <div class="md-search__inner" role="search">
+      <form class="md-search__form" name="search">
+        <input type="text" class="md-search__input" name="query" aria-label="{{ lang.t('search.placeholder') }}" placeholder="{{ lang.t('search.placeholder') }}" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+        <label class="md-search__icon md-icon" for="__search">
+          {% set icon = config.theme.icon.search or "material/magnify" %}
+          {% include ".icons/" ~ icon ~ ".svg" %}
+          {% set icon = config.theme.icon.previous or "material/arrow-left" %}
+          {% include ".icons/" ~ icon ~ ".svg" %}
+        </label>
+        <nav class="md-search__options" aria-label="{{ lang.t('search') }}">
+          {% if "search.share" in features %}
+            <a href="javascript:void(0)" class="md-search__icon md-icon" title="{{ lang.t('search.share') }}" aria-label="{{ lang.t('search.share') }}" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+              {% set icon = config.theme.icon.share or "material/share-variant" %}
+              {% include ".icons/" ~ icon ~ ".svg" %}
+            </a>
+          {% endif %}
+          <button type="reset" class="md-search__icon md-icon" title="{{ lang.t('search.reset') }}" aria-label="{{ lang.t('search.reset') }}" tabindex="-1">
+            {% set icon = config.theme.icon.close or "material/close" %}
+            {% include ".icons/" ~ icon ~ ".svg" %}
+          </button>
+        </nav>
+        {% if "search.suggest" in features %}
+          <div class="md-search__suggest" data-md-component="search-suggest"></div>
+        {% endif %}
+      </form>
+      <div class="md-search__output">
+        <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+          <div class="md-search-result" data-md-component="search-result">
+            <div class="md-search-result__meta">
+              {{ lang.t("search.result.initializer") }}
+            </div>
+            <ol class="md-search-result__list" role="presentation"></ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
