@@ -38,6 +38,45 @@
     }
     input.addEventListener('focus', showRTDSearch);
     input.addEventListener('click', showRTDSearch);
+
+    // Fix dark mode in the RTD Addons search modal. The shadow DOM uses hardcoded
+    // background colors for some elements (e.g. .filters-title) that our external
+    // CSS custom properties cannot override. We inject a <style> into the shadow
+    // root; CSS custom properties DO pierce the shadow boundary, so we can still
+    // reference our --readthedocs-search-* variables from the injected style.
+    const DARK_STYLE_ID = 'flux-rtd-dark';
+    function injectDarkStyle(shadowRoot) {
+      if (shadowRoot.getElementById(DARK_STYLE_ID)) return;
+      const style = document.createElement('style');
+      style.id = DARK_STYLE_ID;
+      style.textContent = [
+        /* filters-title floats as a label over the border — needs content bg */
+        '.filters-title { background: var(--readthedocs-search-content-background-color) !important; }',
+      ].join('\n');
+      shadowRoot.appendChild(style);
+    }
+    function removeDarkStyle(shadowRoot) {
+      const existing = shadowRoot.getElementById(DARK_STYLE_ID);
+      if (existing) existing.remove();
+    }
+    function syncDarkMode() {
+      const rtdSearch = document.querySelector('readthedocs-search');
+      if (!rtdSearch || !rtdSearch.shadowRoot) return;
+      const isDark = document.body.getAttribute('data-md-color-scheme') === 'slate';
+      isDark ? injectDarkStyle(rtdSearch.shadowRoot) : removeDarkStyle(rtdSearch.shadowRoot);
+    }
+    // Watch for the readthedocs-search element to be added to the DOM.
+    const domObserver = new MutationObserver(function(_, obs) {
+      if (document.querySelector('readthedocs-search')) {
+        obs.disconnect();
+        syncDarkMode();
+        // Re-sync whenever the user toggles the color scheme.
+        new MutationObserver(syncDarkMode).observe(document.body, {
+          attributes: true, attributeFilter: ['data-md-color-scheme']
+        });
+      }
+    });
+    domObserver.observe(document.body, { childList: true, subtree: true });
   })();
   </script>
 {% else %}

@@ -29,9 +29,10 @@
 }
 
 /* Sync RTD Addons search modal colors with sphinx_immaterial's slate (dark) scheme.
-   RTD Addons modal defaults to light mode; these overrides make it follow the
-   site's dark mode toggle by mapping to sphinx_immaterial's own CSS variables. */
-body[data-md-color-scheme="slate"] {
+   Variables must be set directly on the readthedocs-search element, not on body —
+   light-DOM styles on the host element override the shadow DOM's :host rules,
+   whereas inherited values from body lose to :host. */
+body[data-md-color-scheme="slate"] readthedocs-search {
   --readthedocs-search-color: var(--md-default-fg-color);
   --readthedocs-search-link-color: var(--md-default-fg-color);
   --readthedocs-search-content-background-color: var(--md-default-bg-color);
@@ -40,6 +41,7 @@ body[data-md-color-scheme="slate"] {
   --readthedocs-search-footer-color: var(--md-default-fg-color);
   --readthedocs-search-footer-code-background-color: var(--md-default-bg-color--lighter);
   --readthedocs-search-content-border-color: var(--md-default-fg-color--lightest);
+  --readthedocs-search-filters-background-color: var(--md-default-bg-color--light);
   --readthedocs-search-filters-border-color: var(--md-default-fg-color--lightest);
   --readthedocs-search-result-border-color: var(--md-default-fg-color--lightest);
   --readthedocs-search-footer-code-border-color: var(--md-default-fg-color--lightest);
