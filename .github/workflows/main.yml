@@ -41,7 +41,7 @@ jobs:
           sudo pip3 install --ignore-installed --upgrade -r ./requirements.txt
 
     - name: Check Spelling
-      uses: crate-ci/typos@v1.45.0
+      uses: crate-ci/typos@v1.46.0
       with:
         files: "*.rst */*.rst */*/*.rst"
    
