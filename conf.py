@@ -31,9 +31,10 @@ sys.path.insert(0, os.path.abspath("."))
 # -- Project information -----------------------------------------------------
 
 project = "Flux"
-copyright = """2014 Lawrence Livermore National Security, LLC and Flux developers.
 
-SPDX-License-Identifier: LGPL-3.0"""
+# The Copyright and symbol is added by Sphinx
+copyright = """Flux Framework a Series of LF Projects, LLC. For web site terms of use, trademark policy and other project policies please see https://lfprojects.org."""
+
 author = "This page is maintained by the Flux Framework community."
 
 # -- RTD configuration -------------------------------------------------------
