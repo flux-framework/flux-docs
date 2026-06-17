@@ -19,7 +19,7 @@ and run ``flux start`` via our job manager. Here we might be on a login node:
 
     # Slurm specific
     $ salloc -N4 --exclusive
-    $ srun -N4 -n4 --pty --mpibind=off flux start
+    $ srun -N4 -n4 --pty flux start
 
 And then we get our allocation! You might adapt this command to be more specific to your resource manager. E.g., Slurm uses srun.
 After you run ``flux start``, you are inside of a Flux instance on your allocation!

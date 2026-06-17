@@ -182,9 +182,8 @@ Why are resources missing in foreign-launched Flux?
 When Flux discovers resources via
 `hwloc <https://www.open-mpi.org/projects/hwloc/>`_, it honors the current
 core and GPU bindings, so if resources are missing, affinity and binding
-from the parent resource manager should be checked.  In Slurm, try
-``--mpibind=off``, in LSF jsrun, try ``--bind=none``.
-
+from the parent resource manager should be checked.  If a competing plugin
+(such as `mpibind`) is determining affinity, try turning it off.
 
 .. _overcommit_resources:
 
