@@ -17,3 +17,4 @@ For questions or feedback, please `open an issue <https://github.com/flux-framew
    debugging
    batch
    hierarchies
+   fast-job-submission
